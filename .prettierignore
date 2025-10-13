@@ -1,0 +1,9 @@
+node_modules
+package-lock.json
+build
+.DS_Store
+CVS
+Thumbs.db
+eslint.config.js
+*.gen.ts
+package.json
