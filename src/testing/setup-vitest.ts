@@ -1,4 +1,15 @@
 import "@testing-library/jest-dom";
-import { vi } from "vitest";
+import { beforeAll, vi } from "vitest";
 
-vi.mock("zustand");
+import { ResizeObserverMock } from "./mocks/resize-observer";
+
+beforeAll(() => {
+  vi.mock("zustand");
+  
+  vi.stubGlobal("ResizeObserver", ResizeObserverMock)
+  vi.stubGlobal("scrollTo", vi.fn())
+
+  return () => {
+    vi.restoreAllMocks();
+  };
+});
