@@ -98,8 +98,10 @@ export function TestAppRouter({
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const initRootRoute = <
-  T extends { path: string; component: () => ReactElement }
->(routes: ReadonlyArray<T>) => {
+  T extends { path: string; component: () => ReactElement },
+>(
+  routes: ReadonlyArray<T>
+) => {
   const rootRoute = createRootRoute({
     component: () => <Outlet />,
   });

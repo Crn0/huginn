@@ -4,7 +4,6 @@ import {
   loginInputSchema,
   useLogin,
   type LoginInput,
-  type LoginResponse,
   type UseLoginOptions,
 } from "@/lib/auth";
 import {

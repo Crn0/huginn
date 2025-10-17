@@ -178,7 +178,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
                     <InputGroupInput
                       {...field}
                       id='form-password'
-                      type="password"
+                      type='password'
                       placeholder='Password'
                       onChange={(e) => {
                         if (
@@ -209,7 +209,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
                       <Tooltip supportMobileTap>
                         <TooltipTrigger asChild>
                           <span>
-                            <ShieldQuestionMark/>
+                            <ShieldQuestionMark />
                             <span className='sr-only'>
                               Password requirements
                             </span>

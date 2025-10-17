@@ -30,15 +30,17 @@ export function ErrorComponent({
     <div role='alert'>
       <p>Error {getErrorCode(error)}: Something went wrong</p>
       <pre className='text-red-600'>{error.message}</pre>
-      {error && error.kind === "VALIDATION_ERROR" && error.issues?.length > 0 && (
-        <ul className='ml-4 list-disc'>
-          {error.issues.map((issue) => (
-            <li key={`${issue.path?.join(".")}:${issue.message}`}>
-              {issue.message}
-            </li>
-          ))}
-        </ul>
-      )}
+      {error &&
+        error.kind === "VALIDATION_ERROR" &&
+        error.issues?.length > 0 && (
+          <ul className='ml-4 list-disc'>
+            {error.issues.map((issue) => (
+              <li key={`${issue.path?.join(".")}:${issue.message}`}>
+                {issue.message}
+              </li>
+            ))}
+          </ul>
+        )}
       <Button type='button' onClick={() => reset()}>
         Try again
       </Button>
