@@ -178,6 +178,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
                     <InputGroupInput
                       {...field}
                       id='form-password'
+                      type="password"
                       placeholder='Password'
                       onChange={(e) => {
                         if (
