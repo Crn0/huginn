@@ -5,7 +5,7 @@ import {
   type UseMutationOptions,
 } from "@tanstack/react-query";
 import type { Client } from "../api-client";
-import type { ValidationError } from "../errors";
+import type { ValidationError, AuthenticationError } from "../errors";
 import { getAuthUserQueryOptions } from "./get-auth-user";
 import { useClient } from "@/hooks/use-client";
 
@@ -34,7 +34,7 @@ const loginWithEmailAndPassword =
 
 export type UseLoginOptions = UseMutationOptions<
   LoginResponse,
-  ValidationError,
+  ValidationError | AuthenticationError,
   LoginInput
 >;
 
