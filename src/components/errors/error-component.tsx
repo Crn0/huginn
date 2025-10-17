@@ -1,17 +1,17 @@
 import { ErrorComponent as TanstackErrorComponent } from "@tanstack/react-router";
 
-import { CustomError, ValidationError } from "@/lib/errors";
-
 import { Button } from "@/components/ui/button";
 
-const isCustomError = (e: Error | CustomError): e is CustomError =>
-  (e as CustomError)?.is !== undefined;
+import type { ErrorType } from "@/lib/errors/errors.type";
 
-const getErrorCode = (e: Error | CustomError) => {
+const isCustomError = (e: Error | ErrorType): e is ErrorType =>
+  (e as ErrorType)?.kind !== undefined;
+
+const getErrorCode = (e: Error | ErrorType) => {
   const defaultCode = 500;
 
   if (isCustomError(e)) {
-    return e.code || e.response?.status || defaultCode;
+    return e.code || defaultCode;
   }
 
   return defaultCode;
@@ -30,11 +30,11 @@ export function ErrorComponent({
     <div role='alert'>
       <p>Error {getErrorCode(error)}: Something went wrong</p>
       <pre className='text-red-600'>{error.message}</pre>
-      {error && error.is(ValidationError) && error.fields?.length > 0 && (
+      {error && error.kind === "VALIDATION_ERROR" && error.issues?.length > 0 && (
         <ul className='ml-4 list-disc'>
-          {error.fields.map((field) => (
-            <li key={`${field.path?.join(".")}:${field.message}`}>
-              {field.message}
+          {error.issues.map((issue) => (
+            <li key={`${issue.path?.join(".")}:${issue.message}`}>
+              {issue.message}
             </li>
           ))}
         </ul>
