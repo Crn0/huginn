@@ -8,25 +8,22 @@ import type { Client } from "../api-client";
 import type { ValidationError } from "../errors";
 import { getAuthUserQueryOptions } from "./get-auth-user";
 import { useClient } from "@/hooks/use-client";
-import { passwordRegex } from "./regex";
 
 export const loginInputSchema = z.object({
   email: z.email().trim(),
-  displayName: z.string().trim().max(36, {
-    message: "Use no more than 36 characters for the 'display name'",
-  }),
-  birthday: z.coerce.date(),
-  password: z.string().refine((val) => passwordRegex.test(val), {
-    message:
-      "Password must be at least 8 characters long and include at least one lowercase letter, one uppercase letter, one number and no spaces",
-  }),
+  password: z.string().trim().min(1, { error: "Required" }),
 });
 
 export type LoginInput = z.infer<typeof loginInputSchema>;
 
+export interface LoginResponse {
+  token: string;
+}
+
 const loginWithEmailAndPassword =
-  (client: Client) => async (data: LoginInput) => {
-    const res = await client.callApi("auth/register", {
+  (client: Client) =>
+  async (data: LoginInput): Promise<LoginResponse> => {
+    const res = await client.callApi("auth/login", {
       data,
       method: "POST",
       credentials: "include",
@@ -34,10 +31,6 @@ const loginWithEmailAndPassword =
 
     return res.json();
   };
-
-export interface LoginResponse {
-  token: string;
-}
 
 export type UseLoginOptions = UseMutationOptions<
   LoginResponse,
