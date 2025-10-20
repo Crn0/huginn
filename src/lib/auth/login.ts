@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import type { Client } from "../api-client";
 import type { ValidationError, AuthenticationError } from "../errors";
-import { getAuthUserQueryOptions } from "./get-auth-user";
+import { authUserQueryOptions } from "./auth-user";
 import { useClient } from "@/hooks/use-client";
 
 export const loginInputSchema = z.object({
@@ -49,7 +49,7 @@ export const useLogin = (options: UseLoginOptions = {}) => {
     mutationFn: loginWithEmailAndPassword(client),
     onSuccess: (...args) => {
       queryClient.removeQueries({
-        queryKey: getAuthUserQueryOptions().queryKey,
+        queryKey: authUserQueryOptions().queryKey,
       });
       onSuccess?.(...args);
     },
