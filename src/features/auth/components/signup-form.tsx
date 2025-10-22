@@ -149,6 +149,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
                       {...field}
                       id='form-email'
                       placeholder='Email'
+                      aria-invalid={fieldState.invalid}
                     />
                     {!field.value?.length ? null : (
                       <InputGroupAddon align='block-start'>

@@ -99,6 +99,7 @@ export function LoginForm({ onSuccess, close }: LoginFormProps) {
                       {...field}
                       id='form-email'
                       placeholder='Email'
+                      aria-invalid={fieldState.invalid}
                     />
                     {!field.value?.length ? null : (
                       <InputGroupAddon align='block-start'>
