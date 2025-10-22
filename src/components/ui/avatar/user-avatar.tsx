@@ -16,7 +16,6 @@ export function UserAvatar({ user, className }: UserAvatarProps) {
       <AvatarImage
         src={large}
         onLoadingStatusChange={(status) => {
-          console.log(status);
           if (status === "loading") return small;
           if (status === "error") return fallback;
         }}
