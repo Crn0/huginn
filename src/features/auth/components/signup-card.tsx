@@ -33,7 +33,9 @@ export function SignupCard() {
         <>
           <span>Have an account already?</span>
           <CardAction>
-            <Link to='/login'>Log in</Link>
+            <Link to='/login' preload={false}>
+              Log in
+            </Link>
           </CardAction>
         </>
       }

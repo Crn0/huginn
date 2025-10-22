@@ -32,7 +32,9 @@ export function LoginCard() {
         <>
           <span>Don't have an account?</span>
           <CardAction>
-            <Link to='/signup'>Sign up</Link>
+            <Link to='/signup' preload={false}>
+              Sign up
+            </Link>
           </CardAction>
         </>
       }
