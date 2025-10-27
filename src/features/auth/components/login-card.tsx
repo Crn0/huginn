@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { useDisclosure } from "@/hooks/use-disclosure";
@@ -10,12 +10,16 @@ import { useAuthActions } from "@/hooks/use-auth-store";
 
 export function LoginCard() {
   const navigate = useNavigate();
+  const search = useSearch({ from: "/_auth/login" });
   const setToken = useAuthActions().login;
   const { isOpen, open, close } = useDisclosure(false);
 
+  const redirectTo = search.redirectTo ?? "/home";
+
   const onSuccess = ({ token }: { token: string }) => {
     setToken(token);
-    navigate({ to: "/home", replace: true });
+
+    navigate({ to: redirectTo, replace: true });
   };
 
   return !isOpen ? (
