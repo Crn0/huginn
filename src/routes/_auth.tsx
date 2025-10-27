@@ -5,6 +5,8 @@ import {
   createFileRoute,
   Outlet,
   redirect,
+  useNavigate,
+  useSearch,
 } from "@tanstack/react-router";
 
 import { tryCatch } from "@/lib/try-catch";
@@ -16,9 +18,11 @@ import { AuthLayout } from "@/components/layouts/auth-layout";
 import { LogoSplash } from "@/components/ui/logo-splash";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, search }) => {
     if (context.auth.isAuthenticated) {
-      throw redirect({ to: "/home", replace: true });
+      const redirectTo = search.redirectTo ?? "/home";
+
+      throw redirect({ to: redirectTo, replace: true });
     }
   },
   loader: async () => {
@@ -30,17 +34,19 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function SilentLogin({ token }: { token: string | null }) {
-  const navigate = Route.useNavigate();
+  const navigate = useNavigate();
+  const search = useSearch({ from: "/_auth" });
 
+  const redirectTo = search.redirectTo ?? "/home";
   const login = useAuthActions().login;
 
   useEffect(() => {
     if (token) {
       login(token);
 
-      navigate({ to: "home", replace: true });
+      navigate({ to: redirectTo, replace: true });
     }
-  }, [token, login, navigate]);
+  }, [token, login, navigate, redirectTo]);
 
   return <LogoSplash />;
 }
