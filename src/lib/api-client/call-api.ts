@@ -44,7 +44,7 @@ const generateFetchOptions = (config: CallApiConfig, token?: string) => {
 
   rest.headers = generateHeader(rest);
 
-  if (!token) {
+  if (token) {
     rest.headers.set("Authorization", `Bearer ${token}`);
   }
 

@@ -34,7 +34,7 @@ export const authUserSchema = z.object({
   username: z.string(),
   avatarUrl: z.url().nullable(),
   profile: z.object({
-    displayName: z.string().nullable(),
+    displayName: z.string(),
     bio: z.string().nullable(),
     location: z.string().nullable(),
     website: z.url().nullable(),
@@ -47,6 +47,7 @@ export const authUserSchema = z.object({
   _count: z.object({
     followedBy: z.coerce.number().default(0),
     following: z.coerce.number().default(0),
+    tweets: z.coerce.number().default(0),
   }),
 
   createdAt: z.coerce.date().transform((d) => d.toISOString()),

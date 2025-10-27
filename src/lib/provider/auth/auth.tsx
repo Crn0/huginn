@@ -1,28 +1,14 @@
-import type { AuthStoreState } from "./auth.types";
-
 import { useState } from "react";
-import { createStore } from "zustand";
-import { devtools } from "zustand/middleware";
 
 import { AuthStoreContext } from "./auth-context";
+import { authStore } from "./store";
 
 export interface AuthStoreProviderProps {
   children: React.ReactNode;
 }
 
 export const AuthStoreProvider = ({ children }: AuthStoreProviderProps) => {
-  const [store] = useState(() =>
-    createStore(
-      devtools<AuthStoreState>((set) => ({
-        token: null,
-        isAuthenticated: false,
-        actions: {
-          login: (token) => set(() => ({ token, isAuthenticated: !!token })),
-          logout: () => set(() => ({ token: null, isAuthenticated: false })),
-        },
-      }))
-    )
-  );
+  const [store] = useState(() => authStore);
 
   return (
     <AuthStoreContext.Provider value={store}>
