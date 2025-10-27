@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{jsx,mjs,js,ts,tsx}\"",
-    "type:check": "tsc --noEmit",
+    "type:check": "tsc --project ./tsconfig.app.json --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {
