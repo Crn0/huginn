@@ -1,5 +1,7 @@
 import { useState, useCallback } from "react";
 
+export type UseDisclosure = ReturnType<typeof useDisclosure>;
+
 export const useDisclosure = (initial = false) => {
   const [isOpen, setIsOpen] = useState(initial);
 
