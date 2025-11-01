@@ -11,13 +11,20 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "./input";
 
-export function BirthdatePicker({
-  ...props
-}: {
+export interface BirthdatePickerProps {
   onChange: (...event: unknown[]) => void;
-}) {
+  defaultDate?: Date | null;
+}
+
+export function BirthdatePicker({
+  defaultDate,
+  onChange,
+  ...field
+}: BirthdatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [date, setDate] = React.useState<Date | undefined>(
+    () => defaultDate ?? undefined
+  );
 
   return (
     <div className='flex flex-col gap-3'>
@@ -41,14 +48,14 @@ export function BirthdatePicker({
             selected={date}
             captionLayout='dropdown'
             onSelect={(d) => {
-              props?.onChange?.(d);
+              onChange?.(d);
               setDate(d);
               setOpen(false);
             }}
           />
         </PopoverContent>
       </Popover>
-      <Input type='hidden' {...props} />
+      <Input type='hidden' {...field} />
     </div>
   );
 }
