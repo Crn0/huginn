@@ -8,26 +8,6 @@ import { ValidationError } from "../errors";
 import type { ErrorType } from "../errors/errors.type";
 import { useClient } from "@/hooks/use-client";
 
-export const mediaSizeSchema = z.object({
-  url: z.url(),
-  w: z.coerce.number(),
-  h: z.coerce.number(),
-});
-
-export type MediaSize = z.infer<typeof mediaSizeSchema>;
-
-export const profileMediaSchema = z.object({
-  url: z.url(),
-  type: z.enum(["IMAGE", "GIF"]),
-  sizes: z.object({
-    small: mediaSizeSchema,
-    medium: mediaSizeSchema,
-    large: mediaSizeSchema,
-  }),
-});
-
-export type ProfileMedia = z.infer<typeof profileMediaSchema>;
-
 export const authUserSchema = z.object({
   id: z.uuidv7(),
   email: z.email().trim(),
@@ -40,8 +20,8 @@ export const authUserSchema = z.object({
     website: z.url().nullable(),
     birthday: z.coerce.date().nullable(),
 
-    avatar: profileMediaSchema.nullable(),
-    banner: profileMediaSchema.nullable(),
+    avatarUrl: z.url().nullable(),
+    bannerUrl: z.url().nullable(),
   }),
 
   _count: z.object({
