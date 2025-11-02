@@ -1,26 +1,25 @@
-import type { AuthUser } from "@/lib/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { cn } from "@/utils/cn";
 
 export interface UserAvatarProps {
-  user: AuthUser;
+  avatar: string | null;
+  fallback: string;
   className?: string;
+  fallbackClassName?: string;
 }
 
-export function UserAvatar({ user, className }: UserAvatarProps) {
-  const small = user.profile.avatar?.sizes.small.url;
-  const large = user.profile.avatar?.sizes.large.url;
-  const fallback = user.username[0].toUpperCase();
-
+export function UserAvatar({
+  avatar,
+  fallback,
+  className,
+  fallbackClassName,
+}: UserAvatarProps) {
   return (
-    <Avatar className={className}>
-      <AvatarImage
-        src={large}
-        onLoadingStatusChange={(status) => {
-          if (status === "loading") return small;
-          if (status === "error") return fallback;
-        }}
-      />
-      <AvatarFallback className='bg-inherit'>{fallback}</AvatarFallback>
+    <Avatar className={cn("text-foreground border-5 border-black", className)}>
+      {avatar && <AvatarImage src={avatar} />}
+      <AvatarFallback className={cn("bg-teal-600", fallbackClassName)}>
+        {fallback[0].toUpperCase()}
+      </AvatarFallback>
     </Avatar>
   );
 }
