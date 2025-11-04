@@ -31,7 +31,7 @@ export const Route = createFileRoute("/logout")({
   },
   loader: async ({ context: { client } }) => {
     return {
-      p: client.callApi("auth/logout", { method: "POST" }),
+      p: client.callApi("auth/logout", { method: "POST", credentials: "include" }),
     };
   },
   component: RouteComponent,
