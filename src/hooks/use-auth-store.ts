@@ -20,3 +20,6 @@ export const useAuthToken = () => useAuthStore((state) => state.token);
 
 export const useIsAuthenticatedToken = () =>
   useAuthStore((state) => state.isAuthenticated);
+
+export const useIsSilentLogin = () =>
+  useAuthStore((state) => state.isSilentLogin);

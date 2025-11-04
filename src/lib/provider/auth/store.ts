@@ -7,9 +7,11 @@ export const authStore = createStore(
   devtools<AuthStoreState>((set) => ({
     token: null,
     isAuthenticated: false,
+    isSilentLogin: false,
     actions: {
       login: (token) => set(() => ({ token, isAuthenticated: !!token })),
       logout: () => set(() => ({ token: null, isAuthenticated: false })),
+      setIsSilentLogin: () => set(() => ({ isSilentLogin: true })),
     },
   }))
 );

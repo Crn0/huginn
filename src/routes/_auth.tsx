@@ -12,7 +12,7 @@ import {
 import { tryCatch } from "@/lib/try-catch";
 import { debugError } from "@/lib/logger";
 import { refreshToken as silentLogin } from "@/lib/auth";
-import { useAuthActions } from "@/hooks/use-auth-store";
+import { useAuthActions, useIsSilentLogin } from "@/hooks/use-auth-store";
 import { ErrorComponent } from "@/components/errors/error-component";
 import { AuthLayout } from "@/components/layouts/auth-layout";
 import { LogoSplash } from "@/components/ui/logo-splash";
@@ -25,52 +25,74 @@ export const Route = createFileRoute("/_auth")({
       throw redirect({ to: redirectTo, replace: true });
     }
   },
-  loader: async () => {
-    const refreshToken = tryCatch(silentLogin());
+  loader: async ({
+    context: {
+      auth: { isSilentLogin },
+    },
+  }) => {
+    const refreshToken = (
+      !isSilentLogin ? tryCatch(silentLogin()) : Promise.resolve({ data: null })
+    ) as Promise<{ data: string | null }>;
 
     return { refreshToken };
   },
   component: RouteComponent,
 });
 
-function SilentLogin({ token }: { token: string | null }) {
+function Wrapper({ token }: { token: string | null }) {
   const navigate = useNavigate();
   const search = useSearch({ from: "/_auth" });
 
   const redirectTo = search.redirectTo ?? "/home";
   const login = useAuthActions().login;
+  const setIsSilentLogin = useAuthActions().setIsSilentLogin;
 
   useEffect(() => {
+    setIsSilentLogin();
+
     if (token) {
       login(token);
 
       navigate({ to: redirectTo, replace: true });
     }
-  }, [token, login, navigate, redirectTo]);
+  }, [token, login, navigate, redirectTo, setIsSilentLogin]);
 
-  return <LogoSplash />;
+  if (token) return <LogoSplash />;
+
+  return (
+    <AuthLayout>
+      <CatchBoundary
+        getResetKey={() => "reset"}
+        onCatch={(error) => debugError(error)}
+        errorComponent={ErrorComponent}
+      >
+        <Outlet />
+      </CatchBoundary>
+    </AuthLayout>
+  );
 }
 
 function RouteComponent() {
   const { refreshToken } = Route.useLoaderData();
+  const isSilentLogin = useIsSilentLogin();
 
   return (
-    <Await promise={refreshToken} fallback={<LogoSplash />}>
-      {({ data: token }) =>
-        token ? (
-          <SilentLogin token={token} />
-        ) : (
-          <AuthLayout>
-            <CatchBoundary
-              getResetKey={() => "reset"}
-              onCatch={(error) => debugError(error)}
-              errorComponent={ErrorComponent}
-            >
-              <Outlet />
-            </CatchBoundary>
-          </AuthLayout>
-        )
-      }
-    </Await>
+    <>
+      {isSilentLogin ? (
+        <AuthLayout>
+          <CatchBoundary
+            getResetKey={() => "reset"}
+            onCatch={(error) => debugError(error)}
+            errorComponent={ErrorComponent}
+          >
+            <Outlet />
+          </CatchBoundary>
+        </AuthLayout>
+      ) : (
+        <Await promise={refreshToken} fallback={<LogoSplash />}>
+          {({ data: token }) => <Wrapper token={token} />}
+        </Await>
+      )}
+    </>
   );
 }
