@@ -35,7 +35,6 @@ export type RegisterInput = z.infer<typeof registerInputSchema>;
 
 const registerWithEmailAndPassword =
   (client: Client) => async (data: RegisterInput) => {
-    console.log(data);
     return client.callApi("auth/register", {
       data,
       method: "POST",

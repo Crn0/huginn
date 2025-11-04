@@ -18,12 +18,12 @@ export function ContentLayout({ children, title, header }: ContentLayoutProps) {
       {header ? (
         <>{header}</>
       ) : (
-        <header className='sticky bg-inherit top-0 mx-auto max-w-7xl border-l border-r border-neutral-600 px-4 sm:px-6 md:px-8'>
-          <h1 className='text-2xl font-semibold text-foreground'>{title}</h1>
+        <header className='sticky top-0 mx-auto max-w-7xl border-r border-l border-neutral-600 bg-inherit px-4 sm:px-6 md:px-8'>
+          <h1 className='text-foreground text-2xl font-semibold'>{title}</h1>
         </header>
       )}
 
-      <div className='flex bg-inherit h-full w-full flex-col border-l border-r border-neutral-600'>
+      <div className='flex h-full w-full flex-col border-r border-l border-neutral-600 bg-inherit'>
         {children}
       </div>
     </>

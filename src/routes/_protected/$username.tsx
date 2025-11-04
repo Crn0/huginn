@@ -92,8 +92,8 @@ function RouteComponent() {
             <UserBanner banner={user.profile.bannerUrl} />
             <div className='-mt-10 flex items-center-safe justify-between p-2'>
               <UserAvatar
-                className='h-25 w-25 sm:h-45 sm:w-45 '
-                fallbackClassName="text-3xl sm:text-5xl"
+                className='h-25 w-25 sm:h-45 sm:w-45'
+                fallbackClassName='text-3xl sm:text-5xl'
                 avatar={user.profile.avatarUrl}
                 fallback={user.username}
               />
@@ -140,13 +140,13 @@ function RouteComponent() {
                 <span className='font-light opacity-50'>@{user.username}</span>
               </div>
 
-              <div className="grid gap-2">
+              <div className='grid gap-2'>
                 {user.profile.bio && (
                   <div className='w-sm wrap-break-word sm:w-5xl'>
                     <span>{user.profile.bio}</span>
                   </div>
                 )}
-                <div className="flex flex-wrap sm:flex-col">
+                <div className='flex flex-wrap sm:flex-col'>
                   {user.profile.location && (
                     <div className='flex items-center-safe gap-1'>
                       <MapPinXInsideIcon size={15} />
@@ -156,26 +156,31 @@ function RouteComponent() {
                     </div>
                   )}
 
-                 <div className="flex gap-5">
-                   {user.profile.website && (
-                    <div className='flex items-center-safe gap-1'>
-                      <LinkIcon size={15} />
-                      <a className='font-light overflow-hidden w-[150px] whitespace-nowrap text-ellipsis text-sky-600' href={user.profile.website} target="_blank" rel="noreferrer">
-                        {user.profile.website}
-                      </a>
-                    </div>
-                  )}
+                  <div className='flex gap-5'>
+                    {user.profile.website && (
+                      <div className='flex items-center-safe gap-1'>
+                        <LinkIcon size={15} />
+                        <a
+                          className='w-[150px] overflow-hidden font-light text-ellipsis whitespace-nowrap text-sky-600'
+                          href={user.profile.website}
+                          target='_blank'
+                          rel='noreferrer'
+                        >
+                          {user.profile.website}
+                        </a>
+                      </div>
+                    )}
 
-                  <div className='flex items-center-safe gap-1 flex-1'>
-                    <CalendarDaysIcon size={15} />
-                    <time
-                      className='font-light opacity-50'
-                      dateTime={user.createdAt}
-                    >
-                      {formatDate(user.createdAt, "'Joined at 'MMMM yyyy")}
-                    </time>
+                    <div className='flex flex-1 items-center-safe gap-1'>
+                      <CalendarDaysIcon size={15} />
+                      <time
+                        className='font-light opacity-50'
+                        dateTime={user.createdAt}
+                      >
+                        {formatDate(user.createdAt, "'Joined at 'MMMM yyyy")}
+                      </time>
+                    </div>
                   </div>
-                 </div>
                 </div>
               </div>
 

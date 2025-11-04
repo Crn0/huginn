@@ -94,7 +94,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <div className='bg-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
       <header className='hidden font-mono sm:sticky sm:top-0 sm:flex sm:flex-col sm:place-items-center-safe sm:items-center-safe sm:justify-between lg:flex-[0.9]'>
-        <nav className='mt-1  grid place-items-center-safe items-center-safe gap-2 lg:flex lg:flex-1 lg:flex-col lg:place-items-baseline'>
+        <nav className='mt-1 grid place-items-center-safe items-center-safe gap-2 lg:flex lg:flex-1 lg:flex-col lg:place-items-baseline'>
           <Link
             to='/home'
             className='p-2 text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
@@ -109,7 +109,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   {...link}
                   key={link.name}
                   to={link.to}
-                  className='flex text-xl items-center-safe gap-2 p-2 font-medium text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
+                  className='flex items-center-safe gap-2 p-2 text-xl font-medium text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
                   activeProps={{ className: "font-extrabold" }}
                   activeOptions={{ exact: true }}
                 >
@@ -167,11 +167,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <div className='flex w-full flex-1 items-end-safe justify-center-safe p-2'>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  className='bg-background flex w-full justify-start p-10'
-                >
+                <Button className='bg-background flex w-full justify-start p-10'>
                   <UserAvatar
-                    className="h-15 w-15"
+                    className='h-15 w-15'
                     avatar={authUser.profile.avatarUrl}
                     fallback={authUser.username}
                   />
@@ -257,7 +255,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   >
                     <>
                       <UserAvatar
-                        className="h-12 w-12"
+                        className='h-12 w-12'
                         avatar={authUser.profile.avatarUrl}
                         fallback={authUser.username}
                       />
@@ -281,7 +279,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                       params={{ username: authUser.username }}
                     >
                       <UserAvatar
-                        className="h-15 w-15"
+                        className='h-15 w-15'
                         avatar={authUser.profile.avatarUrl}
                         fallback={authUser.username}
                       />
