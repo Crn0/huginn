@@ -42,7 +42,10 @@ export function BirthdatePicker({
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className='w-auto overflow-hidden p-0' align='start'>
+        <PopoverContent
+          className='w-auto overflow-hidden bg-black p-0 text-foreground'
+          align='start'
+        >
           <Calendar
             mode='single'
             selected={date}
