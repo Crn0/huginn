@@ -2,6 +2,12 @@ export const tweetKeys = {
   all: ["tweets"] as const,
   detail: (id: string) => [...tweetKeys.all, "detail", id] as const,
 
+  mutation: {
+    create: ["add-tweets"] as const,
+    delete: ["delete-tweets"] as const,
+    update: ["update-tweets"] as const,
+  },
+
   infinite: {
     all: ["infinite-tweets"] as const,
     list: () => [...tweetKeys.infinite.all, "list"] as const,
