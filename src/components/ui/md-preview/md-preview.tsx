@@ -22,7 +22,10 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
 export function MDPreview({ parse, value, className, config }: MDPreviewProps) {
   return (
     <div
-      className={cn("w-full p-2", className)}
+      className={cn(
+        "w-full p-2 [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all [&>p]:whitespace-pre-wrap",
+        className
+      )}
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(parse(value) as string, { ...config }),
       }}
