@@ -10,7 +10,7 @@ import z from "zod";
 import { tweetKeys } from "./query-key-factory";
 
 export const MAX_CONTENT_LENGTH = 1000 as const;
-export const MAX_MEDIA_LENGTH = 5;
+export const MAX_MEDIA_LENGTH = 4;
 export const MAX_FILE_SIZE = 10_000_000; // 10mb
 
 export const ACCEPTED_ATTACHMENTS_TYPES = [
