@@ -35,6 +35,20 @@ export class ApiClient implements Client {
     );
   }
 
+  private normalizeResource(resource: string): string {
+    let normalizedResource = resource;
+
+    if (normalizedResource.startsWith("/")) {
+      normalizedResource = normalizedResource.slice(1);
+
+      if (normalizedResource.startsWith("/")) {
+        return this.normalizeResource(normalizedResource);
+      }
+    }
+
+    return normalizedResource;
+  }
+
   constructor(baseURL: string, provider: Provider, config?: CallApiConfig) {
     this._baseUrl = baseURL;
 
@@ -55,7 +69,7 @@ export class ApiClient implements Client {
   }
 
   async callApi(resource: string, config: CallApiConfig = this._config) {
-    const url = `${this._baseUrl}${resource}`;
+    const url = `${this._baseUrl}${this.normalizeResource(resource)}`;
 
     if (!config.isAuth) return callAPIWithoutToken(url, config);
 
