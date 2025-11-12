@@ -54,7 +54,7 @@ function RouteComponent() {
   return (
     <ContentLayout
       header={
-        <header className='bg-background sticky top-0 z-30 flex flex-1 items-center-safe justify-between border-l border-border'>
+        <header className='bg-background border-border sticky top-0 z-30 flex flex-1 items-center-safe justify-between border-l'>
           <div className='flex items-center-safe gap-2'>
             <Button variant='outline' asChild>
               <Link to='/home' className='text-foreground border-none bg-none'>
