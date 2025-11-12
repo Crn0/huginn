@@ -12,4 +12,4 @@ marked.use({
   },
 });
 
-export const parse = (value: string) => marked.parse(value);
+export const parse = marked.parse;
