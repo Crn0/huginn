@@ -12,11 +12,11 @@ import { authUserQueryOptions, useAuthUser } from "@/lib/auth";
 import { LogoSplash } from "@/components/ui/logo-splash";
 
 export const Route = createFileRoute("/_protected")({
-  beforeLoad: ({ context, location: { pathname } }) => {
+  beforeLoad: ({ context, location: { href } }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
         to: "/login",
-        search: { redirectTo: pathname },
+        search: { redirectTo: href },
         replace: true,
       });
     }
