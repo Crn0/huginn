@@ -1,13 +1,27 @@
 import type { Tweet } from "@/types/api";
-import { MessageCircleOffIcon } from "lucide-react";
+import {
+  BookmarkIcon,
+  ChartColumnIcon,
+  HeartIcon,
+  MessageCircleIcon,
+  MessageCircleOffIcon,
+  Repeat2Icon,
+  ShareIcon,
+} from "lucide-react";
 
 import { dateDiffInDays } from "@/lib/date";
 import { formatDate, formatDistance } from "@/utils/format-date";
 import { parse } from "../utils/parse";
 import { linkifyHtml } from "../utils/linkify-html";
+import { nFormatter } from "@/lib/number-formatter";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { Link } from "@/components/ui/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +31,7 @@ import {
 } from "@/components/ui/tooltip";
 import { MDPreview } from "@/components/ui/md-preview/md-preview";
 import { TweetMedia } from "./tweet-media";
+import { cn } from "@/utils/cn";
 
 export interface TweetProps {
   tweet: Tweet;
@@ -85,6 +100,89 @@ export function Tweet({ tweet }: TweetProps) {
 
         <TweetMedia media={tweet.media} />
       </CardContent>
+
+      <CardFooter className='flex justify-between'>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' asChild>
+              <Link
+                className='text-foreground'
+                to='/compose/post'
+                search={{ replyTo: tweet.id }}
+              >
+                <MessageCircleIcon />
+
+                {tweet._count.replies ? (
+                  <span>{nFormatter(tweet._count.replies, 0)}</span>
+                ) : null}
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+            Reply
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost'>
+              <Repeat2Icon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+            Repost
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost' className={cn(tweet.liked && "text-rose-400")}>
+              <HeartIcon />
+              {tweet._count.likes ? (
+                <span>{nFormatter(tweet._count.likes, 0)}</span>
+              ) : null}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+            Like
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost'>
+              <ChartColumnIcon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+            View
+          </TooltipContent>
+        </Tooltip>
+
+        <div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost'>
+                <BookmarkIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
+              Bookmark
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost'>
+                <ShareIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
+              Share
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
