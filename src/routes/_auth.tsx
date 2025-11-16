@@ -48,12 +48,12 @@ function Wrapper({ token }: { token: string | null }) {
   const setIsSilentLogin = useAuthActions().setIsSilentLogin;
 
   useEffect(() => {
-    setIsSilentLogin();
-
     if (token) {
       login(token);
 
       navigate({ to: redirectTo, replace: true });
+    } else {
+      setIsSilentLogin();
     }
   }, [token, login, navigate, redirectTo, setIsSilentLogin]);
 
