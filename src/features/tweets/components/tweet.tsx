@@ -45,7 +45,7 @@ export function Tweet({ tweet }: TweetProps) {
   const currentDate = new Date();
 
   return (
-    <Card id={tweet.id} className='bg-background text-foreground w-sm sm:w-lg'>
+    <Card id={tweet.id} className='bg-background text-foreground w-full'>
       <CardHeader>
         <div className='flex gap-2'>
           <div>
