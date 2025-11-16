@@ -10,12 +10,12 @@ export const tweetKeys = {
 
   infinite: {
     all: ["infinite-tweets"] as const,
-    list: () => [...tweetKeys.infinite.all, "list"] as const,
+    lists: () => [...tweetKeys.infinite.all, "list"] as const,
+    list: (scope: string, search: string) =>
+      [...tweetKeys.infinite.lists(), { scope, search }] as const,
     replies: (id: string) =>
       [...tweetKeys.infinite.all, id, "replies"] as const,
-    listByUser: (username: string) =>
-      [...tweetKeys.infinite.list(), username] as const,
-    repliesByUser: (username: string) =>
-      [...tweetKeys.infinite.listByUser(username), "replies"] as const,
+    listByUser: (username: string, scope: string) =>
+      [...tweetKeys.infinite.lists(), username, { scope }] as const,
   } as const,
 };

@@ -106,11 +106,12 @@ export const useCreateTweet = (
     ...restConfig,
     mutationKey: tweetKeys.mutation.create,
     onSuccess: (...args) => {
-      queryClient.invalidateQueries({ queryKey: tweetKeys.infinite.list() });
       queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username),
+        queryKey: tweetKeys.infinite.listByUser(username, "posts"),
       });
-
+      queryClient.invalidateQueries({
+        queryKey: tweetKeys.infinite.list("all", ""),
+      });
       onSuccess?.(...args);
     },
     onError: (...args) => {
