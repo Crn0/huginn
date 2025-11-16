@@ -1,25 +1,18 @@
 import type { PropsWithChildren, ReactNode } from "react";
 
-export type ContentLayoutProps = PropsWithChildren &
-  (
-    | {
-        header: ReactNode;
-        title?: never;
-      }
-    | {
-        title: string;
-        header?: never;
-      }
-  );
+export type ContentLayoutProps = PropsWithChildren & {
+  headerChildren?: ReactNode;
+};
 
-export function ContentLayout({ children, title, header }: ContentLayoutProps) {
+export function ContentLayout({
+  children,
+  headerChildren,
+}: ContentLayoutProps) {
   return (
     <>
-      {header ? (
-        <>{header}</>
-      ) : (
-        <header className='border-border sticky top-0 mx-auto max-w-7xl border-r border-l bg-inherit px-4 sm:px-6 md:px-8'>
-          <h1 className='text-foreground text-2xl font-semibold'>{title}</h1>
+      {headerChildren && (
+        <header className='bg-background border-border sticky top-0 z-30 flex flex-1 items-center-safe justify-between border-l'>
+          {headerChildren}
         </header>
       )}
 
