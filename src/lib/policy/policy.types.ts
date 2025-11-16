@@ -1,3 +1,4 @@
+import type { Tweet } from "@/types/api";
 import type { User } from "@/types/user.types";
 
 export type Action = "view" | "create" | "update" | "delete";
@@ -15,6 +16,10 @@ export type PolicyCheckMap = {
 export interface Policy {
   user: {
     dataType: User;
+    action: "view" | "update" | "delete";
+  };
+  tweet: {
+    dataType: Tweet;
     action: "view" | "update" | "delete";
   };
 }

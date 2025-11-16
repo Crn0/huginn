@@ -2,6 +2,7 @@ import type { Tweet } from "@/types/api";
 import {
   BookmarkIcon,
   ChartColumnIcon,
+  EllipsisIcon,
   HeartIcon,
   MessageCircleIcon,
   MessageCircleOffIcon,
@@ -32,12 +33,21 @@ import {
 import { MDPreview } from "@/components/ui/md-preview/md-preview";
 import { TweetMedia } from "./tweet-media";
 import { cn } from "@/utils/cn";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Authorization } from "@/lib/authorization";
+import { DeleteTweet } from "./delete-tweet";
+import { useAuthUser } from "@/lib/auth";
 
 export interface TweetProps {
   tweet: Tweet;
 }
 
 export function Tweet({ tweet }: TweetProps) {
+  const { data: user } = useAuthUser();
   const author = tweet.author;
   const profile = author.profile;
 
@@ -74,7 +84,7 @@ export function Tweet({ tweet }: TweetProps) {
               </time>
             </div>
 
-            <div>
+            <div className='flex'>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -91,6 +101,40 @@ export function Tweet({ tweet }: TweetProps) {
                   Explain this post
                 </TooltipContent>
               </Tooltip>
+
+              <Popover>
+                <Tooltip>
+                  <PopoverTrigger asChild>
+                    <TooltipTrigger asChild>
+                      <Button
+                        className='hover:bg-background hover:text-foreground text-foreground opacity-50 hover:border-0'
+                        variant='ghost'
+                        size='icon-sm'
+                        type='button'
+                      >
+                        <EllipsisIcon size={15} />
+                      </Button>
+                    </TooltipTrigger>
+                  </PopoverTrigger>
+
+                  <TooltipContent side='bottom' sideOffset={-2}>
+                    More
+                  </TooltipContent>
+                </Tooltip>
+
+                <PopoverContent className='bg-background grid gap-2'>
+                  {user && (
+                    <Authorization
+                      user={user}
+                      resource='tweet'
+                      action='delete'
+                      data={tweet}
+                    >
+                      <DeleteTweet tweet={tweet} />
+                    </Authorization>
+                  )}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
