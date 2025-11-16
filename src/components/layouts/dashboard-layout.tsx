@@ -243,16 +243,12 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {!username && (
           <header
             id='dashboard-header'
-            className='bg-background sticky top-0 z-30 flex items-center gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
+            className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
           >
             <aside>
               <Drawer>
                 <DrawerTrigger asChild>
-                  <Button
-                    size='icon'
-                    variant='default'
-                    className='text-black sm:hidden'
-                  >
+                  <Button size='icon' variant='default' className='text-black'>
                     <>
                       <UserAvatar
                         className='h-12 w-12'
