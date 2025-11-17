@@ -75,12 +75,25 @@ export type Image = Entity<{
 
 export type Media = Video | Image;
 
-export type Tweet = Entity<{
+type BaseTweet = Entity<{
   content: string | null;
   author: TweetAuthor;
   liked: boolean;
   media: Media[];
-  replyTo: { id: string } | null;
   updatedAt: string | null;
   _count: { replies: number; likes: number };
 }>;
+
+export type Tweet =
+  | Entity<
+      BaseTweet & {
+        replyTo: null;
+        withReply: false;
+      }
+    >
+  | Entity<
+      BaseTweet & {
+        replyTo: BaseTweet & { replyTo: null, withReply: false };
+        withReply: true;
+      }
+    >;
