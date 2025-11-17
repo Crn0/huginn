@@ -4,6 +4,7 @@ export const tweetKeys = {
 
   mutation: {
     create: ["add-tweets"] as const,
+    reply: ["reply-tweets"] as const,
     delete: ["delete-tweets"] as const,
     update: ["update-tweets"] as const,
   },
