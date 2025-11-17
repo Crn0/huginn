@@ -7,6 +7,7 @@ export const tweetKeys = {
     reply: ["reply-tweets"] as const,
     delete: ["delete-tweets"] as const,
     update: ["update-tweets"] as const,
+    like: ["like-tweets"] as const,
   },
 
   infinite: {

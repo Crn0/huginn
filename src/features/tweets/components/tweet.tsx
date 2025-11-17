@@ -41,6 +41,7 @@ import {
 import { Authorization } from "@/lib/authorization";
 import { DeleteTweet } from "./delete-tweet";
 import { useAuthUser } from "@/lib/auth";
+import { useToggleLikeTweet } from "../api/like-tweet";
 
 export interface TweetProps {
   tweet: Tweet;
@@ -48,6 +49,7 @@ export interface TweetProps {
 
 export function Tweet({ tweet }: TweetProps) {
   const { data: user } = useAuthUser();
+  const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "")
   const author = tweet.author;
   const profile = author.profile;
 
@@ -180,7 +182,7 @@ export function Tweet({ tweet }: TweetProps) {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant='ghost' className={cn(tweet.liked && "text-rose-400")}>
+            <Button variant='ghost' className={cn(tweet.liked && "text-rose-400")} onClick={() => toggleLikeMutation.mutate(tweet)} disabled={toggleLikeMutation.isPending}>
               <HeartIcon />
               {tweet._count.likes ? (
                 <span>{nFormatter(tweet._count.likes, 0)}</span>
@@ -188,7 +190,7 @@ export function Tweet({ tweet }: TweetProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent side='bottom' sideOffset={-2}>
-            Like
+            { tweet.liked ? "Unlike" : "Like" }
           </TooltipContent>
         </Tooltip>
 

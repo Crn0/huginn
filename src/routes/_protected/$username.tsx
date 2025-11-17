@@ -214,6 +214,11 @@ function RouteComponent() {
                     Replies
                   </span>
                 </TabsTrigger>
+                                <TabsTrigger value='likes'>
+                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                    Likes
+                  </span>
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value='posts'>
@@ -225,6 +230,13 @@ function RouteComponent() {
                   username={user.username}
                   scope='replies'
                   withReply
+                />
+              </TabsContent>
+
+                   <TabsContent value='likes'>
+                <UserTweetList
+                  username={user.username}
+                  scope='likes'
                 />
               </TabsContent>
             </Tabs>
