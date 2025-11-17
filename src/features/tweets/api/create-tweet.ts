@@ -29,6 +29,7 @@ const isAcceptedMediaFile = (type: string) => {
       "image/jpg",
       "image/png",
       "image/webp",
+      "image/gif",
       "video/mp4",
     ].includes(type)
   )
