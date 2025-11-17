@@ -29,6 +29,8 @@ import { Link } from "@/components/ui/link";
 import { LogoSplash } from "@/components/ui/logo-splash";
 import { userQueryOption, useUser } from "@/features/users/api/get-user";
 import { UpdateProfile } from "@/features/users/components/update-profile";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
 
 export const Route = createFileRoute("/_protected/$username")({
   loader: ({ context, params }) => {
@@ -198,7 +200,36 @@ function RouteComponent() {
           )}
         </CardContent>
 
-        <CardFooter></CardFooter>
+        <CardFooter className='flex-1'>
+          {user && (
+            <Tabs defaultValue='posts' className='flex-1'>
+              <TabsList className='sticky top-10 z-30 flex w-full sm:top-0'>
+                <TabsTrigger value='posts'>
+                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                    Posts
+                  </span>
+                </TabsTrigger>
+                <TabsTrigger value='replies'>
+                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                    Replies
+                  </span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value='posts'>
+                <UserTweetList username={user.username} scope='posts' />
+              </TabsContent>
+
+              <TabsContent value='replies'>
+                <UserTweetList
+                  username={user.username}
+                  scope='replies'
+                  withReply
+                />
+              </TabsContent>
+            </Tabs>
+          )}
+        </CardFooter>
       </Card>
     </ContentLayout>
   );
