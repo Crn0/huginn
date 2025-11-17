@@ -18,7 +18,7 @@ export function Image({ ratio, bgImage, className, ...props }: ImageProps) {
     <AspectRatio
       className='rounded-md bg-cover bg-center'
       ratio={ratio}
-      style={{ backgroundImage: `url(${bgImage})` }}
+      style={{ backgroundImage: !loaded ? `url(${bgImage})` : "" }}
     >
       <ImagePrimitive.Avatar className='rounded-md'>
         <ImagePrimitive.Image
