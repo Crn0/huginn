@@ -8,6 +8,7 @@ import {
   MAX_MEDIA_LENGTH,
   useCreateTweet,
   type CreateTweetInput,
+  type UseUpdateProfileOptions,
 } from "../api/create-tweet";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";
@@ -56,9 +57,10 @@ import { handleServerError } from "@/lib/handle-form-server-error";
 
 export interface CreateTweetProps {
   username: string;
+  onSuccess?: () => void;
 }
 
-export function CreateTweet({ username }: CreateTweetProps) {
+export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm({
@@ -71,6 +73,7 @@ export function CreateTweet({ username }: CreateTweetProps) {
     onError: (e) => handleServerError<CreateTweetInput>(e, form.setError),
     onSuccess: () => {
       form.reset();
+      onSuccess?.();
     },
   });
 
