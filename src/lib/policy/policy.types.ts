@@ -1,11 +1,11 @@
-import type { Tweet } from "@/types/api";
-import type { User } from "@/types/user.types";
+import type { AuthUser } from "../auth";
+import type { User, Tweet } from "@/types/api";
 
 export type Action = "view" | "create" | "update" | "delete";
 
 export type PolicyAction<Resource extends keyof Policy> =
   | boolean
-  | ((user: User, data: Policy[Resource]["dataType"]) => boolean);
+  | ((user: AuthUser, data: Policy[Resource]["dataType"]) => boolean);
 
 export type PolicyCheckMap = {
   [Resource in keyof Policy]: {

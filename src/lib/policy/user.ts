@@ -1,6 +1,7 @@
-import type { User } from "@/types/user.types";
+import type { User } from "@/types/api";
+import type { AuthUser } from "../auth";
 
 export const userPolicy = {
-  update: (user: User, targetUser: User) => user.id === targetUser.id,
-  delete: (user: User, targetUser: User) => user.id === targetUser.id,
+  update: (user: AuthUser, targetUser: User) => user.id === targetUser.id,
+  delete: (user: AuthUser, targetUser: User) => user.id === targetUser.id,
 } as const;
