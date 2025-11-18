@@ -51,11 +51,15 @@ const generateFetchOptions = (config: CallApiConfig, token?: string) => {
   const options: RequestInit = { ...rest };
 
   if (data && !isBodyInit(data) && typeof data === "object") {
-    options.headers = {
-      ...options.headers,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    };
+    if (!(options.headers instanceof Headers)) {
+      options.headers = rest.headers;
+
+    } 
+
+     options.headers.set("Accept", "application/json")
+      options.headers.set("Content-Type", "application/json")
+
+
   }
 
   options.body = handlePayload(data);
