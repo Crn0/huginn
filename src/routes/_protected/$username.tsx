@@ -227,11 +227,18 @@ function RouteComponent() {
                     Replies
                   </span>
                 </TabsTrigger>
-                <TabsTrigger value='likes'>
-                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-                    Likes
-                  </span>
-                </TabsTrigger>
+                <Authorization
+                  user={authUser}
+                  resource='like'
+                  action='view'
+                  data={user}
+                >
+                  <TabsTrigger value='likes'>
+                    <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                      Likes
+                    </span>
+                  </TabsTrigger>
+                </Authorization>
               </TabsList>
 
               <TabsContent value='posts'>
@@ -246,9 +253,16 @@ function RouteComponent() {
                 />
               </TabsContent>
 
-              <TabsContent value='likes'>
-                <UserTweetList username={user.username} scope='likes' />
-              </TabsContent>
+              <Authorization
+                user={authUser}
+                resource='like'
+                action='view'
+                data={user}
+              >
+                <TabsContent value='likes'>
+                  <UserTweetList username={user.username} scope='likes' />
+                </TabsContent>
+              </Authorization>
             </Tabs>
           )}
         </CardFooter>
