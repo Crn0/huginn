@@ -39,8 +39,7 @@ export function UserTweetList({ username, scope, withReply }: TweetListProps) {
     );
   }
 
-  const renderedParentTweetIds = new Set<string>()
-
+  const renderedParentTweetIds = new Set<string>();
 
   return (
     <>
@@ -54,25 +53,25 @@ export function UserTweetList({ username, scope, withReply }: TweetListProps) {
             className='grid w-full sm:w-xl'
             aria-label={`comment-${tweet.content}-${tweet.id}`}
           >
-            {withReply && tweet.replyTo &&  (() => {
-              if (renderedParentTweetIds.has(tweet.id)) return null
+            {withReply &&
+              tweet.replyTo &&
+              (() => {
+                if (renderedParentTweetIds.has(tweet.id)) return null;
 
-              renderedParentTweetIds.add(tweet.replyTo.id)
+                renderedParentTweetIds.add(tweet.replyTo.id);
 
-              return (
-              <>
-                <Tweet tweet={tweet.replyTo} />
-                <Separator
-                  orientation='vertical'
-                  className='ml-12 border-2 data-[orientation=vertical]:h-25'
-                />
-              </>
-            )
-            })()}
+                return (
+                  <>
+                    <Tweet tweet={tweet.replyTo} />
+                    <Separator
+                      orientation='vertical'
+                      className='ml-12 border-2 data-[orientation=vertical]:h-25'
+                    />
+                  </>
+                );
+              })()}
 
-            {
-              !renderedParentTweetIds.has(tweet.id) && <Tweet tweet={tweet} />
-            }
+            {!renderedParentTweetIds.has(tweet.id) && <Tweet tweet={tweet} />}
           </li>
         ))}
       </ul>

@@ -50,8 +50,8 @@ export interface TweetProps {
 
 export function Tweet({ tweet }: TweetProps) {
   const { data: user } = useAuthUser();
-  const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "")
-  const toggleFollowMutation = useToggleFollowUser(user?.username ?? "")
+  const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
+  const toggleFollowMutation = useToggleFollowUser(user?.username ?? "");
 
   const author = tweet.author;
   const profile = author.profile;
@@ -134,7 +134,17 @@ export function Tweet({ tweet }: TweetProps) {
                       resource='tweet'
                       action='delete'
                       data={tweet}
-                forbiddenFallback={<Button variant="secondary" onClick={() => toggleFollowMutation.mutate(tweet.author)} disabled={toggleFollowMutation.isPending}>{ tweet.author.followed ? "Unfollow" : "Follow"}</Button>}
+                      forbiddenFallback={
+                        <Button
+                          variant='secondary'
+                          onClick={() =>
+                            toggleFollowMutation.mutate(tweet.author)
+                          }
+                          disabled={toggleFollowMutation.isPending}
+                        >
+                          {tweet.author.followed ? "Unfollow" : "Follow"}
+                        </Button>
+                      }
                     >
                       <DeleteTweet tweet={tweet} />
                     </Authorization>
@@ -186,7 +196,12 @@ export function Tweet({ tweet }: TweetProps) {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant='ghost' className={cn(tweet.liked && "text-rose-400")} onClick={() => toggleLikeMutation.mutate(tweet)} disabled={toggleLikeMutation.isPending}>
+            <Button
+              variant='ghost'
+              className={cn(tweet.liked && "text-rose-400")}
+              onClick={() => toggleLikeMutation.mutate(tweet)}
+              disabled={toggleLikeMutation.isPending}
+            >
               <HeartIcon />
               {tweet._count.likes ? (
                 <span>{nFormatter(tweet._count.likes, 0)}</span>
@@ -194,7 +209,7 @@ export function Tweet({ tweet }: TweetProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent side='bottom' sideOffset={-2}>
-            { tweet.liked ? "Unlike" : "Like" }
+            {tweet.liked ? "Unlike" : "Like"}
           </TooltipContent>
         </Tooltip>
 

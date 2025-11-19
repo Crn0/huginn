@@ -56,7 +56,13 @@ import {
   type ReplyTweetInput,
 } from "../api/reply-tweet";
 import type { Tweet } from "@/types/api";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import { Link } from "@/components/ui/link";
 import { dateDiffInDays } from "@/lib/date";
@@ -149,14 +155,14 @@ export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
 
           <TweetMedia media={tweet.media} />
         </CardContent>
-        {
-          username !== tweet.author.username && 
-        <CardFooter>
-              <CardDescription>
-            Replying to <span className="text-blue-400">@{tweet.author.username}</span>
-          </CardDescription>
-        </CardFooter>
-        }
+        {username !== tweet.author.username && (
+          <CardFooter>
+            <CardDescription>
+              Replying to{" "}
+              <span className='text-blue-400'>@{tweet.author.username}</span>
+            </CardDescription>
+          </CardFooter>
+        )}
       </Card>
 
       <Separator

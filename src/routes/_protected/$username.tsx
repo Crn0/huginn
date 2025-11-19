@@ -46,7 +46,9 @@ function RouteComponent() {
   const params = Route.useParams();
   const authUserQuery = useAuthUser();
   const userQuery = useUser(params.username);
-  const followMutation = useToggleFollowUser(authUserQuery.data?.username ?? "" )
+  const followMutation = useToggleFollowUser(
+    authUserQuery.data?.username ?? ""
+  );
 
   if (!authUserQuery.isSuccess || userQuery.isLoading) {
     return <LogoSplash />;
@@ -107,7 +109,15 @@ function RouteComponent() {
                 resource='user'
                 action='update'
                 data={user}
-                forbiddenFallback={<Button variant="secondary" onClick={() => followMutation.mutate(user)} disabled={followMutation.isPending}>{ user.followed ? "Unfollow" : "Follow"}</Button>}
+                forbiddenFallback={
+                  <Button
+                    variant='secondary'
+                    onClick={() => followMutation.mutate(user)}
+                    disabled={followMutation.isPending}
+                  >
+                    {user.followed ? "Unfollow" : "Follow"}
+                  </Button>
+                }
               >
                 <UpdateProfile
                   user={authUser}
@@ -217,7 +227,7 @@ function RouteComponent() {
                     Replies
                   </span>
                 </TabsTrigger>
-                                <TabsTrigger value='likes'>
+                <TabsTrigger value='likes'>
                   <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
                     Likes
                   </span>
@@ -236,11 +246,8 @@ function RouteComponent() {
                 />
               </TabsContent>
 
-                   <TabsContent value='likes'>
-                <UserTweetList
-                  username={user.username}
-                  scope='likes'
-                />
+              <TabsContent value='likes'>
+                <UserTweetList username={user.username} scope='likes' />
               </TabsContent>
             </Tabs>
           )}

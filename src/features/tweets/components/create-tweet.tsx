@@ -8,7 +8,6 @@ import {
   MAX_MEDIA_LENGTH,
   useCreateTweet,
   type CreateTweetInput,
-  type UseUpdateProfileOptions,
 } from "../api/create-tweet";
 import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import { Label } from "@/components/ui/label";

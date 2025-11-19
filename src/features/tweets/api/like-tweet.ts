@@ -12,11 +12,14 @@ import {
 import { tweetKeys } from "./query-key-factory";
 import { useClient } from "@/hooks/use-client";
 
-const transformLikedTweet = (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+const transformLikedTweet =
+  (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.map((tweet) => tweet.id !== id ? tweet : { ...tweet, liked: !tweet.liked });
-        
+        const newData = data.map((tweet) =>
+          tweet.id !== id ? tweet : { ...tweet, liked: !tweet.liked }
+        );
+
         return { ...rest, data: newData };
       });
 
@@ -40,8 +43,6 @@ const filterunlikedTweet =
 
     return prevPages;
   };
- 
-
 
 export const likeTweet = (client: ApiClient) => async (tweet: Tweet) => {
   return client.callApi(`tweets/${tweet.id}/likes`, {
@@ -50,7 +51,7 @@ export const likeTweet = (client: ApiClient) => async (tweet: Tweet) => {
   });
 };
 
-export const unlikeTweet =  (client: ApiClient) => async (tweet: Tweet) => {
+export const unlikeTweet = (client: ApiClient) => async (tweet: Tweet) => {
   return client.callApi(`tweets/${tweet.id}/likes`, {
     isAuth: true,
     method: "DELETE",
@@ -84,9 +85,9 @@ export const useToggleLikeTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         }),
-                queryClient.cancelQueries({
+        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-        })
+        }),
       ]);
 
       queryClient.setQueryData(
@@ -97,15 +98,14 @@ export const useToggleLikeTweet = (
         tweetKeys.infinite.listByUser(username, "posts"),
         transformLikedTweet(tweet.id)
       );
-         queryClient.setQueryData(
+      queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "replies"),
         transformLikedTweet(tweet.id)
       );
-              queryClient.setQueryData(
-          tweetKeys.infinite.listByUser(username, "likes"),
-          filterunlikedTweet(tweet.id)
-        );
-
+      queryClient.setQueryData(
+        tweetKeys.infinite.listByUser(username, "likes"),
+        filterunlikedTweet(tweet.id)
+      );
     },
     onSettled: () => {
       if (
@@ -117,15 +117,15 @@ export const useToggleLikeTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
-         queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.listByUser(username, "replies"),
-          });
-             queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-          });
-
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+        });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+        });
       }
     },
-    mutationFn: (tweet) => tweet.liked ? unlikeTweet(client)(tweet)  : likeTweet(client)(tweet),
+    mutationFn: (tweet) =>
+      tweet.liked ? unlikeTweet(client)(tweet) : likeTweet(client)(tweet),
   });
 };

@@ -15,7 +15,9 @@ const filterDeletedTweet =
   (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.filter((tweet) => tweet.id !== id && tweet.replyTo?.id !== id);
+        const newData = data.filter(
+          (tweet) => tweet.id !== id && tweet.replyTo?.id !== id
+        );
 
         return { ...rest, data: newData };
       });
@@ -59,7 +61,7 @@ export const useDeleteTweet = (
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "replies"),
-        })
+        }),
       ]);
 
       queryClient.setQueryData(
@@ -71,10 +73,9 @@ export const useDeleteTweet = (
         filterDeletedTweet(tweet.id)
       );
       queryClient.setQueryData(
-          tweetKeys.infinite.listByUser(username, "replies"),
-          filterDeletedTweet(tweet.id)
-        );
-
+        tweetKeys.infinite.listByUser(username, "replies"),
+        filterDeletedTweet(tweet.id)
+      );
     },
     onSettled: () => {
       if (
@@ -86,10 +87,9 @@ export const useDeleteTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
-         queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.listByUser(username, "replies"),
-          });
-
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+        });
       }
     },
     mutationFn: (tweet) => deleteTweet(client)(tweet),
