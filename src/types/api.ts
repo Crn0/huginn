@@ -18,7 +18,7 @@ export type Pagination<T extends unknown[]> = {
 
 export type User = Entity<{
   username: string;
-  avatarUrl: string | null;
+  followed: boolean;
   profile: {
     displayName: string | null;
     bio: string | null;
@@ -35,7 +35,11 @@ export type User = Entity<{
   updatedAt: string | null;
 }>;
 
-export type TweetAuthor = Pick<User, "id" | "username"> & {
+export type FollowUser = Omit<User, "updatedAt" | "_count" | "profile"> & {
+  profile: Pick<User["profile"], "displayName" | "avatarUrl" | "bio">;
+};
+
+export type TweetAuthor = Pick<User, "id" | "username" | "followed"> & {
   profile: Pick<User["profile"], "displayName" | "avatarUrl" | "bannerUrl">;
 };
 
@@ -93,7 +97,7 @@ export type Tweet =
     >
   | Entity<
       BaseTweet & {
-        replyTo: BaseTweet & { replyTo: null, withReply: false };
+        replyTo: BaseTweet & { replyTo: null; withReply: false };
         withReply: true;
       }
     >;

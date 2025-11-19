@@ -31,6 +31,7 @@ import { userQueryOption, useUser } from "@/features/users/api/get-user";
 import { UpdateProfile } from "@/features/users/components/update-profile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
+import { useToggleFollowUser } from "@/features/follow/api/follow";
 
 export const Route = createFileRoute("/_protected/$username")({
   loader: ({ context, params }) => {
@@ -43,14 +44,15 @@ export const Route = createFileRoute("/_protected/$username")({
 
 function RouteComponent() {
   const params = Route.useParams();
-  const authUserQUery = useAuthUser();
+  const authUserQuery = useAuthUser();
   const userQuery = useUser(params.username);
+  const followMutation = useToggleFollowUser(authUserQuery.data?.username ?? "" )
 
-  if (!authUserQUery.isSuccess || userQuery.isLoading) {
+  if (!authUserQuery.isSuccess || userQuery.isLoading) {
     return <LogoSplash />;
   }
 
-  const authUser = authUserQUery.data;
+  const authUser = authUserQuery.data;
   const user = userQuery.data;
 
   return (
@@ -105,6 +107,7 @@ function RouteComponent() {
                 resource='user'
                 action='update'
                 data={user}
+                forbiddenFallback={<Button variant="secondary" onClick={() => followMutation.mutate(user)} disabled={followMutation.isPending}>{ user.followed ? "Unfollow" : "Follow"}</Button>}
               >
                 <UpdateProfile
                   user={authUser}

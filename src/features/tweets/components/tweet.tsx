@@ -42,6 +42,7 @@ import { Authorization } from "@/lib/authorization";
 import { DeleteTweet } from "./delete-tweet";
 import { useAuthUser } from "@/lib/auth";
 import { useToggleLikeTweet } from "../api/like-tweet";
+import { useToggleFollowUser } from "@/features/follow/api/follow";
 
 export interface TweetProps {
   tweet: Tweet;
@@ -50,6 +51,8 @@ export interface TweetProps {
 export function Tweet({ tweet }: TweetProps) {
   const { data: user } = useAuthUser();
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "")
+  const toggleFollowMutation = useToggleFollowUser(user?.username ?? "")
+
   const author = tweet.author;
   const profile = author.profile;
 
@@ -131,6 +134,7 @@ export function Tweet({ tweet }: TweetProps) {
                       resource='tweet'
                       action='delete'
                       data={tweet}
+                forbiddenFallback={<Button variant="secondary" onClick={() => toggleFollowMutation.mutate(tweet.author)} disabled={toggleFollowMutation.isPending}>{ tweet.author.followed ? "Unfollow" : "Follow"}</Button>}
                     >
                       <DeleteTweet tweet={tweet} />
                     </Authorization>

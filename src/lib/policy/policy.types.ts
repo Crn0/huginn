@@ -1,7 +1,7 @@
 import type { AuthUser } from "../auth";
 import type { User, Tweet } from "@/types/api";
 
-export type Action = "view" | "create" | "update" | "delete";
+export type Action = "view" | "create" | "update" | "follow" | "delete";
 
 export type PolicyAction<Resource extends keyof Policy> =
   | boolean
@@ -16,7 +16,7 @@ export type PolicyCheckMap = {
 export interface Policy {
   user: {
     dataType: User;
-    action: "view" | "update" | "delete";
+    action: "view" | "update" | "follow" | "delete";
   };
   tweet: {
     dataType: Tweet;
