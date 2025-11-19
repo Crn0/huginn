@@ -55,7 +55,7 @@ export function LoginForm({ onSuccess, close }: LoginFormProps) {
   const onSubmit = (data: LoginInput) => login.mutate(data);
 
   return (
-    <Card className='w-full bg-black text-white sm:max-w-md'>
+    <Card className='[&_input]:selection:bg-input-background w-full bg-black text-white sm:max-w-md'>
       <CardHeader>
         <CardTitle>
           <h1>Sign in to Huginn</h1>

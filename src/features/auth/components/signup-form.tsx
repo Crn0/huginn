@@ -59,7 +59,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
   const onSubmit = (data: RegisterInput) => register.mutate(data);
 
   return (
-    <Card className='w-full bg-black text-white sm:max-w-md'>
+    <Card className='[&_input]:selection:bg-input-background w-full bg-black text-white sm:max-w-md'>
       <CardHeader>
         <CardTitle>
           <h1>Create your account</h1>
