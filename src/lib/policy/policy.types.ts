@@ -22,4 +22,8 @@ export interface Policy {
     dataType: Tweet;
     action: "view" | "update" | "delete";
   };
+  like: {
+    dataType: User;
+    action: "view";
+  };
 }
