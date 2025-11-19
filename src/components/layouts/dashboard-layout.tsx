@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { FileRouteTypes } from "@/routeTree.gen";
-import { useParams, type LinkProps } from "@tanstack/react-router";
+import { useLocation, useParams, type LinkProps } from "@tanstack/react-router";
 import type { LucideProps } from "lucide-react";
 
 import { cn } from "@/utils/cn";
@@ -50,6 +50,7 @@ export type SideNavigationLink = {
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const { username } = useParams({ strict: false });
+  const location = useLocation();
 
   const authUserQuery = useAuthUser();
 
@@ -240,7 +241,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </nav>
       </header>
       <main className='flex flex-2 flex-col'>
-        {!username && (
+        {!username && location.pathname !== "/compose/post" && (
           <header
             id='dashboard-header'
             className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
