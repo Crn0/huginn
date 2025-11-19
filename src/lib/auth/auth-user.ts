@@ -12,7 +12,6 @@ export const authUserSchema = z.object({
   id: z.uuidv7(),
   email: z.email().trim(),
   username: z.string(),
-  avatarUrl: z.url().nullable(),
   profile: z.object({
     displayName: z.string(),
     bio: z.string().nullable(),
