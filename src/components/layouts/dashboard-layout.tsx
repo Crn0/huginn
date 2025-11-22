@@ -87,14 +87,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     },
     {
       name: "Settings and Privacy",
-      to: "/settings/account",
+      to: "/settings",
       icon: SettingsIcon,
     },
   ] satisfies SideNavigationLink[];
 
   return (
     <div className='bg-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
-      <header className='hidden font-mono sm:sticky sm:top-0 sm:flex sm:flex-col sm:place-items-center-safe sm:items-center-safe sm:justify-between lg:flex-[0.9]'>
+      <header className='border-border hidden border-r font-mono sm:sticky sm:top-0 sm:flex sm:flex-col sm:place-items-center-safe sm:items-center-safe sm:justify-between lg:flex-[0.9]'>
         <nav className='mt-1 grid place-items-center-safe items-center-safe gap-2 lg:flex lg:flex-1 lg:flex-col lg:place-items-baseline'>
           <Link
             to='/home'
@@ -241,105 +241,120 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         </nav>
       </header>
       <main className='flex flex-2 flex-col'>
-        {!username && location.pathname !== "/compose/post" && (
-          <header
-            id='dashboard-header'
-            className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
-          >
-            <aside>
-              <Drawer>
-                <DrawerTrigger asChild>
-                  <Button size='icon' variant='default' className='text-black'>
-                    <>
-                      <UserAvatar
-                        className='h-12 w-12'
-                        avatar={authUser.profile.avatarUrl}
-                        fallback={authUser.username}
-                      />
-                      <span className='sr-only'>Toggle Menu</span>
-                    </>
-                  </Button>
-                </DrawerTrigger>
-
-                <DrawerContent
-                  side='left'
-                  className='bg-background overflow-hidden border-r border-neutral-600 pt-10 text-white'
-                >
-                  <VisuallyHidden>
-                    <DialogTitle>
-                      <span>User menu</span>
-                    </DialogTitle>
-                  </VisuallyHidden>
-                  <DrawerHeader className='mb-5 text-white'>
-                    <Link
-                      to='/$username'
-                      params={{ username: authUser.username }}
+        {!username &&
+          location.pathname !== "/compose/post" &&
+          !location.pathname.includes("/settings") && (
+            <header
+              id='dashboard-header'
+              className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
+            >
+              <aside>
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <Button
+                      size='icon'
+                      variant='default'
+                      className='text-black'
                     >
-                      <UserAvatar
-                        className='h-15 w-15'
-                        avatar={authUser.profile.avatarUrl}
-                        fallback={authUser.username}
-                      />
-                    </Link>
+                      <>
+                        <UserAvatar
+                          className='h-12 w-12'
+                          avatar={authUser.profile.avatarUrl}
+                          fallback={authUser.username}
+                        />
+                        <span className='sr-only'>Toggle Menu</span>
+                      </>
+                    </Button>
+                  </DrawerTrigger>
 
-                    <div className='flex flex-col items-start'>
-                      <span className='font-bold'>
-                        {authUser.profile.displayName}
-                      </span>
-                      <span className='font-light opacity-50'>
-                        @{authUser.username}
-                      </span>
-                    </div>
+                  <DrawerContent
+                    side='left'
+                    className='bg-background overflow-hidden border-r border-neutral-600 pt-10 text-white'
+                  >
+                    <VisuallyHidden>
+                      <DialogTitle>
+                        <span>User menu</span>
+                      </DialogTitle>
+                    </VisuallyHidden>
+                    <DrawerHeader className='mb-5 text-white'>
+                      <Link
+                        to='/$username'
+                        params={{ username: authUser.username }}
+                      >
+                        <UserAvatar
+                          className='h-15 w-15'
+                          avatar={authUser.profile.avatarUrl}
+                          fallback={authUser.username}
+                        />
+                      </Link>
 
-                    <div className='flex items-center-safe gap-5'>
-                      <div className='flex gap-1'>
-                        <span> {nFormatter(authUser._count.following, 0)}</span>
-                        <span className='font-light opacity-50'>Following</span>
+                      <div className='flex flex-col items-start'>
+                        <span className='font-bold'>
+                          {authUser.profile.displayName}
+                        </span>
+                        <span className='font-light opacity-50'>
+                          @{authUser.username}
+                        </span>
                       </div>
-                      <div className='flex gap-1'>
-                        <span>{nFormatter(authUser._count.followedBy, 0)}</span>
-                        <span className='font-light opacity-50'>Followers</span>
-                      </div>
-                    </div>
-                  </DrawerHeader>
 
-                  <nav className='grid gap-6 text-lg font-medium'>
-                    {(
-                      [
-                        ...navLinks,
-                        {
-                          name: "Logout",
-                          to: "/logout",
-                          preload: false,
-                          replace: true,
-                          icon: LogOutIcon,
-                        },
-                      ] satisfies SideNavigationLink[]
-                    ).map((link) => (
-                      <DrawerClose key={link.name} asChild>
-                        <Link
-                          {...link}
-                          to={link.to}
-                          className='flex items-center-safe gap-2 rounded-4xl p-2 text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
-                          activeOptions={{ exact: true }}
-                        >
-                          <link.icon
-                            className={cn(
-                              "text-gray-400 group-hover:text-gray-300",
-                              "mr-4 size-6 shrink-0"
-                            )}
-                            aria-hidden='true'
-                          />
-                          {link.name}
-                        </Link>
-                      </DrawerClose>
-                    ))}
-                  </nav>
-                </DrawerContent>
-              </Drawer>
-            </aside>
-          </header>
-        )}
+                      <div className='flex items-center-safe gap-5'>
+                        <div className='flex gap-1'>
+                          <span>
+                            {" "}
+                            {nFormatter(authUser._count.following, 0)}
+                          </span>
+                          <span className='font-light opacity-50'>
+                            Following
+                          </span>
+                        </div>
+                        <div className='flex gap-1'>
+                          <span>
+                            {nFormatter(authUser._count.followedBy, 0)}
+                          </span>
+                          <span className='font-light opacity-50'>
+                            Followers
+                          </span>
+                        </div>
+                      </div>
+                    </DrawerHeader>
+
+                    <nav className='grid gap-6 text-lg font-medium'>
+                      {(
+                        [
+                          ...navLinks,
+                          {
+                            name: "Logout",
+                            to: "/logout",
+                            preload: false,
+                            replace: true,
+                            icon: LogOutIcon,
+                          },
+                        ] satisfies SideNavigationLink[]
+                      ).map((link) => (
+                        <DrawerClose key={link.name} asChild>
+                          <Link
+                            {...link}
+                            to={link.to}
+                            className='flex items-center-safe gap-2 rounded-4xl p-2 text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
+                            activeOptions={{ exact: true }}
+                          >
+                            <link.icon
+                              className={cn(
+                                "text-gray-400 group-hover:text-gray-300",
+                                "mr-4 size-6 shrink-0"
+                              )}
+                              aria-hidden='true'
+                            />
+                            {link.name}
+                          </Link>
+                        </DrawerClose>
+                      ))}
+                    </nav>
+                  </DrawerContent>
+                </Drawer>
+              </aside>
+            </header>
+          )}
         <section className='flex-1'>{children}</section>
       </main>
 
