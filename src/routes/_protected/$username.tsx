@@ -10,7 +10,6 @@ import {
 import { useAuthUser } from "@/lib/auth";
 import { Authorization } from "@/lib/authorization";
 import { nFormatter } from "@/lib/number-formatter";
-import { cn } from "@/utils/cn";
 import { formatDate } from "@/utils/format-date";
 
 import { ContentLayout } from "@/components/layouts/content-layout";
@@ -54,6 +53,40 @@ function RouteComponent() {
     return <LogoSplash />;
   }
 
+  if (!userQuery.isSuccess) {
+    return (
+      <ContentLayout
+        headerChildren={
+          <>
+            <div className='flex items-center-safe gap-2'>
+              <Button variant='outline' asChild>
+                <Link
+                  to='/home'
+                  className='text-foreground border-none bg-none'
+                >
+                  <Undo2Icon />
+                </Link>
+              </Button>
+
+              <h1>Profile</h1>
+            </div>
+          </>
+        }
+      >
+        <Card className='bg-background text-foreground border-black pt-0'>
+          <CardContent className='p-10'>
+            <div className='grid place-content-center-safe gap-2'>
+              <CardTitle className='text-3xl'>
+                This account doesn't exist
+              </CardTitle>
+              <CardDescription>Try searching for another.</CardDescription>
+            </div>
+          </CardContent>
+        </Card>
+      </ContentLayout>
+    );
+  }
+
   const authUser = authUserQuery.data;
   const user = userQuery.data;
 
@@ -68,203 +101,180 @@ function RouteComponent() {
               </Link>
             </Button>
 
-            {user && (
-              <div className='flex w-xs flex-col justify-center-safe gap-1'>
-                <span className='overflow-hidden text-xl overflow-ellipsis whitespace-nowrap'>
-                  {user.username}
-                </span>
-                <span className='text-xl opacity-45'>
-                  {nFormatter(user._count.tweets, 0)} posts
-                </span>
-              </div>
-            )}
-
-            {!user && <h1>Profile</h1>}
+            <div className='flex w-xs flex-col justify-center-safe gap-1'>
+              <span className='overflow-hidden text-xl overflow-ellipsis whitespace-nowrap'>
+                {user.username}
+              </span>
+              <span className='text-xl opacity-45'>
+                {nFormatter(user._count.tweets, 0)} posts
+              </span>
+            </div>
           </div>
 
-          {user && (
-            <Button variant='ghost' className='text-foreground' asChild>
-              <Link to='/explore'>
-                <SearchIcon className='size-6' />
-              </Link>
-            </Button>
-          )}
+          <Button variant='ghost' className='text-foreground' asChild>
+            <Link to='/explore'>
+              <SearchIcon className='size-6' />
+            </Link>
+          </Button>
         </>
       }
     >
       <Card className='bg-background text-foreground border-black pt-0'>
-        {user && (
-          <CardHeader className='px-0'>
-            <UserBanner banner={user.profile.bannerUrl} />
-            <div className='-mt-10 flex items-center-safe justify-between p-2'>
-              <UserAvatar
-                className='h-25 w-25 sm:h-45 sm:w-45'
-                fallbackClassName='text-3xl sm:text-5xl'
-                avatar={user.profile.avatarUrl}
-                fallback={user.username}
-              />
+        <CardHeader className='px-0'>
+          <UserBanner banner={user.profile.bannerUrl} />
+          <div className='-mt-10 flex items-center-safe justify-between p-2'>
+            <UserAvatar
+              className='h-25 w-25 sm:h-45 sm:w-45'
+              fallbackClassName='text-3xl sm:text-5xl'
+              avatar={user.profile.avatarUrl}
+              fallback={user.username}
+            />
 
-              <Authorization
+            <Authorization
+              user={authUser}
+              resource='user'
+              action='update'
+              data={user}
+              forbiddenFallback={
+                <Button
+                  variant='secondary'
+                  onClick={() => followMutation.mutate(user)}
+                  disabled={followMutation.isPending}
+                >
+                  {user.followed ? "Unfollow" : "Follow"}
+                </Button>
+              }
+            >
+              <UpdateProfile
                 user={authUser}
-                resource='user'
-                action='update'
-                data={user}
-                forbiddenFallback={
+                renderButtonTrigger={({ open }) => (
                   <Button
-                    variant='secondary'
-                    onClick={() => followMutation.mutate(user)}
-                    disabled={followMutation.isPending}
+                    variant='ghost'
+                    className='rounded-full border-1 border-white'
+                    onClick={open}
                   >
-                    {user.followed ? "Unfollow" : "Follow"}
+                    <span>Edit profile</span>
                   </Button>
-                }
-              >
-                <UpdateProfile
-                  user={authUser}
-                  renderButtonTrigger={({ open }) => (
-                    <Button
-                      variant='ghost'
-                      className='rounded-full border-1 border-white'
-                      onClick={open}
-                    >
-                      <span>Edit profile</span>
-                    </Button>
-                  )}
-                />
-              </Authorization>
-            </div>
-          </CardHeader>
-        )}
+                )}
+              />
+            </Authorization>
+          </div>
+        </CardHeader>
 
-        <CardContent className={cn(user && "grid gap-2", !user && "p-10")}>
-          {!user && (
-            <div className='grid place-content-center-safe gap-2'>
-              <CardTitle className='text-3xl'>
-                This account doesn't exist
-              </CardTitle>
-              <CardDescription>Try searching for another.</CardDescription>
-            </div>
-          )}
+        <CardContent className='grid gap-2'>
+          <div className='flex flex-col items-start'>
+            <span className='text-2xl font-bold'>
+              {user.profile.displayName}
+            </span>
+            <span className='font-light opacity-50'>@{user.username}</span>
+          </div>
 
-          {user && (
-            <>
-              <div className='flex flex-col items-start'>
-                <span className='text-2xl font-bold'>
-                  {user.profile.displayName}
-                </span>
-                <span className='font-light opacity-50'>@{user.username}</span>
+          <div className='grid gap-2'>
+            {user.profile.bio && (
+              <div className='w-sm wrap-break-word sm:w-5xl'>
+                <span>{user.profile.bio}</span>
               </div>
+            )}
+            <div className='flex flex-wrap sm:flex-col'>
+              {user.profile.location && (
+                <div className='flex items-center-safe gap-1'>
+                  <MapPinXInsideIcon size={15} />
+                  <span className='font-light opacity-50'>
+                    {user.profile.location}
+                  </span>
+                </div>
+              )}
 
-              <div className='grid gap-2'>
-                {user.profile.bio && (
-                  <div className='w-sm wrap-break-word sm:w-5xl'>
-                    <span>{user.profile.bio}</span>
+              <div className='flex gap-5'>
+                {user.profile.website && (
+                  <div className='flex items-center-safe gap-1'>
+                    <LinkIcon size={15} />
+                    <a
+                      className='w-[150px] overflow-hidden font-light text-ellipsis whitespace-nowrap text-sky-600'
+                      href={user.profile.website}
+                      target='_blank'
+                      rel='noreferrer'
+                    >
+                      {user.profile.website}
+                    </a>
                   </div>
                 )}
-                <div className='flex flex-wrap sm:flex-col'>
-                  {user.profile.location && (
-                    <div className='flex items-center-safe gap-1'>
-                      <MapPinXInsideIcon size={15} />
-                      <span className='font-light opacity-50'>
-                        {user.profile.location}
-                      </span>
-                    </div>
-                  )}
 
-                  <div className='flex gap-5'>
-                    {user.profile.website && (
-                      <div className='flex items-center-safe gap-1'>
-                        <LinkIcon size={15} />
-                        <a
-                          className='w-[150px] overflow-hidden font-light text-ellipsis whitespace-nowrap text-sky-600'
-                          href={user.profile.website}
-                          target='_blank'
-                          rel='noreferrer'
-                        >
-                          {user.profile.website}
-                        </a>
-                      </div>
-                    )}
-
-                    <div className='flex flex-1 items-center-safe gap-1'>
-                      <CalendarDaysIcon size={15} />
-                      <time
-                        className='font-light opacity-50'
-                        dateTime={user.createdAt}
-                      >
-                        {formatDate(user.createdAt, "'Joined at 'MMMM yyyy")}
-                      </time>
-                    </div>
-                  </div>
+                <div className='flex flex-1 items-center-safe gap-1'>
+                  <CalendarDaysIcon size={15} />
+                  <time
+                    className='font-light opacity-50'
+                    dateTime={user.createdAt}
+                  >
+                    {formatDate(user.createdAt, "'Joined at 'MMMM yyyy")}
+                  </time>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <div className='flex items-center-safe gap-5'>
-                <div className='flex gap-1'>
-                  <span> {nFormatter(user._count.following, 0)}</span>
-                  <span className='font-light opacity-50'>Following</span>
-                </div>
-                <div className='flex gap-1'>
-                  <span>{nFormatter(user._count.followedBy, 0)}</span>
-                  <span className='font-light opacity-50'>Followers</span>
-                </div>
-              </div>
-            </>
-          )}
+          <div className='flex items-center-safe gap-5'>
+            <div className='flex gap-1'>
+              <span> {nFormatter(user._count.following, 0)}</span>
+              <span className='font-light opacity-50'>Following</span>
+            </div>
+            <div className='flex gap-1'>
+              <span>{nFormatter(user._count.followedBy, 0)}</span>
+              <span className='font-light opacity-50'>Followers</span>
+            </div>
+          </div>
         </CardContent>
 
         <CardFooter className='flex-1'>
-          {user && (
-            <Tabs defaultValue='posts' className='flex-1'>
-              <TabsList className='sticky top-10 z-30 flex w-full sm:top-0'>
-                <TabsTrigger value='posts'>
-                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-                    Posts
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger value='replies'>
-                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-                    Replies
-                  </span>
-                </TabsTrigger>
-                <Authorization
-                  user={authUser}
-                  resource='like'
-                  action='view'
-                  data={user}
-                >
-                  <TabsTrigger value='likes'>
-                    <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-                      Likes
-                    </span>
-                  </TabsTrigger>
-                </Authorization>
-              </TabsList>
-
-              <TabsContent value='posts'>
-                <UserTweetList username={user.username} scope='posts' />
-              </TabsContent>
-
-              <TabsContent value='replies'>
-                <UserTweetList
-                  username={user.username}
-                  scope='replies'
-                  withReply
-                />
-              </TabsContent>
-
+          <Tabs defaultValue='posts' className='flex-1'>
+            <TabsList className='sticky top-10 z-30 flex w-full sm:top-0'>
+              <TabsTrigger value='posts'>
+                <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                  Posts
+                </span>
+              </TabsTrigger>
+              <TabsTrigger value='replies'>
+                <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                  Replies
+                </span>
+              </TabsTrigger>
               <Authorization
                 user={authUser}
                 resource='like'
                 action='view'
                 data={user}
               >
-                <TabsContent value='likes'>
-                  <UserTweetList username={user.username} scope='likes' />
-                </TabsContent>
+                <TabsTrigger value='likes'>
+                  <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                    Likes
+                  </span>
+                </TabsTrigger>
               </Authorization>
-            </Tabs>
-          )}
+            </TabsList>
+
+            <TabsContent value='posts'>
+              <UserTweetList username={user.username} scope='posts' />
+            </TabsContent>
+
+            <TabsContent value='replies'>
+              <UserTweetList
+                username={user.username}
+                scope='replies'
+                withReply
+              />
+            </TabsContent>
+
+            <Authorization
+              user={authUser}
+              resource='like'
+              action='view'
+              data={user}
+            >
+              <TabsContent value='likes'>
+                <UserTweetList username={user.username} scope='likes' />
+              </TabsContent>
+            </Authorization>
+          </Tabs>
         </CardFooter>
       </Card>
     </ContentLayout>
