@@ -43,7 +43,7 @@ export function BirthdatePicker({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className='text-foreground w-auto overflow-hidden bg-black p-0'
+          className='text-muted-foreground bg-background w-auto overflow-hidden p-0'
           align='start'
         >
           <Calendar
