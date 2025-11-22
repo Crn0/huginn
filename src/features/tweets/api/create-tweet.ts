@@ -8,6 +8,8 @@ import {
 } from "@tanstack/react-query";
 import z from "zod";
 import { tweetKeys } from "./query-key-factory";
+import { userKeys } from "@/features/users/api/query-key-factory";
+import { authUserQueryOptions } from "@/lib/auth";
 
 export const MAX_CONTENT_LENGTH = 1000 as const;
 export const MAX_MEDIA_LENGTH = 4;
@@ -107,6 +109,12 @@ export const useCreateTweet = (
     ...restConfig,
     mutationKey: tweetKeys.mutation.create,
     onSuccess: (...args) => {
+      queryClient.invalidateQueries({
+        queryKey: authUserQueryOptions().queryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: userKeys.detail(username),
+      });
       queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.listByUser(username, "posts"),
       });
