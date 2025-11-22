@@ -1,21 +1,19 @@
-import { useEffect } from "react";
 import {
   Await,
   CatchBoundary,
   createFileRoute,
   Outlet,
   redirect,
-  useNavigate,
-  useSearch,
 } from "@tanstack/react-router";
 
 import { tryCatch } from "@/lib/try-catch";
 import { debugError } from "@/lib/logger";
 import { refreshToken as silentLogin } from "@/lib/auth";
-import { useAuthActions, useIsSilentLogin } from "@/hooks/use-auth-store";
+import { useIsSilentLogin } from "@/hooks/use-auth-store";
 import { ErrorComponent } from "@/components/errors/error-component";
 import { AuthLayout } from "@/components/layouts/auth-layout";
 import { LogoSplash } from "@/components/ui/logo-splash";
+import { SilentLogin } from "@/features/auth/components/silent-login";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: ({ context, search }) => {
@@ -39,39 +37,6 @@ export const Route = createFileRoute("/_auth")({
   component: RouteComponent,
 });
 
-function Wrapper({ token }: { token: string | null }) {
-  const navigate = useNavigate();
-  const search = useSearch({ from: "/_auth" });
-
-  const redirectTo = search.redirectTo ?? "/home";
-  const login = useAuthActions().login;
-  const setIsSilentLogin = useAuthActions().setIsSilentLogin;
-
-  useEffect(() => {
-    if (token) {
-      login(token);
-
-      navigate({ to: redirectTo, replace: true });
-    } else {
-      setIsSilentLogin();
-    }
-  }, [token, login, navigate, redirectTo, setIsSilentLogin]);
-
-  if (token) return <LogoSplash />;
-
-  return (
-    <AuthLayout>
-      <CatchBoundary
-        getResetKey={() => "reset"}
-        onCatch={(error) => debugError(error)}
-        errorComponent={ErrorComponent}
-      >
-        <Outlet />
-      </CatchBoundary>
-    </AuthLayout>
-  );
-}
-
 function RouteComponent() {
   const { refreshToken } = Route.useLoaderData();
   const isSilentLogin = useIsSilentLogin();
@@ -90,7 +55,19 @@ function RouteComponent() {
         </AuthLayout>
       ) : (
         <Await promise={refreshToken} fallback={<LogoSplash />}>
-          {({ data: token }) => <Wrapper token={token} />}
+          {({ data: token }) => (
+            <SilentLogin token={token}>
+              <AuthLayout>
+                <CatchBoundary
+                  getResetKey={() => "reset"}
+                  onCatch={(error) => debugError(error)}
+                  errorComponent={ErrorComponent}
+                >
+                  <Outlet />
+                </CatchBoundary>
+              </AuthLayout>
+            </SilentLogin>
+          )}
         </Await>
       )}
     </>
