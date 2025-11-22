@@ -26,18 +26,10 @@ function RouteComponent() {
 
   return (
     <div className='flex h-full w-full overflow-hidden'>
-      <div
-        className={cn(
-          "border-border max-w-lg flex-1 border-r",
-          !isRootPath && "hidden sm:p-1 lg:block"
-        )}
-      >
+      <div className='border-border hidden max-w-lg flex-1 border-r sm:p-1 lg:block'>
         <ContentLayout
           contentClassName='border-none'
-          headerClassName={cn(
-            "flex-1 justify-baseline gap-5 p-1 ",
-            !isRootPath && "hidden lg:flex"
-          )}
+          headerClassName='flex-1 justify-baseline gap-5 p-1 hidden lg:flex'
           headerChildren={
             <>
               <Button
