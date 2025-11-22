@@ -21,6 +21,7 @@ import { Route as ProtectedBookmarksRouteImport } from './routes/_protected/book
 import { Route as ProtectedUsernameRouteImport } from './routes/_protected/$username'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as ProtectedSettingsIndexRouteImport } from './routes/_protected/settings/index'
 import { Route as ProtectedSettingsUsernameRouteImport } from './routes/_protected/settings/username'
 import { Route as ProtectedSettingsPasswordRouteImport } from './routes/_protected/settings/password'
 import { Route as ProtectedSettingsAccountRouteImport } from './routes/_protected/settings/account'
@@ -85,6 +86,11 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AuthRoute,
 } as any)
+const ProtectedSettingsIndexRoute = ProtectedSettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProtectedSettingsRoute,
+} as any)
 const ProtectedSettingsUsernameRoute =
   ProtectedSettingsUsernameRouteImport.update({
     id: '/username',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/settings/': typeof ProtectedSettingsIndexRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRoutesByTo {
@@ -142,11 +149,11 @@ export interface FileRoutesByTo {
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
   '/notifications': typeof ProtectedNotificationsRoute
-  '/settings': typeof ProtectedSettingsRouteWithChildren
   '/compose/post': typeof ProtectedComposePostRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/settings': typeof ProtectedSettingsIndexRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRoutesById {
@@ -167,6 +174,7 @@ export interface FileRoutesById {
   '/_protected/settings/account': typeof ProtectedSettingsAccountRoute
   '/_protected/settings/password': typeof ProtectedSettingsPasswordRoute
   '/_protected/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/_protected/settings/': typeof ProtectedSettingsIndexRoute
   '/_protected/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRouteTypes {
@@ -186,6 +194,7 @@ export interface FileRouteTypes {
     | '/settings/account'
     | '/settings/password'
     | '/settings/username'
+    | '/settings/'
     | '/settings/me/account'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -198,11 +207,11 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/notifications'
-    | '/settings'
     | '/compose/post'
     | '/settings/account'
     | '/settings/password'
     | '/settings/username'
+    | '/settings'
     | '/settings/me/account'
   id:
     | '__root__'
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/_protected/settings/account'
     | '/_protected/settings/password'
     | '/_protected/settings/username'
+    | '/_protected/settings/'
     | '/_protected/settings/me/account'
   fileRoutesById: FileRoutesById
 }
@@ -317,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_protected/settings/': {
+      id: '/_protected/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof ProtectedSettingsIndexRouteImport
+      parentRoute: typeof ProtectedSettingsRoute
+    }
     '/_protected/settings/username': {
       id: '/_protected/settings/username'
       path: '/username'
@@ -382,6 +399,7 @@ interface ProtectedSettingsRouteChildren {
   ProtectedSettingsAccountRoute: typeof ProtectedSettingsAccountRoute
   ProtectedSettingsPasswordRoute: typeof ProtectedSettingsPasswordRoute
   ProtectedSettingsUsernameRoute: typeof ProtectedSettingsUsernameRoute
+  ProtectedSettingsIndexRoute: typeof ProtectedSettingsIndexRoute
   ProtectedSettingsMeAccountRoute: typeof ProtectedSettingsMeAccountRoute
 }
 
@@ -389,6 +407,7 @@ const ProtectedSettingsRouteChildren: ProtectedSettingsRouteChildren = {
   ProtectedSettingsAccountRoute: ProtectedSettingsAccountRoute,
   ProtectedSettingsPasswordRoute: ProtectedSettingsPasswordRoute,
   ProtectedSettingsUsernameRoute: ProtectedSettingsUsernameRoute,
+  ProtectedSettingsIndexRoute: ProtectedSettingsIndexRoute,
   ProtectedSettingsMeAccountRoute: ProtectedSettingsMeAccountRoute,
 }
 
