@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeftIcon,
   ChevronRightIcon,
+  HeartCrackIcon,
   KeyRoundIcon,
   UserIcon,
   type LucideProps,
@@ -56,6 +57,12 @@ function RouteComponent() {
       to: "/settings/password",
       icon: KeyRoundIcon,
     },
+    {
+      name: "Delete your account",
+      description: "Find out how can you delete your account",
+      to: "/settings/delete",
+      icon: HeartCrackIcon,
+    }
   ] satisfies ContentNavigationLink[];
 
   return (

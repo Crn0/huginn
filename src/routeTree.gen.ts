@@ -24,6 +24,7 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as ProtectedSettingsIndexRouteImport } from './routes/_protected/settings/index'
 import { Route as ProtectedSettingsUsernameRouteImport } from './routes/_protected/settings/username'
 import { Route as ProtectedSettingsPasswordRouteImport } from './routes/_protected/settings/password'
+import { Route as ProtectedSettingsDeleteRouteImport } from './routes/_protected/settings/delete'
 import { Route as ProtectedSettingsAccountRouteImport } from './routes/_protected/settings/account'
 import { Route as ProtectedComposePostRouteImport } from './routes/_protected/compose/post'
 import { Route as ProtectedSettingsMeAccountRouteImport } from './routes/_protected/settings/me.account'
@@ -103,6 +104,11 @@ const ProtectedSettingsPasswordRoute =
     path: '/password',
     getParentRoute: () => ProtectedSettingsRoute,
   } as any)
+const ProtectedSettingsDeleteRoute = ProtectedSettingsDeleteRouteImport.update({
+  id: '/delete',
+  path: '/delete',
+  getParentRoute: () => ProtectedSettingsRoute,
+} as any)
 const ProtectedSettingsAccountRoute =
   ProtectedSettingsAccountRouteImport.update({
     id: '/account',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof ProtectedSettingsRouteWithChildren
   '/compose/post': typeof ProtectedComposePostRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
+  '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
   '/settings/': typeof ProtectedSettingsIndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof ProtectedNotificationsRoute
   '/compose/post': typeof ProtectedComposePostRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
+  '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
   '/settings': typeof ProtectedSettingsIndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/_protected/settings': typeof ProtectedSettingsRouteWithChildren
   '/_protected/compose/post': typeof ProtectedComposePostRoute
   '/_protected/settings/account': typeof ProtectedSettingsAccountRoute
+  '/_protected/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/_protected/settings/password': typeof ProtectedSettingsPasswordRoute
   '/_protected/settings/username': typeof ProtectedSettingsUsernameRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/compose/post'
     | '/settings/account'
+    | '/settings/delete'
     | '/settings/password'
     | '/settings/username'
     | '/settings/'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/compose/post'
     | '/settings/account'
+    | '/settings/delete'
     | '/settings/password'
     | '/settings/username'
     | '/settings'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/_protected/settings'
     | '/_protected/compose/post'
     | '/_protected/settings/account'
+    | '/_protected/settings/delete'
     | '/_protected/settings/password'
     | '/_protected/settings/username'
     | '/_protected/settings/'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSettingsPasswordRouteImport
       parentRoute: typeof ProtectedSettingsRoute
     }
+    '/_protected/settings/delete': {
+      id: '/_protected/settings/delete'
+      path: '/delete'
+      fullPath: '/settings/delete'
+      preLoaderRoute: typeof ProtectedSettingsDeleteRouteImport
+      parentRoute: typeof ProtectedSettingsRoute
+    }
     '/_protected/settings/account': {
       id: '/_protected/settings/account'
       path: '/account'
@@ -397,6 +416,7 @@ const ProtectedComposeRouteWithChildren =
 
 interface ProtectedSettingsRouteChildren {
   ProtectedSettingsAccountRoute: typeof ProtectedSettingsAccountRoute
+  ProtectedSettingsDeleteRoute: typeof ProtectedSettingsDeleteRoute
   ProtectedSettingsPasswordRoute: typeof ProtectedSettingsPasswordRoute
   ProtectedSettingsUsernameRoute: typeof ProtectedSettingsUsernameRoute
   ProtectedSettingsIndexRoute: typeof ProtectedSettingsIndexRoute
@@ -405,6 +425,7 @@ interface ProtectedSettingsRouteChildren {
 
 const ProtectedSettingsRouteChildren: ProtectedSettingsRouteChildren = {
   ProtectedSettingsAccountRoute: ProtectedSettingsAccountRoute,
+  ProtectedSettingsDeleteRoute: ProtectedSettingsDeleteRoute,
   ProtectedSettingsPasswordRoute: ProtectedSettingsPasswordRoute,
   ProtectedSettingsUsernameRoute: ProtectedSettingsUsernameRoute,
   ProtectedSettingsIndexRoute: ProtectedSettingsIndexRoute,
