@@ -10,7 +10,7 @@ import {
 
 import { useAuthUser } from "@/lib/auth";
 
-import { ContentLayout } from "@/components/layouts/content-layout";
+import { SettingLayout } from "@/components/layouts/setting-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -57,9 +57,7 @@ function RouteComponent() {
   ] satisfies ContentNavigationLink[];
 
   return (
-    <ContentLayout
-      contentClassName='border-none'
-      headerClassName='justify-baseline gap-5 p-1'
+    <SettingLayout
       headerChildren={
         <>
           <Button
@@ -111,6 +109,6 @@ function RouteComponent() {
           ))}
         </CardContent>
       </Card>
-    </ContentLayout>
+    </SettingLayout>
   );
 }

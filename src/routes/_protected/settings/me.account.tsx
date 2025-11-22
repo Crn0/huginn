@@ -10,7 +10,7 @@ import { differenceInCalendarYears } from "date-fns";
 import { formatDate } from "@/utils/format-date";
 import { useAuthUser } from "@/lib/auth";
 
-import { ContentLayout } from "@/components/layouts/content-layout";
+import { SettingLayout } from "@/components/layouts/setting-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,14 +42,12 @@ function RouteComponent() {
   const user = userQuery.data;
 
   return (
-    <ContentLayout
-      contentClassName='border-none'
-      headerClassName='justify-baseline gap-5 p-1'
+    <SettingLayout
       headerChildren={
         <>
           <Button
             variant='outline'
-            className='text-foreground sm:hidden'
+            className='text-foreground lg:hidden'
             asChild
           >
             <Link to='/home'>
@@ -60,7 +58,7 @@ function RouteComponent() {
           <div>
             <h2 className='font-bold'>Account information</h2>
 
-            <span className='font-light opacity-50 sm:hidden'>
+            <span className='font-light opacity-50 lg:hidden'>
               @{user.username}
             </span>
           </div>
@@ -174,6 +172,6 @@ function RouteComponent() {
           </div>
         </CardContent>
       </Card>
-    </ContentLayout>
+    </SettingLayout>
   );
 }

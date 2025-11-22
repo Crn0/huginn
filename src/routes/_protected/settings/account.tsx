@@ -11,7 +11,7 @@ import {
 import { cn } from "@/utils/cn";
 import { useAuthUser } from "@/lib/auth";
 
-import { ContentLayout } from "@/components/layouts/content-layout";
+import { SettingLayout } from "@/components/layouts/setting-layout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,14 +59,12 @@ function RouteComponent() {
   ] satisfies ContentNavigationLink[];
 
   return (
-    <ContentLayout
-      contentClassName='border-none'
-      headerClassName='justify-baseline gap-5 p-1'
+    <SettingLayout
       headerChildren={
         <>
           <Button
             variant='outline'
-            className='text-foreground sm:hidden'
+            className='text-foreground lg:hidden'
             asChild
           >
             <Link to='/home'>
@@ -77,7 +75,7 @@ function RouteComponent() {
           <div>
             <h2 className='font-bold'>Your Account</h2>
 
-            <span className='font-light opacity-50 sm:hidden'>
+            <span className='font-light opacity-50 lg:hidden'>
               @{user.username}
             </span>
           </div>
@@ -119,6 +117,6 @@ function RouteComponent() {
           ))}
         </CardContent>
       </Card>
-    </ContentLayout>
+    </SettingLayout>
   );
 }
