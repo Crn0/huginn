@@ -77,9 +77,10 @@ export interface ReplyTweetProps {
   username: string;
   tweet: Tweet;
   onSuccess?: () => void;
+  showReplyToContent?: boolean;
 }
 
-export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
+export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = true }: ReplyTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
   const form = useForm({
     resolver: zodResolver(replyTweetInputSchema),
@@ -113,7 +114,9 @@ export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
         id={tweet.id}
         className='bg-background text-foreground w-full border-none'
       >
-        <CardHeader>
+        {
+          showReplyToContent &&<>
+                  <CardHeader>
           <div className='flex gap-2'>
             <div>
               <Link
@@ -154,7 +157,8 @@ export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
           <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")} />
 
           <TweetMedia media={tweet.media} />
-        </CardContent>
+        </CardContent></>
+        }
         {username !== tweet.author.username && (
           <CardFooter>
             <CardDescription>
@@ -165,10 +169,12 @@ export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
         )}
       </Card>
 
-      <Separator
+        {
+          showReplyToContent &&      <Separator
         orientation='vertical'
         className='ml-[2rem] border-2 data-[orientation=vertical]:h-25'
       />
+        }
 
       <form
         id='create-tweet'
@@ -194,7 +200,7 @@ export function ReplyTweet({ username, tweet, onSuccess }: ReplyTweetProps) {
                   <InputGroupTextarea
                     {...field}
                     id='content'
-                    placeholder="what's happening?"
+                    placeholder="Post your reply"
                     onChange={(e) => {
                       if (e.currentTarget.value.length <= MAX_CONTENT_LENGTH) {
                         field.onChange(e);
