@@ -1,23 +1,10 @@
 import type { Media } from "@/types/api";
 
-import { Image } from "@/components/ui/image";
-import { Video } from "@/components/ui/video";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Media as MediaComponent } from "@/components/ui/media";
 
 export interface TweetMediaProps {
   media: Media[];
-}
-
-function TweetImage({ image }: { image: Media & { type: "IMAGE" | "GIF" } }) {
-  const [lowRes, , highRes] = image.variants.sort((a, b) => a.width - b.width);
-
-  return <Image bgImage={lowRes.url} src={highRes.url} />;
-}
-
-function TweetVideo({ video }: { video: Media & { type: "VIDEO" } }) {
-  const [, , highRes] = video.variants.sort((a, b) => a.bitRate - b.bitRate);
-
-  return <Video src={highRes.url} autoPlay loop />;
 }
 
 function Default({ media }: TweetMediaProps) {
@@ -27,11 +14,7 @@ function Default({ media }: TweetMediaProps) {
     <>
       {media.map((m) => (
         <ResizablePanel key={m.id} defaultSize={50}>
-          {m.type === "VIDEO" ? (
-            <TweetVideo video={m} />
-          ) : (
-            <TweetImage image={m} />
-          )}
+          {m.type === "VIDEO" ? <MediaComponent media={m} /> : <MediaComponent media={m} />}
         </ResizablePanel>
       ))}
     </>
@@ -47,9 +30,9 @@ function LenThree({ media }: TweetMediaProps) {
     <>
       <ResizablePanel defaultSize={50}>
         {item.type === "VIDEO" ? (
-          <TweetVideo video={item} />
+          <MediaComponent media={item} />
         ) : (
-          <TweetImage image={item} />
+          <MediaComponent media={item} />
         )}
       </ResizablePanel>
 
@@ -57,11 +40,7 @@ function LenThree({ media }: TweetMediaProps) {
         <ResizablePanelGroup direction='vertical' className='gap-1'>
           {rest.map((m) => (
             <ResizablePanel key={m.id} defaultSize={25}>
-              {m.type === "VIDEO" ? (
-                <TweetVideo video={m} />
-              ) : (
-                <TweetImage image={m} />
-              )}
+              {m.type === "VIDEO" ? <MediaComponent media={m} /> : <MediaComponent media={m} />}
             </ResizablePanel>
           ))}
         </ResizablePanelGroup>
@@ -81,7 +60,7 @@ function LenFour({ media }: TweetMediaProps) {
           <div className='grid h-full gap-1'>
             {[item, item2].map((m) => (
               <ResizablePanel key={m.id} defaultSize={25}>
-                {m.type === "VIDEO" ? null : <TweetImage image={m} />}
+                {m.type === "VIDEO" ? null : <MediaComponent media={m} />}
               </ResizablePanel>
             ))}
           </div>
@@ -93,11 +72,7 @@ function LenFour({ media }: TweetMediaProps) {
           <div className='grid h-full gap-1'>
             {group2.map((m) => (
               <ResizablePanel key={m.id} defaultSize={25}>
-                {m.type === "VIDEO" ? (
-                  <TweetVideo video={m} />
-                ) : (
-                  <TweetImage image={m} />
-                )}
+                {m.type === "VIDEO" ? <MediaComponent media={m} /> : <MediaComponent media={m} />}
               </ResizablePanel>
             ))}
           </div>
