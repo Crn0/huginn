@@ -10,6 +10,7 @@ import {
 
 import { tweetKeys } from "./query-key-factory";
 import { userKeys } from "@/features/users/api/query-key-factory";
+import { mediaKeys } from "@/features/media/api/query-key-factory";
 import { authUserQueryOptions } from "@/lib/auth";
 
 import { useClient } from "@/hooks/use-client";
@@ -121,6 +122,15 @@ export const useDeleteTweet = (
             queryKey: userKey,
           });
         }
+
+
+      if (tweet.media.length > 0) {
+        queryClient.invalidateQueries({
+          queryKey: mediaKeys.list(username) 
+        })
+
+
+      }
 
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),

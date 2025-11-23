@@ -1,14 +1,17 @@
-import { useClient } from "@/hooks/use-client";
 import type { ApiClient } from "@/lib/api-client";
 import type { ValidationError } from "@/lib/errors";
+
 import {
   useMutation,
   useQueryClient,
   type UseMutationOptions,
 } from "@tanstack/react-query";
 import z from "zod";
+
+import { useClient } from "@/hooks/use-client";
 import { tweetKeys } from "./query-key-factory";
 import { userKeys } from "@/features/users/api/query-key-factory";
+import { mediaKeys } from "@/features/media/api/query-key-factory";
 import { authUserQueryOptions } from "@/lib/auth";
 
 export const MAX_CONTENT_LENGTH = 1000 as const;
@@ -108,7 +111,9 @@ export const useCreateTweet = (
   return useMutation({
     ...restConfig,
     mutationKey: tweetKeys.mutation.create,
-    onSuccess: (...args) => {
+    onSuccess: (data, variables, context) => {
+      const media = variables?.media ?? [];
+
       queryClient.invalidateQueries({
         queryKey: authUserQueryOptions().queryKey,
       });
@@ -121,7 +126,15 @@ export const useCreateTweet = (
       queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.list("all", ""),
       });
-      onSuccess?.(...args);
+
+      if (media.length > 0) {
+        queryClient.invalidateQueries({
+        queryKey: mediaKeys.list(username),
+      });
+      }
+
+
+      onSuccess?.(data, variables, context);
     },
     onError: (...args) => {
       onError?.(...args);
