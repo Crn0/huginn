@@ -1,21 +1,30 @@
-import { InfiniteScroll } from "@/components/ui/infinite-scroll";
-import { Tweet } from "./tweet";
-import { Spinner } from "@/components/ui/spinner";
-import { ErrorComponent } from "@/components/errors/error-component";
+import { useUser } from "@/features/users/api/get-user";
 import {
   useInfiniteUserTweets,
   type Scope,
 } from "../api/[username]/get-tweets";
-import { Separator } from "@/components/ui/separator";
 
-export interface TweetListProps {
+import { ErrorComponent } from "@/components/errors/error-component";
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
+import { Spinner } from "@/components/ui/spinner";
+import { Separator } from "@/components/ui/separator";
+import { Tweet } from "./tweet";
+import { LogoSplash } from "@/components/ui/logo-splash";
+
+export interface UserTweetListProps {
   username: string;
   scope: Scope;
   withReply?: boolean;
 }
 
-export function UserTweetList({ username, scope, withReply }: TweetListProps) {
+export function UserTweetList({ username, scope, withReply }: UserTweetListProps) {
+  const userQuery = useUser(username)
+
   const tweetsQuery = useInfiniteUserTweets(username, scope);
+
+  if (!userQuery.isSuccess) {
+    return <LogoSplash />
+  }
 
   if (!tweetsQuery.data && tweetsQuery.isLoading)
     return (
@@ -29,6 +38,7 @@ export function UserTweetList({ username, scope, withReply }: TweetListProps) {
       <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} />
     );
 
+  const user = userQuery.data;
   const tweets = tweetsQuery.data.pages?.flatMap(({ data }) => data);
 
   if (!tweets.length) {
@@ -62,7 +72,7 @@ export function UserTweetList({ username, scope, withReply }: TweetListProps) {
 
                 return (
                   <>
-                    <Tweet tweet={tweet.replyTo} />
+                    <Tweet user={user} tweet={tweet.replyTo} />
                     <Separator
                       orientation='vertical'
                       className='ml-12 border-2 data-[orientation=vertical]:h-25'
@@ -71,7 +81,7 @@ export function UserTweetList({ username, scope, withReply }: TweetListProps) {
                 );
               })()}
 
-            {!renderedParentTweetIds.has(tweet.id) && <Tweet tweet={tweet} />}
+            {!renderedParentTweetIds.has(tweet.id) && <Tweet user={user} tweet={tweet} />}
           </li>
         ))}
       </ul>

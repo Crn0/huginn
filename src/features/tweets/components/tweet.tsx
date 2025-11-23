@@ -1,4 +1,8 @@
-import type { Tweet } from "@/types/api";
+import type { Tweet, User } from "@/types/api";
+import type { AuthUser } from "@/lib/auth";
+
+
+import { useNavigate, useParams } from "@tanstack/react-router";
 import {
   BookmarkIcon,
   ChartColumnIcon,
@@ -40,16 +44,15 @@ import {
 } from "@/components/ui/popover";
 import { Authorization } from "@/lib/authorization";
 import { DeleteTweet } from "./delete-tweet";
-import { useAuthUser } from "@/lib/auth";
 import { useToggleLikeTweet } from "../api/like-tweet";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
 
 export interface TweetProps {
+  user: AuthUser | User
   tweet: Tweet;
 }
 
-export function Tweet({ tweet }: TweetProps) {
-  const { data: user } = useAuthUser();
+export function Tweet({ user, tweet }: TweetProps) {
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
   const toggleFollowMutation = useToggleFollowUser(user?.username ?? "");
 

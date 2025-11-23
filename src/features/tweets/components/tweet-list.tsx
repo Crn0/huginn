@@ -1,27 +1,49 @@
-import { InfiniteScroll } from "@/components/ui/infinite-scroll";
+import { useParams } from "@tanstack/react-router";
+
+import { useAuthUser } from "@/lib/auth";
+import { useUser } from "@/features/users/api/get-user";
 import { useInfiniteTweets, type TweetFilter } from "../api/get-tweets";
-import { Tweet } from "./tweet";
-import { Spinner } from "@/components/ui/spinner";
+
+import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { ErrorComponent } from "@/components/errors/error-component";
+import { LogoSplash } from "@/components/ui/logo-splash";
+import { Spinner } from "@/components/ui/spinner";
+import { Tweet } from "./tweet";
 
 export interface TweetListProps {
   filter: TweetFilter;
 }
 
 export function TweetList({ filter }: TweetListProps) {
+  const params = useParams({ strict: false })
+
+  const authUserQuery = useAuthUser()
+  const userQuery = useUser(params.username ?? "", !!params.username)
+
   const tweetsQuery = useInfiniteTweets(filter);
 
-  if (!tweetsQuery.data && tweetsQuery.isLoading)
-    return (
+  if (!authUserQuery.isSuccess || userQuery.isLoading) {
+    return <LogoSplash />
+  }
+
+  if (!tweetsQuery.data && tweetsQuery.isLoading) {
+        return (
       <div className='flex items-center-safe justify-center-safe'>
         <Spinner className='size-8 text-blue-400' />
       </div>
     );
-  if (!tweetsQuery.isSuccess)
-    return (
+  }
+
+  if (!tweetsQuery.isSuccess) {
+        return (
       <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} />
     );
 
+  }
+
+
+  const user = userQuery.data ?? authUserQuery.data
+  
   const tweets = tweetsQuery.data.pages?.flatMap(({ data }) => data);
 
   if (!tweets.length) {
@@ -44,7 +66,7 @@ export function TweetList({ filter }: TweetListProps) {
             className='w-full sm:w-xl'
             aria-label={`comment-${tweet.content}-${tweet.id}`}
           >
-            <Tweet key={tweet.id} tweet={tweet} />
+            <Tweet key={tweet.id} user={user} tweet={tweet} />
           </li>
         ))}
       </ul>
