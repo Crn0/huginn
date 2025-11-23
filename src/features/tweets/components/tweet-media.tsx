@@ -85,11 +85,11 @@ function LenFour({ media }: TweetMediaProps) {
 export function TweetMedia({ media }: TweetMediaProps) {
   if (!media.length) return null;
 
-  return (
+  return <div className="grid w-lg">
     <ResizablePanelGroup direction='horizontal' className='gap-1'>
       <Default media={media} />
       <LenThree media={media} />
       <LenFour media={media} />
     </ResizablePanelGroup>
-  );
+  </div>;
 }
