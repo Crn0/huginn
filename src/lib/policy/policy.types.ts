@@ -5,7 +5,7 @@ export type Action = "view" | "create" | "update" | "follow" | "delete";
 
 export type PolicyAction<Resource extends keyof Policy> =
   | boolean
-  | ((user: AuthUser, data: Policy[Resource]["dataType"]) => boolean);
+  | ((user: AuthUser | User, data: Policy[Resource]["dataType"]) => boolean);
 
 export type PolicyCheckMap = {
   [Resource in keyof Policy]: {

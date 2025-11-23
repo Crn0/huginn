@@ -3,10 +3,11 @@ import { policyCheck } from "./policy-check";
 import type { AuthUser } from "../auth/auth-user";
 import type { PropsWithChildren, ReactNode } from "react";
 import type { Policy } from "../policy/policy.types";
+import type { User } from "@/types/api";
 
 export interface AuthorizationProps<Resource extends keyof Policy>
   extends PropsWithChildren {
-  user: AuthUser;
+  user: AuthUser | User;
   resource: Resource;
   action: Policy[Resource]["action"];
   data: Policy[Resource]["dataType"];

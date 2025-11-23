@@ -1,10 +1,11 @@
 import { POLICIES } from "../policy";
 
 import type { AuthUser } from "../auth/auth-user";
+import type { User } from "@/types/api";
 import type { Policy, PolicyCheckMap } from "../policy/policy.types";
 
 export const policyCheck = <Resource extends keyof Policy>(
-  user: AuthUser,
+  user: AuthUser | User,
   resource: Resource,
   action: Policy[Resource]["action"],
   data: Policy[Resource]["dataType"]

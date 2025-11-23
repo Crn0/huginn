@@ -1,7 +1,7 @@
 import type { AuthUser } from "../auth";
-import type { Tweet } from "@/types/api";
+import type { Tweet, User } from "@/types/api";
 
 export const tweetPolicy = {
-  update: (user: AuthUser, tweet: Tweet) => user.id === tweet?.author.id,
-  delete: (user: AuthUser, tweet: Tweet) => user.id === tweet?.author.id,
+  update: (user: AuthUser | User, tweet: Tweet) => user.id === tweet?.author.id,
+  delete: (user: AuthUser | User, tweet: Tweet) => user.id === tweet?.author.id,
 } as const;
