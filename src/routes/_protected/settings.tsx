@@ -1,7 +1,6 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { ArrowLeftIcon, ChevronRightIcon } from "lucide-react";
 
-import { cn } from "@/utils/cn";
 import { useAuthUser } from "@/lib/auth";
 import { ContentLayout } from "@/components/layouts/content-layout";
 import { LogoSplash } from "@/components/ui/logo-splash";
@@ -14,7 +13,6 @@ export const Route = createFileRoute("/_protected/settings")({
 
 function RouteComponent() {
   const userQuery = useAuthUser();
-  const location = useLocation();
 
   if (!userQuery.isSuccess) {
     return <LogoSplash />;
@@ -22,11 +20,9 @@ function RouteComponent() {
 
   const user = userQuery.data;
 
-  const isRootPath = location.pathname === "/settings";
-
   return (
     <div className='flex h-full w-full overflow-hidden'>
-      <div className='border-border hidden max-w-lg flex-1 border-r sm:p-1 lg:block'>
+      <div className='border-border hidden flex-1 border-r sm:p-1 lg:block'>
         <ContentLayout
           contentClassName='border-none'
           headerClassName='flex-1 justify-baseline gap-5 p-1 hidden lg:flex'
@@ -52,7 +48,7 @@ function RouteComponent() {
             </>
           }
         >
-          <div className={cn(!isRootPath && "hidden lg:block")}>
+          <div className='hidden lg:block'>
             <Button
               variant='link'
               className='text-foreground flex justify-between text-xl'
@@ -66,7 +62,7 @@ function RouteComponent() {
         </ContentLayout>
       </div>
 
-      <div className={cn(!isRootPath && "flex-1 p-1")}>
+      <div className='flex-1 p-1'>
         <Outlet />
       </div>
     </div>
