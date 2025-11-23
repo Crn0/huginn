@@ -31,6 +31,7 @@ import { UpdateProfile } from "@/features/users/components/update-profile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
+import { MediaList } from "@/features/media/components/media-list";
 
 export const Route = createFileRoute("/_protected/$username")({
   loader: ({ context, params }) => {
@@ -238,6 +239,11 @@ function RouteComponent() {
                   Replies
                 </span>
               </TabsTrigger>
+                            <TabsTrigger value='media'>
+                <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                  Media
+                </span>
+              </TabsTrigger>
               <Authorization
                 user={authUser}
                 resource='like'
@@ -261,6 +267,13 @@ function RouteComponent() {
                 username={user.username}
                 scope='replies'
                 withReply
+              />
+            </TabsContent>
+
+
+            <TabsContent value='media'>
+              <MediaList
+                username={user.username}
               />
             </TabsContent>
 
