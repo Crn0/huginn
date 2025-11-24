@@ -29,6 +29,7 @@ import { Route as ProtectedSettingsDeleteRouteImport } from './routes/_protected
 import { Route as ProtectedSettingsAccountRouteImport } from './routes/_protected/settings/account'
 import { Route as ProtectedComposePostRouteImport } from './routes/_protected/compose/post'
 import { Route as ProtectedSettingsMeAccountRouteImport } from './routes/_protected/settings/me.account'
+import { Route as ProtectedUsernameStatusTweetIdRouteImport } from './routes/_protected/$username_.status.$tweetId'
 
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
@@ -132,6 +133,12 @@ const ProtectedSettingsMeAccountRoute =
     path: '/me/account',
     getParentRoute: () => ProtectedSettingsRoute,
   } as any)
+const ProtectedUsernameStatusTweetIdRoute =
+  ProtectedUsernameStatusTweetIdRouteImport.update({
+    id: '/$username_/status/$tweetId',
+    path: '/$username/status/$tweetId',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
   '/settings/': typeof ProtectedSettingsIndexRoute
+  '/$username/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRoutesByTo {
@@ -170,6 +178,7 @@ export interface FileRoutesByTo {
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
   '/settings': typeof ProtectedSettingsIndexRoute
+  '/$username/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRoutesById {
@@ -193,6 +202,7 @@ export interface FileRoutesById {
   '/_protected/settings/password': typeof ProtectedSettingsPasswordRoute
   '/_protected/settings/username': typeof ProtectedSettingsUsernameRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRoute
+  '/_protected/$username_/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/_protected/settings/me/account': typeof ProtectedSettingsMeAccountRoute
 }
 export interface FileRouteTypes {
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/settings/password'
     | '/settings/username'
     | '/settings/'
+    | '/$username/status/$tweetId'
     | '/settings/me/account'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -234,6 +245,7 @@ export interface FileRouteTypes {
     | '/settings/password'
     | '/settings/username'
     | '/settings'
+    | '/$username/status/$tweetId'
     | '/settings/me/account'
   id:
     | '__root__'
@@ -256,6 +268,7 @@ export interface FileRouteTypes {
     | '/_protected/settings/password'
     | '/_protected/settings/username'
     | '/_protected/settings/'
+    | '/_protected/$username_/status/$tweetId'
     | '/_protected/settings/me/account'
   fileRoutesById: FileRoutesById
 }
@@ -408,6 +421,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSettingsMeAccountRouteImport
       parentRoute: typeof ProtectedSettingsRoute
     }
+    '/_protected/$username_/status/$tweetId': {
+      id: '/_protected/$username_/status/$tweetId'
+      path: '/$username/status/$tweetId'
+      fullPath: '/$username/status/$tweetId'
+      preLoaderRoute: typeof ProtectedUsernameStatusTweetIdRouteImport
+      parentRoute: typeof ProtectedRoute
+    }
   }
 }
 
@@ -463,6 +483,7 @@ interface ProtectedRouteChildren {
   ProtectedHomeRoute: typeof ProtectedHomeRoute
   ProtectedNotificationsRoute: typeof ProtectedNotificationsRoute
   ProtectedSettingsRoute: typeof ProtectedSettingsRouteWithChildren
+  ProtectedUsernameStatusTweetIdRoute: typeof ProtectedUsernameStatusTweetIdRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
@@ -473,6 +494,7 @@ const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedHomeRoute: ProtectedHomeRoute,
   ProtectedNotificationsRoute: ProtectedNotificationsRoute,
   ProtectedSettingsRoute: ProtectedSettingsRouteWithChildren,
+  ProtectedUsernameStatusTweetIdRoute: ProtectedUsernameStatusTweetIdRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
