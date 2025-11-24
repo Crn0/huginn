@@ -82,8 +82,10 @@ export interface ReplyTweetProps {
 
 export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = true }: ReplyTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
+  
   const form = useForm({
     resolver: zodResolver(replyTweetInputSchema),
+    mode: "onBlur"
   });
 
   const emojiDisclosure = useDisclosure(false);
@@ -98,7 +100,7 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
 
   const onSubmit = (data: ReplyTweetInput) => tweetMutation.mutate(data);
 
-  const content = form.watch("content") ?? "";
+  const content = JSON.stringify(form.watch("content")) ?? ""
   const media =
     form
       .watch("media")
@@ -201,17 +203,12 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
                     {...field}
                     id='content'
                     placeholder="Post your reply"
-                    onChange={(e) => {
-                      if (e.currentTarget.value.length <= MAX_CONTENT_LENGTH) {
-                        field.onChange(e);
-                      }
-                    }}
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
-                    aria-disabled={field.value?.length === MAX_CONTENT_LENGTH}
+                    aria-disabled={content.length === MAX_CONTENT_LENGTH}
                   />
                   <InputGroupText className='tabular-nums'>
-                    {field.value?.length ?? 0}/{MAX_CONTENT_LENGTH}
+                    {content.length ?? 0}/{MAX_CONTENT_LENGTH}
                   </InputGroupText>
                 </InputGroup>
                 {fieldState.invalid && (
@@ -410,7 +407,7 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
               type='submit'
               form='create-tweet'
               disabled={
-                tweetMutation.isPending || (!content?.length && !media?.length)
+                tweetMutation.isPending || (!content.length && !media.length) || content.length > MAX_CONTENT_LENGTH
               }
             >
               Post
