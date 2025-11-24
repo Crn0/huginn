@@ -16,15 +16,15 @@ export function Image({ ratio, bgImage, className, ...props }: ImageProps) {
 
   return (
     <AspectRatio
-      className='rounded-md bg-cover bg-center'
+      className='bg-cover bg-center'
       ratio={ratio}
       style={{ backgroundImage: !loaded ? `url(${bgImage})` : "" }}
       asChild
     >
-      <ImagePrimitive.Avatar className='rounded-md'>
+      <ImagePrimitive.Avatar >
         <ImagePrimitive.Image
           className={cn(
-            "block aspect-square h-full w-full rounded-md object-cover object-center opacity-0 transition-opacity delay-150 ease-in-out",
+            "block aspect-square h-full w-full object-cover object-center opacity-0 transition-opacity delay-150 ease-in-out",
             loaded && "opacity-100",
             className
           )}
