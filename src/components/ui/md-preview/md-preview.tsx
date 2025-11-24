@@ -9,7 +9,7 @@ export type MDPreviewProps = {
   parse: typeof Parse;
   className?: string;
   config?: Config;
-};
+} & React.ComponentProps<"div">
 
 const DOMPurify = createDOMPurify(window);
 
@@ -19,9 +19,10 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
   }
 });
 
-export function MDPreview({ parse, value, className, config }: MDPreviewProps) {
+export function MDPreview({ parse, value, className, config, ...props }: MDPreviewProps) {
   return (
     <div
+    {...props}
       className={cn(
         "w-full p-2 [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all [&>p]:whitespace-pre-wrap",
         className
