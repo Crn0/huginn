@@ -93,6 +93,7 @@ function RouteComponent() {
 
   return (
     <ContentLayout
+      headerClassName="static"
       headerChildren={
         <>
           <div className='flex items-center-safe gap-2'>
@@ -228,7 +229,7 @@ function RouteComponent() {
 
         <CardFooter className='flex-1'>
           <Tabs defaultValue='posts' className='flex-1'>
-            <TabsList className='sticky top-10 z-30 flex w-full sm:top-0'>
+            <TabsList className='rounded-none flex w-full'>
               <TabsTrigger value='posts'>
                 <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
                   Posts
