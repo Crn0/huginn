@@ -34,15 +34,11 @@ export function MediaList({ username }: { username: string }) {
     <>
       <ul
         aria-label='media'
-        className='flex flex-1 flex-col items-center-safe justify-center-safe gap-2 sm:flex-row sm:flex-wrap'
+        className="grid grid-cols-2 xl:grid-cols-4 gap-1 flex-1"
       >
         {media.map((m) => (
-          <li key={m.id} className='grid w-full sm:w-md'>
-            {m.type !== "VIDEO" ? (
-              <Media media={m} />
-            ) : (
-              <Media media={m} />
-            )}
+          <li key={m.id} className=' w-full max-w-lg'>
+            <Media media={m} />
           </li>
         ))}
       </ul>
