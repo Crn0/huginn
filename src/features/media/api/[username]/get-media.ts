@@ -7,7 +7,6 @@ import { buildResourcePath } from "@/lib/build-resource-path";
 import { mediaKeys } from "../query-key-factory";
 import { useClient } from "@/hooks/use-client";
 
-
 export const getTweets =
   (client: Client) =>
   async (username: string, page: string): Promise<Pagination<Media[]>> => {
@@ -26,7 +25,6 @@ export const useInfiniteMedia = (
   { enabled = true }: { enabled?: boolean } = {}
 ) => {
   const client = useClient();
-
 
   return useInfiniteQuery({
     enabled,

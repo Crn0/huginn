@@ -93,7 +93,7 @@ function RouteComponent() {
 
   return (
     <ContentLayout
-      headerClassName="static"
+      headerClassName='static'
       headerChildren={
         <>
           <div className='flex items-center-safe gap-2'>
@@ -229,7 +229,7 @@ function RouteComponent() {
 
         <CardFooter className='flex-1'>
           <Tabs defaultValue='posts' className='flex-1'>
-            <TabsList className='rounded-none flex w-full'>
+            <TabsList className='flex w-full rounded-none'>
               <TabsTrigger value='posts'>
                 <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
                   Posts
@@ -240,7 +240,7 @@ function RouteComponent() {
                   Replies
                 </span>
               </TabsTrigger>
-                            <TabsTrigger value='media'>
+              <TabsTrigger value='media'>
                 <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
                   Media
                 </span>
@@ -271,11 +271,8 @@ function RouteComponent() {
               />
             </TabsContent>
 
-
             <TabsContent value='media'>
-              <MediaList
-                username={user.username}
-              />
+              <MediaList username={user.username} />
             </TabsContent>
 
             <Authorization

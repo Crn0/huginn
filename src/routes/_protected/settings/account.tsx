@@ -62,7 +62,7 @@ function RouteComponent() {
       description: "Find out how can you delete your account",
       to: "/settings/delete",
       icon: HeartCrackIcon,
-    }
+    },
   ] satisfies ContentNavigationLink[];
 
   return (

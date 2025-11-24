@@ -9,7 +9,7 @@ export type MDPreviewProps = {
   parse: typeof Parse;
   className?: string;
   config?: Config;
-} & React.ComponentProps<"div">
+} & React.ComponentProps<"div">;
 
 const DOMPurify = createDOMPurify(window);
 
@@ -19,12 +19,18 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
   }
 });
 
-export function MDPreview({ parse, value, className, config, ...props }: MDPreviewProps) {
+export function MDPreview({
+  parse,
+  value,
+  className,
+  config,
+  ...props
+}: MDPreviewProps) {
   return (
     <div
-    {...props}
+      {...props}
       className={cn(
-        "w-full p-2 [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all whitespace-pre-wrap",
+        "w-full p-2 whitespace-pre-wrap [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all",
         className
       )}
       dangerouslySetInnerHTML={{

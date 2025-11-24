@@ -80,12 +80,17 @@ export interface ReplyTweetProps {
   showReplyToContent?: boolean;
 }
 
-export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = true }: ReplyTweetProps) {
+export function ReplyTweet({
+  username,
+  tweet,
+  onSuccess,
+  showReplyToContent = true,
+}: ReplyTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
-  
+
   const form = useForm({
     resolver: zodResolver(replyTweetInputSchema),
-    mode: "onBlur"
+    mode: "onBlur",
   });
 
   const emojiDisclosure = useDisclosure(false);
@@ -100,7 +105,7 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
 
   const onSubmit = (data: ReplyTweetInput) => tweetMutation.mutate(data);
 
-  const content = JSON.stringify(form.watch("content")) ?? ""
+  const content = JSON.stringify(form.watch("content")) ?? "";
   const media =
     form
       .watch("media")
@@ -116,51 +121,55 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
         id={tweet.id}
         className='bg-background text-foreground w-full border-none'
       >
-        {
-          showReplyToContent &&<>
-                  <CardHeader>
-          <div className='flex gap-2'>
-            <div>
-              <Link
-                to='/$username'
-                params={{ username: tweet.author.username }}
-              >
-                <UserAvatar
-                  className='h-13 w-13 border-2'
-                  avatar={tweet.author.profile.avatarUrl}
-                  fallback={tweet.author.username}
-                />
-              </Link>
-            </div>
-            <div className='flex w-full justify-between'>
-              <div className='text-foreground flex gap-1'>
-                <span className='font-bold'>
-                  {tweet.author.profile.displayName}
-                </span>
-                <span className='font-light opacity-50'>
-                  @{tweet.author.username}
-                </span>
+        {showReplyToContent && (
+          <>
+            <CardHeader>
+              <div className='flex gap-2'>
+                <div>
+                  <Link
+                    to='/$username'
+                    params={{ username: tweet.author.username }}
+                  >
+                    <UserAvatar
+                      className='h-13 w-13 border-2'
+                      avatar={tweet.author.profile.avatarUrl}
+                      fallback={tweet.author.username}
+                    />
+                  </Link>
+                </div>
+                <div className='flex w-full justify-between'>
+                  <div className='text-foreground flex gap-1'>
+                    <span className='font-bold'>
+                      {tweet.author.profile.displayName}
+                    </span>
+                    <span className='font-light opacity-50'>
+                      @{tweet.author.username}
+                    </span>
 
-                <time
-                  className='font-light opacity-50'
-                  dateTime={tweet.createdAt}
-                >
-                  {dateDiffInDays(laterDate, currentDate) < 1
-                    ? formatDistance(laterDate, currentDate, {
-                        isUnitFirstChar: true,
-                      })
-                    : formatDate(tweet.createdAt, "MMM cc")}
-                </time>
+                    <time
+                      className='font-light opacity-50'
+                      dateTime={tweet.createdAt}
+                    >
+                      {dateDiffInDays(laterDate, currentDate) < 1
+                        ? formatDistance(laterDate, currentDate, {
+                            isUnitFirstChar: true,
+                          })
+                        : formatDate(tweet.createdAt, "MMM cc")}
+                    </time>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className='flex flex-col gap-2'>
-          <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")} />
+            </CardHeader>
+            <CardContent className='flex flex-col gap-2'>
+              <MDPreview
+                parse={parse}
+                value={linkifyHtml(tweet.content ?? "")}
+              />
 
-          <TweetMedia media={tweet.media} />
-        </CardContent></>
-        }
+              <TweetMedia media={tweet.media} />
+            </CardContent>
+          </>
+        )}
         {username !== tweet.author.username && (
           <CardFooter>
             <CardDescription>
@@ -171,12 +180,12 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
         )}
       </Card>
 
-        {
-          showReplyToContent &&      <Separator
-        orientation='vertical'
-        className='ml-[2rem] border-2 data-[orientation=vertical]:h-25'
-      />
-        }
+      {showReplyToContent && (
+        <Separator
+          orientation='vertical'
+          className='ml-[2rem] border-2 data-[orientation=vertical]:h-25'
+        />
+      )}
 
       <form
         id='create-tweet'
@@ -202,7 +211,7 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
                   <InputGroupTextarea
                     {...field}
                     id='content'
-                    placeholder="Post your reply"
+                    placeholder='Post your reply'
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}
                     aria-disabled={content.length === MAX_CONTENT_LENGTH}
@@ -407,7 +416,9 @@ export function ReplyTweet({ username, tweet, onSuccess, showReplyToContent = tr
               type='submit'
               form='create-tweet'
               disabled={
-                tweetMutation.isPending || (!content.length && !media.length) || content.length > MAX_CONTENT_LENGTH
+                tweetMutation.isPending ||
+                (!content.length && !media.length) ||
+                content.length > MAX_CONTENT_LENGTH
               }
             >
               Post

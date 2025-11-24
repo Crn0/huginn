@@ -123,14 +123,11 @@ export const useDeleteTweet = (
           });
         }
 
-
-      if (tweet.media.length > 0) {
-        queryClient.invalidateQueries({
-          queryKey: mediaKeys.list(username) 
-        })
-
-
-      }
+        if (tweet.media.length > 0) {
+          queryClient.invalidateQueries({
+            queryKey: mediaKeys.list(username),
+          });
+        }
 
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),

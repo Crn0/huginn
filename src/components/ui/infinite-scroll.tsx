@@ -24,15 +24,30 @@ export function InfiniteScroll({
   className = "",
   ...props
 }: InfiniteScrollProps) {
-  const { canLoadMore, isLoading, delay, root, rootMargin, threshold, ...rest} = props
+  const {
+    canLoadMore,
+    isLoading,
+    delay,
+    root,
+    rootMargin,
+    threshold,
+    ...rest
+  } = props;
 
   const Comp = asChild ? Slot : "div";
 
-  const setRef = useInfiniteScroll(loadMore, { canLoadMore, isLoading, delay, root, rootMargin, threshold });
+  const setRef = useInfiniteScroll(loadMore, {
+    canLoadMore,
+    isLoading,
+    delay,
+    root,
+    rootMargin,
+    threshold,
+  });
 
   return (
     <Comp
-    {...rest}
+      {...rest}
       data-testid={testId}
       ref={setRef}
       className={cn("flex h-px justify-center-safe", className)}

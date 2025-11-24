@@ -1,10 +1,9 @@
 import type { Tweet, User } from "@/types/api";
 
-import {format} from "date-fns"
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { format } from "date-fns";
+import { useNavigate } from "@tanstack/react-router";
 import {
   BookmarkIcon,
-  ChartColumnIcon,
   EllipsisIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -13,11 +12,14 @@ import {
   ShareIcon,
 } from "lucide-react";
 
-import { dateDiffInDays } from "@/lib/date";
-import { formatDate, formatDistance } from "@/utils/format-date";
 import { parse } from "../utils/parse";
 import { linkifyHtml } from "../utils/linkify-html";
 import { nFormatter } from "@/lib/number-formatter";
+
+import { Authorization } from "@/lib/authorization";
+
+import { useToggleLikeTweet } from "../api/like-tweet";
+import { useToggleFollowUser } from "@/features/follow/api/follow";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import {
@@ -41,11 +43,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Authorization } from "@/lib/authorization";
-import { DeleteTweet } from "./delete-tweet";
-import { useToggleLikeTweet } from "../api/like-tweet";
-import { useToggleFollowUser } from "@/features/follow/api/follow";
 import { Separator } from "@/components/ui/separator";
+import { DeleteTweet } from "./delete-tweet";
 import { ReplyTweet } from "./reply-tweet";
 
 export interface TweetProps {
@@ -54,7 +53,7 @@ export interface TweetProps {
 }
 
 export function TweetDetail({ user, tweet }: TweetProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const toggleLikeMutation = useToggleLikeTweet(user.username);
   const toggleFollowMutation = useToggleFollowUser(user?.username);
@@ -63,11 +62,14 @@ export function TweetDetail({ user, tweet }: TweetProps) {
   const profile = author.profile;
 
   const onSuccess = () => {
-    navigate({ to: "/home", replace: true })
-  }
+    navigate({ to: "/home", replace: true });
+  };
 
   return (
-    <Card id={tweet.id} className='bg-background text-foreground w-full border-none'>
+    <Card
+      id={tweet.id}
+      className='bg-background text-foreground w-full border-none'
+    >
       <CardHeader>
         <div className='flex gap-2'>
           <div>
@@ -142,7 +144,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
                         </Button>
                       }
                     >
-                      <DeleteTweet tweet={tweet} onSuccess={onSuccess}/>
+                      <DeleteTweet tweet={tweet} onSuccess={onSuccess} />
                     </Authorization>
                   )}
                 </PopoverContent>
@@ -152,74 +154,70 @@ export function TweetDetail({ user, tweet }: TweetProps) {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col gap-2'>
-        <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")}/>
+        <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")} />
 
         <TweetMedia media={tweet.media} />
       </CardContent>
 
-      <CardFooter className='grid border-b border-border'>
-          <div className="mb-5">
-            <time
-                className='font-light opacity-50'
-                dateTime={tweet.createdAt}
-              >
-                {format(tweet.createdAt, "h:ss b • MMM d, yyyy")}
-              </time>
-          </div>
+      <CardFooter className='border-border grid border-b'>
+        <div className='mb-5'>
+          <time className='font-light opacity-50' dateTime={tweet.createdAt}>
+            {format(tweet.createdAt, "h:ss b • MMM d, yyyy")}
+          </time>
+        </div>
 
-          <Separator />
+        <Separator />
         <div className='flex justify-between p-1'>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost' asChild>
+                <Link
+                  className='text-foreground'
+                  to='/compose/post'
+                  search={{ replyTo: tweet.id }}
+                >
+                  <MessageCircleIcon />
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant='ghost' asChild>
-              <Link
-                className='text-foreground'
-                to='/compose/post'
-                search={{ replyTo: tweet.id }}
+                  {tweet._count.replies ? (
+                    <span>{nFormatter(tweet._count.replies, 0)}</span>
+                  ) : null}
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
+              Reply
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant='ghost'>
+                <Repeat2Icon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
+              Repost
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                className={cn(tweet.liked && "text-rose-400")}
+                onClick={() => toggleLikeMutation.mutate(tweet)}
+                disabled={toggleLikeMutation.isPending}
               >
-                <MessageCircleIcon />
-
-                {tweet._count.replies ? (
-                  <span>{nFormatter(tweet._count.replies, 0)}</span>
+                <HeartIcon />
+                {tweet._count.likes ? (
+                  <span>{nFormatter(tweet._count.likes, 0)}</span>
                 ) : null}
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side='bottom' sideOffset={-2}>
-            Reply
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant='ghost'>
-              <Repeat2Icon />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side='bottom' sideOffset={-2}>
-            Repost
-          </TooltipContent>
-        </Tooltip>
-
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='ghost'
-              className={cn(tweet.liked && "text-rose-400")}
-              onClick={() => toggleLikeMutation.mutate(tweet)}
-              disabled={toggleLikeMutation.isPending}
-            >
-              <HeartIcon />
-              {tweet._count.likes ? (
-                <span>{nFormatter(tweet._count.likes, 0)}</span>
-              ) : null}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side='bottom' sideOffset={-2}>
-            {tweet.liked ? "Unlike" : "Like"}
-          </TooltipContent>
-        </Tooltip>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
+              {tweet.liked ? "Unlike" : "Like"}
+            </TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
@@ -243,13 +241,15 @@ export function TweetDetail({ user, tweet }: TweetProps) {
             </TooltipContent>
           </Tooltip>
         </div>
-          <Separator />
+        <Separator />
 
-        <div >
-
-            <ReplyTweet username={user.username} tweet={tweet} showReplyToContent={false}/>
+        <div>
+          <ReplyTweet
+            username={user.username}
+            tweet={tweet}
+            showReplyToContent={false}
+          />
         </div>
-
       </CardFooter>
     </Card>
   );

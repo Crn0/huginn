@@ -64,7 +64,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
 
   const form = useForm({
     resolver: zodResolver(createTweetInputSchema),
-    mode: "onBlur"
+    mode: "onBlur",
   });
 
   const emojiDisclosure = useDisclosure(false);
@@ -79,7 +79,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
 
   const onSubmit = (data: CreateTweetInput) => tweetMutation.mutate(data);
 
-  const content = JSON.stringify(form.watch("content")) ?? ""
+  const content = JSON.stringify(form.watch("content")) ?? "";
   const media =
     form
       .watch("media")

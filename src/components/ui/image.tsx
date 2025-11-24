@@ -21,7 +21,7 @@ export function Image({ ratio, bgImage, className, ...props }: ImageProps) {
       style={{ backgroundImage: !loaded ? `url(${bgImage})` : "" }}
       asChild
     >
-      <ImagePrimitive.Avatar >
+      <ImagePrimitive.Avatar>
         <ImagePrimitive.Image
           className={cn(
             "block aspect-square h-full w-full object-cover object-center opacity-0 transition-opacity delay-150 ease-in-out",

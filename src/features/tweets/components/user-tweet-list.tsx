@@ -17,13 +17,17 @@ export interface UserTweetListProps {
   withReply?: boolean;
 }
 
-export function UserTweetList({ username, scope, withReply }: UserTweetListProps) {
-  const userQuery = useUser(username)
+export function UserTweetList({
+  username,
+  scope,
+  withReply,
+}: UserTweetListProps) {
+  const userQuery = useUser(username);
 
   const tweetsQuery = useInfiniteUserTweets(username, scope);
 
   if (!userQuery.isSuccess) {
-    return <LogoSplash />
+    return <LogoSplash />;
   }
 
   if (!tweetsQuery.data && tweetsQuery.isLoading)
@@ -81,7 +85,9 @@ export function UserTweetList({ username, scope, withReply }: UserTweetListProps
                 );
               })()}
 
-            {!renderedParentTweetIds.has(tweet.id) && <Tweet user={user} tweet={tweet} />}
+            {!renderedParentTweetIds.has(tweet.id) && (
+              <Tweet user={user} tweet={tweet} />
+            )}
           </li>
         ))}
       </ul>

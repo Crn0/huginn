@@ -3,7 +3,7 @@ import { useInfiniteMedia } from "../api/[username]/get-media";
 import { Spinner } from "@/components/ui/spinner";
 import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
-import {  Media } from "@/components/ui/media";
+import { Media } from "@/components/ui/media";
 
 export function MediaList({ username }: { username: string }) {
   const mediaQuery = useInfiniteMedia(username);
@@ -34,10 +34,10 @@ export function MediaList({ username }: { username: string }) {
     <>
       <ul
         aria-label='media'
-        className="grid grid-cols-2 xl:grid-cols-4 gap-1 flex-1"
+        className='grid flex-1 grid-cols-2 gap-1 xl:grid-cols-4'
       >
         {media.map((m) => (
-          <li key={m.id} className=' w-full max-w-lg'>
+          <li key={m.id} className='w-full max-w-lg'>
             <Media media={m} />
           </li>
         ))}

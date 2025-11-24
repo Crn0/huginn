@@ -15,35 +15,33 @@ export interface TweetListProps {
 }
 
 export function TweetList({ filter }: TweetListProps) {
-  const params = useParams({ strict: false })
+  const params = useParams({ strict: false });
 
-  const authUserQuery = useAuthUser()
-  const userQuery = useUser(params.username ?? "", !!params.username)
+  const authUserQuery = useAuthUser();
+  const userQuery = useUser(params.username ?? "", !!params.username);
 
   const tweetsQuery = useInfiniteTweets(filter);
 
   if (!authUserQuery.isSuccess || userQuery.isLoading) {
-    return <LogoSplash />
+    return <LogoSplash />;
   }
 
   if (!tweetsQuery.data && tweetsQuery.isLoading) {
-        return (
+    return (
       <div className='flex items-center-safe justify-center-safe'>
-        <Spinner className='size-8 text-spinner' />
+        <Spinner className='text-spinner size-8' />
       </div>
     );
   }
 
   if (!tweetsQuery.isSuccess) {
-        return (
+    return (
       <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} />
     );
-
   }
 
+  const user = userQuery.data ?? authUserQuery.data;
 
-  const user = userQuery.data ?? authUserQuery.data
-  
   const tweets = tweetsQuery.data.pages?.flatMap(({ data }) => data);
 
   if (!tweets.length) {
