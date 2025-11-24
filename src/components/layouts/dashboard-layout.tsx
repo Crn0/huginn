@@ -93,7 +93,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   ] satisfies SideNavigationLink[];
 
   return (
-    <div className='bg-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
+    <div className='bg-background [&_input]:selection:bg-input-background [&_textarea]:selection:bg-input-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
       <header className='border-border hidden border-r font-mono sm:sticky sm:top-0 sm:flex sm:flex-col sm:place-items-center-safe sm:items-center-safe sm:justify-between lg:flex-[0.9]'>
         <nav className='mt-1 grid place-items-center-safe items-center-safe gap-2 lg:flex lg:flex-1 lg:flex-col lg:place-items-baseline'>
           <Link
