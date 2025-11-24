@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export function DeleteTweet({ tweet }: { tweet: Tweet }) {
-  const tweetMutation = useDeleteTweet(tweet.author.username);
+export function DeleteTweet({ tweet, onSuccess }: { tweet: Tweet, onSuccess?: () => void }) {
+  const tweetMutation = useDeleteTweet(tweet.author.username, { onSuccess });
 
   return (
     <Dialog>
