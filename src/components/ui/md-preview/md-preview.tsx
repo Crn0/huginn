@@ -24,7 +24,7 @@ export function MDPreview({ parse, value, className, config, ...props }: MDPrevi
     <div
     {...props}
       className={cn(
-        "w-full p-2 [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all [&>p]:whitespace-pre-wrap",
+        "w-full p-2 [&_a]:text-blue-500 [&>p]:text-pretty [&>p]:break-all whitespace-pre-wrap",
         className
       )}
       dangerouslySetInnerHTML={{
