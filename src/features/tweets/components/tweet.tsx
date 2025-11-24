@@ -1,8 +1,7 @@
 import type { Tweet, User } from "@/types/api";
 import type { AuthUser } from "@/lib/auth";
 
-
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import {
   BookmarkIcon,
   ChartColumnIcon,
@@ -53,6 +52,8 @@ export interface TweetProps {
 }
 
 export function Tweet({ user, tweet }: TweetProps) {
+  const navigate = useNavigate()
+
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
   const toggleFollowMutation = useToggleFollowUser(user?.username ?? "");
 
@@ -62,12 +63,31 @@ export function Tweet({ user, tweet }: TweetProps) {
   const laterDate = new Date(tweet.createdAt);
   const currentDate = new Date();
 
+  const onNavigateTweet = (e:  React.MouseEvent<HTMLDivElement, MouseEvent> | React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.type === "keydown") {
+      if ((e as React.KeyboardEvent<HTMLDivElement>).key !== "Enter") return
+    }
+
+    const target = e.target as Element
+
+    const targetParent = target.parentElement
+
+    const selection = window.getSelection()?.toString() ?? ""
+
+    if (selection.length > 0) return 
+
+    if (targetParent && targetParent.getAttribute("data-navigates") !== "true" && target.getAttribute("data-navigates") !== "true") return;
+
+
+    navigate({ to: "/$username/status/$tweetId", params:{ username: user.username, tweetId: tweet.id }})
+  }
+
   return (
-    <Card id={tweet.id} className='bg-background text-foreground w-full'>
-      <CardHeader>
+    <Card data-navigates="true" role="button" id={tweet.id} tabIndex={0} className='bg-background text-foreground w-full' onClick={onNavigateTweet} onKeyDown={onNavigateTweet}>
+      <CardHeader >
         <div className='flex gap-2'>
           <div>
-            <Link to='/$username' params={{ username: author.username }}>
+            <Link to='/$username' params={{ username: author.username }} >
               <UserAvatar
                 className='h-13 w-13 border-2'
                 avatar={profile.avatarUrl}
@@ -75,8 +95,8 @@ export function Tweet({ user, tweet }: TweetProps) {
               />
             </Link>
           </div>
-          <div className='flex w-full justify-between'>
-            <div className='text-foreground flex gap-1'>
+          <div className='flex w-full'>
+            <div data-navigates="true" role="button" tabIndex={0} onClick={onNavigateTweet} className='text-foreground flex-1 flex gap-1'>
               <span className='font-bold'>{profile.displayName}</span>
               <span className='font-light opacity-50'>@{author.username}</span>
 
@@ -115,6 +135,7 @@ export function Tweet({ user, tweet }: TweetProps) {
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button
+                        data-tweet-navigates="false"
                         className='hover:bg-background hover:text-foreground text-foreground opacity-50 hover:border-0'
                         variant='ghost'
                         size='icon-sm'
@@ -159,7 +180,7 @@ export function Tweet({ user, tweet }: TweetProps) {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col gap-2'>
-        <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")} />
+         <MDPreview data-navigates="true" parse={parse} value={linkifyHtml(tweet.content ?? "")} />
 
         <TweetMedia media={tweet.media} />
       </CardContent>
