@@ -29,7 +29,7 @@ export function TweetList({ filter }: TweetListProps) {
   if (!tweetsQuery.data && tweetsQuery.isLoading) {
         return (
       <div className='flex items-center-safe justify-center-safe'>
-        <Spinner className='size-8 text-blue-400' />
+        <Spinner className='size-8 text-spinner' />
       </div>
     );
   }
