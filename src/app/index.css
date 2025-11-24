@@ -41,6 +41,7 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-spinner: var(--spinner);
 
   --avatar-banner-size: 100% 100%;
 }
@@ -80,8 +81,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --popover: oklch(0 0 262)
-  --popover-foreground: oklch(0.9676 0.0074 262)
+  --popover: oklch(0 0 262);
+  --popover-foreground: oklch(0.9676 0.0074 262);
+  --spinner: oklch(0.7352 0.1628 241.41);
 }
 
 .dark {
@@ -124,5 +126,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow: hidden
   }
 }
