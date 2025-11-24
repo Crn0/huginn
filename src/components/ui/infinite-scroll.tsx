@@ -22,14 +22,17 @@ export function InfiniteScroll({
   loadMore,
   asChild,
   className = "",
-  ...options
+  ...props
 }: InfiniteScrollProps) {
+  const { canLoadMore, isLoading, delay, root, rootMargin, threshold, ...rest} = props
+
   const Comp = asChild ? Slot : "div";
 
-  const setRef = useInfiniteScroll(loadMore, { ...options });
+  const setRef = useInfiniteScroll(loadMore, { canLoadMore, isLoading, delay, root, rootMargin, threshold });
 
   return (
     <Comp
+    {...rest}
       data-testid={testId}
       ref={setRef}
       className={cn("flex h-px justify-center-safe", className)}
