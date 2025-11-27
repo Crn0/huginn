@@ -1,48 +1,16 @@
 import type { ValidationError } from "@/lib/errors";
 import type { ApiClient } from "@/lib/api-client";
-import type { Pagination, Tweet } from "@/types/api";
+import type { Tweet } from "@/types/api";
 
 import {
   useMutation,
   useQueryClient,
-  type InfiniteData,
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
 import { tweetKeys } from "./query-key-factory";
 import { useClient } from "@/hooks/use-client";
-
-const transformLikedTweet =
-  (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
-    if (prevPages) {
-      const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.map((tweet) =>
-          tweet.id !== id ? tweet : { ...tweet, liked: !tweet.liked }
-        );
-
-        return { ...rest, data: newData };
-      });
-
-      return { ...prevPages, pages: newPages };
-    }
-
-    return prevPages;
-  };
-
-const filterunlikedTweet =
-  (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
-    if (prevPages) {
-      const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.filter((tweet) => tweet.id !== id);
-
-        return { ...rest, data: newData };
-      });
-
-      return { ...prevPages, pages: newPages };
-    }
-
-    return prevPages;
-  };
+import { filterLikeTweet, transformLikeReplies, transformLikeTweet, transformLikeTweets } from "./mapper";
 
 export const likeTweet = (client: ApiClient) => async (tweet: Tweet) => {
   return client.callApi(`tweets/${tweet.id}/likes`, {
@@ -61,7 +29,7 @@ export const unlikeTweet = (client: ApiClient) => async (tweet: Tweet) => {
 export type UseToggleLikeTweetOptions = UseMutationOptions<
   Response,
   ValidationError,
-  Tweet
+  { tweet: Tweet, pageTweet?: Tweet }
 >;
 
 export const useToggleLikeTweet = (
@@ -74,8 +42,12 @@ export const useToggleLikeTweet = (
   return useMutation({
     ...options,
     mutationKey: tweetKeys.mutation.like,
-    onMutate: async (tweet) => {
+    onMutate: async ({ tweet, pageTweet }) => {
+
       await Promise.all([
+        queryClient.cancelQueries({
+          queryKey: tweetKeys.detail(tweet.id),
+        }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
@@ -88,30 +60,45 @@ export const useToggleLikeTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         }),
+        !pageTweet ? Promise.resolve() : queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.replies(pageTweet.id),
+        })
       ]);
 
+      if (pageTweet) {
+
+              queryClient.setQueryData(
+       tweetKeys.infinite.replies(pageTweet.id),
+        transformLikeReplies(tweet)
+      );
+      }
+
+      queryClient.setQueryData(tweetKeys.detail(tweet.id), transformLikeTweet)
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
-        transformLikedTweet(tweet.id)
+        transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
-        transformLikedTweet(tweet.id)
+        transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "replies"),
-        transformLikedTweet(tweet.id)
+        transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "likes"),
-        filterunlikedTweet(tweet.id)
+        filterLikeTweet(tweet)
       );
     },
-    onSettled: () => {
+    onSettled: (_data, _error, { tweet }) => {
       if (
         queryClient.isMutating({ mutationKey: tweetKeys.mutation.like }) === 1
       ) {
         queryClient.invalidateQueries({
+          queryKey: tweetKeys.detail(tweet.id)
+        });
+        queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
         queryClient.invalidateQueries({
@@ -123,9 +110,12 @@ export const useToggleLikeTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         });
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.reply()
+          });
       }
     },
-    mutationFn: (tweet) =>
+    mutationFn: ({ tweet }) => 
       tweet.liked ? unlikeTweet(client)(tweet) : likeTweet(client)(tweet),
   });
 };

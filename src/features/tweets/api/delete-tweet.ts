@@ -1,10 +1,10 @@
 import type { ApiClient } from "@/lib/api-client";
 import type { ErrorType } from "@/lib/errors/errors.type";
-import type { Pagination, Tweet, User } from "@/types/api";
+import type { Tweet } from "@/types/api";
+
 import {
   useMutation,
   useQueryClient,
-  type InfiniteData,
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
@@ -13,33 +13,10 @@ import { userKeys } from "@/features/users/api/query-key-factory";
 import { mediaKeys } from "@/features/media/api/query-key-factory";
 import { authUserQueryOptions } from "@/lib/auth";
 
+import { isTweetReplies } from "../utils/is-tweet-replies";
+import { transformUserTweetCount, filterDeletedReplies, filterDeletedTweets, transformTweetReplyCount } from "./mapper";
+
 import { useClient } from "@/hooks/use-client";
-
-const filterDeletedTweet =
-  (id: string) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
-    if (prevPages) {
-      const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.filter(
-          (tweet) => tweet.id !== id && tweet.replyTo?.id !== id
-        );
-
-        return { ...rest, data: newData };
-      });
-
-      return { ...prevPages, pages: newPages };
-    }
-
-    return prevPages;
-  };
-
-const transformUser = <TUser extends Pick<User, "_count">>(user?: TUser) => {
-  if (!user) return;
-
-  return {
-    ...user,
-    _count: { ...user?._count, tweets: (user._count.tweets -= 1) },
-  };
-};
 
 export const deleteTweet = (client: ApiClient) => async (tweet: Tweet) => {
   return client.callApi(`tweets/${tweet.id}`, {
@@ -51,7 +28,7 @@ export const deleteTweet = (client: ApiClient) => async (tweet: Tweet) => {
 export type UseDeleteTweetOptions = UseMutationOptions<
   Response,
   ErrorType,
-  Tweet
+  { tweet: Tweet, pageTweet?: Tweet }
 >;
 
 export const useDeleteTweet = (
@@ -64,8 +41,11 @@ export const useDeleteTweet = (
   return useMutation({
     ...options,
     mutationKey: tweetKeys.mutation.delete,
-    onMutate: async (tweet) => {
+    onMutate: async ({tweet, pageTweet}) => {
       await Promise.all([
+                queryClient.cancelQueries({
+            queryKey: userKeys.detail(username),
+          }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
@@ -75,53 +55,74 @@ export const useDeleteTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         }),
+        !tweet.replyTo ? Promise.resolve() : queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.replies(tweet.replyTo.id)
+        }),
+        !tweet.liked ? Promise.resolve() :         queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+        }),
+         username !== tweet.author.username ? Promise.resolve() :  queryClient.cancelQueries({
+            queryKey: authUserQueryOptions().queryKey,
+          }),
+          !pageTweet ? Promise.resolve() : queryClient.cancelQueries({
+            queryKey: tweetKeys.infinite.replies(pageTweet.id)
+          }),
+          !tweet.media.length ? Promise.resolve() : queryClient.cancelQueries({
+            queryKey: mediaKeys.list(username)
+          })
       ]);
 
       if (username === tweet.author.username) {
-        const authKey = authUserQueryOptions().queryKey;
-        const userKey = userKeys.detail(username);
-
-        await Promise.all([
-          queryClient.cancelQueries({
-            queryKey: authKey,
-          }),
-          queryClient.cancelQueries({
-            queryKey: userKey,
-          }),
-        ]);
-
-        queryClient.setQueryData(authKey, transformUser);
-        queryClient.setQueryData(userKey, transformUser);
+        queryClient.setQueryData(authUserQueryOptions().queryKey, transformUserTweetCount("delete"));
       }
 
+      if (pageTweet) {
+        queryClient.setQueryData(tweetKeys.infinite.replies(pageTweet.id), !isTweetReplies(tweet) ? filterDeletedTweets(tweet) : filterDeletedReplies(tweet))
+      }
+
+      if (tweet.replyTo) {
+        console.log(tweet.content, tweet.replyTo.id)
+         queryClient.setQueryData(
+        tweetKeys.detail(tweet.replyTo.id),
+        transformTweetReplyCount("delete")
+      );
+      }
+
+      if (tweet.liked) {
+              queryClient.setQueryData(
+        tweetKeys.infinite.listByUser(username, "likes"),
+        filterDeletedTweets(tweet)
+      );
+      }
+
+      queryClient.setQueryData(userKeys.detail(username), transformUserTweetCount("delete"));
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
-        filterDeletedTweet(tweet.id)
+        filterDeletedTweets(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
-        filterDeletedTweet(tweet.id)
+        filterDeletedTweets(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "replies"),
-        filterDeletedTweet(tweet.id)
+        filterDeletedTweets(tweet)
       );
     },
-    onSettled: (_data, _error, tweet) => {
+    onSettled: (_data, _error, {tweet}) => {
       if (
         queryClient.isMutating({ mutationKey: tweetKeys.mutation.delete }) === 1
       ) {
-        if (username === tweet.author.username) {
-          const authKey = authUserQueryOptions().queryKey;
-          const userKey = userKeys.detail(username);
-
-          queryClient.invalidateQueries({
-            queryKey: authKey,
+             queryClient.invalidateQueries({
+            queryKey: userKeys.detail(username),
           });
+
+        if (username === tweet.author.username) {
           queryClient.invalidateQueries({
-            queryKey: userKey,
+            queryKey: authUserQueryOptions().queryKey,
           });
         }
+
 
         if (tweet.media.length > 0) {
           queryClient.invalidateQueries({
@@ -129,6 +130,12 @@ export const useDeleteTweet = (
           });
         }
 
+        if (tweet.liked) {
+                  queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+        });
+        }
+
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
@@ -138,8 +145,11 @@ export const useDeleteTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         });
+        queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.reply()
+          });
       }
     },
-    mutationFn: (tweet) => deleteTweet(client)(tweet),
+    mutationFn: ({tweet}) => deleteTweet(client)(tweet),
   });
 };

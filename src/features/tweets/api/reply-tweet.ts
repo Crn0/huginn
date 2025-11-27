@@ -59,7 +59,7 @@ export const useReplyTweet = (
   return useMutation({
     ...restConfig,
     mutationKey: tweetKeys.mutation.reply,
-    onSuccess: (...args) => {
+    onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.list("all", ""),
       });
@@ -69,7 +69,10 @@ export const useReplyTweet = (
       queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.listByUser(username, "replies"),
       });
-      onSuccess?.(...args);
+      queryClient.invalidateQueries({
+        queryKey: tweetKeys.infinite.replies(variables.replyTo),
+      });
+      onSuccess?.(data, variables, context);
     },
     onError: (...args) => {
       onError?.(...args);
