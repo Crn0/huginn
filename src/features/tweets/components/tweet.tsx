@@ -1,4 +1,4 @@
-import type { Tweet, User } from "@/types/api";
+import type { Tweet as TweetType, TweetReply, User } from "@/types/api";
 import type { AuthUser } from "@/lib/auth";
 
 import { useNavigate } from "@tanstack/react-router";
@@ -48,10 +48,11 @@ import { useToggleFollowUser } from "@/features/follow/api/follow";
 
 export interface TweetProps {
   user: AuthUser | User;
-  tweet: Tweet;
+  tweet: TweetType | TweetReply | TweetReply["replies"][0];
+  pageTweet?: TweetType;
 }
 
-export function Tweet({ user, tweet }: TweetProps) {
+export function Tweet({ user, tweet, pageTweet }: TweetProps) {
   const navigate = useNavigate();
 
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
@@ -195,7 +196,7 @@ export function Tweet({ user, tweet }: TweetProps) {
                         </Button>
                       }
                     >
-                      <DeleteTweet tweet={tweet} />
+                      <DeleteTweet tweet={tweet} pageTweet={pageTweet}/>
                     </Authorization>
                   )}
                 </PopoverContent>
@@ -252,7 +253,7 @@ export function Tweet({ user, tweet }: TweetProps) {
             <Button
               variant='ghost'
               className={cn(tweet.liked && "text-rose-400")}
-              onClick={() => toggleLikeMutation.mutate(tweet)}
+              onClick={() => toggleLikeMutation.mutate({tweet, pageTweet})}
               disabled={toggleLikeMutation.isPending}
             >
               <HeartIcon />

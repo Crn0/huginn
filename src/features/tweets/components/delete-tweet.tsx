@@ -17,9 +17,11 @@ import { Button } from "@/components/ui/button";
 
 export function DeleteTweet({
   tweet,
+  pageTweet,
   onSuccess,
 }: {
   tweet: Tweet;
+  pageTweet?: Tweet
   onSuccess?: () => void;
 }) {
   const tweetMutation = useDeleteTweet(tweet.author.username, { onSuccess });
@@ -54,7 +56,7 @@ export function DeleteTweet({
           <DialogClose asChild>
             <Button
               variant='destructive'
-              onClick={() => tweetMutation.mutate(tweet)}
+              onClick={() => tweetMutation.mutate({tweet, pageTweet})}
               disabled={tweetMutation.isPending}
             >
               Delete
