@@ -1,4 +1,5 @@
-import type { Tweet, User } from "@/types/api";
+import type { AuthUser } from "@/lib/auth";
+import type { Tweet } from "@/types/api";
 
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -48,7 +49,7 @@ import { DeleteTweet } from "./delete-tweet";
 import { ReplyTweet } from "./reply-tweet";
 
 export interface TweetProps {
-  user: User;
+  user: AuthUser;
   tweet: Tweet;
 }
 
@@ -205,7 +206,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
               <Button
                 variant='ghost'
                 className={cn(tweet.liked && "text-rose-400")}
-                onClick={() => toggleLikeMutation.mutate(tweet)}
+                onClick={() => toggleLikeMutation.mutate({ tweet })}
                 disabled={toggleLikeMutation.isPending}
               >
                 <HeartIcon />
