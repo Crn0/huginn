@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useLocation, useNavigate, useSearch } from "@tanstack/react-router";
 
 import { useAuthActions } from "@/hooks/use-auth-store";
 
@@ -12,6 +12,7 @@ export function SilentLogin({
   children: React.ReactNode;
   token: string | null;
 }) {
+  const location = useLocation()
   const navigate = useNavigate();
   const search = useSearch({ from: "__root__" });
 
@@ -27,9 +28,9 @@ export function SilentLogin({
     } else {
       setIsSilentLogin();
 
-      navigate({ to: "/login", replace: true });
+      navigate({ to: location.pathname === "/signup" ? location.pathname : "/login", replace: true });
     }
-  }, [token, login, navigate, redirectTo, setIsSilentLogin]);
+  }, [token, login, navigate, redirectTo, setIsSilentLogin, location.pathname]);
 
   if (token) return <LogoSplash />;
 
