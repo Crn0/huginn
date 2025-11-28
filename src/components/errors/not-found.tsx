@@ -14,7 +14,7 @@ export function NotFound({
       />
       <h1 className='text-2xl font-semibold'>{title}</h1>
       <p className='max-w-md text-white/70'>{message}</p>
-      <Link to='..' variant='button'>
+      <Link to='/home' variant='button' replace>
         Go Home
       </Link>
     </div>
