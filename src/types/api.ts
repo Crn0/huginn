@@ -88,16 +88,10 @@ type BaseTweet = Entity<{
   _count: { replies: number; likes: number };
 }>;
 
-export type Tweet =
-  | Entity<
+export type Tweet = Entity<
       BaseTweet & {
-        replyTo: null;
-        withReply: false;
-      }
-    >
-  | Entity<
-      BaseTweet & {
-        replyTo: BaseTweet & { replyTo: null; withReply: false };
-        withReply: true;
+        replyTo: Pick<BaseEntity, "id"> | null;
       }
     >;
+
+export type TweetReply = Tweet & { replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string}})[]  };
