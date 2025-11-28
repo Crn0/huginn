@@ -67,9 +67,6 @@ export const useReplyTweet = (
         queryKey: tweetKeys.infinite.listByUser(username, "posts"),
       });
       queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username, "replies"),
-      });
-      queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.replies(variables.replyTo),
       });
       onSuccess?.(data, variables, context);

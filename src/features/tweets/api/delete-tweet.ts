@@ -94,7 +94,6 @@ export const useDeleteTweet = (
         filterDeletedTweets(tweet)
       );
       }
-
       queryClient.setQueryData(userKeys.detail(username), transformUserTweetCount("delete"));
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
@@ -102,10 +101,6 @@ export const useDeleteTweet = (
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
-        filterDeletedTweets(tweet)
-      );
-      queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "replies"),
         filterDeletedTweets(tweet)
       );
     },
@@ -141,9 +136,6 @@ export const useDeleteTweet = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         });
         queryClient.invalidateQueries({
             queryKey: tweetKeys.infinite.reply()
