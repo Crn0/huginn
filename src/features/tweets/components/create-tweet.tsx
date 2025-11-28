@@ -295,7 +295,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
               <EmojiPicker
                 className='h-[342px]'
                 onEmojiSelect={({ emoji }) => {
-                  form.setValue("content", content ? content + emoji : emoji);
+                  form.setValue("content",  content ? `${JSON.parse(content)}${emoji}` : emoji);
 
                   emojiDisclosure.close();
                 }}
