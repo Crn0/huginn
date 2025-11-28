@@ -1,6 +1,5 @@
 import type { Tweet, User } from "@/types/api";
 
-import { format } from "date-fns";
 import { useNavigate } from "@tanstack/react-router";
 import {
   BookmarkIcon,
@@ -14,6 +13,7 @@ import {
 
 import { parse } from "../utils/parse";
 import { linkifyHtml } from "../utils/linkify-html";
+import { format } from "@/utils/format-date";
 import { nFormatter } from "@/lib/number-formatter";
 
 import { Authorization } from "@/lib/authorization";

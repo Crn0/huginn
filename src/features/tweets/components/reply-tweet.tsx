@@ -66,7 +66,7 @@ import {
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import { Link } from "@/components/ui/link";
 import { dateDiffInDays } from "@/lib/date";
-import { formatDate, formatDistance } from "@/utils/format-date";
+import { format, formatDistanceStrict } from "@/utils/format-date";
 import { MDPreview } from "@/components/ui/md-preview/md-preview";
 import { parse } from "../utils/parse";
 import linkifyHtml from "linkify-html";
@@ -150,11 +150,9 @@ export function ReplyTweet({
                       className='font-light opacity-50'
                       dateTime={tweet.createdAt}
                     >
-                      {dateDiffInDays(laterDate, currentDate) < 1
-                        ? formatDistance(laterDate, currentDate, {
-                            isUnitFirstChar: true,
-                          })
-                        : formatDate(tweet.createdAt, "MMM cc")}
+                {dateDiffInDays(laterDate, currentDate) < 1
+                  ? `• ${formatDistanceStrict(laterDate, currentDate)}`
+                  : format(tweet.createdAt, "MMM d")}
                     </time>
                   </div>
                 </div>
@@ -397,7 +395,7 @@ export function ReplyTweet({
                 <EmojiPicker
                   className='h-[342px]'
                   onEmojiSelect={({ emoji }) => {
-                    form.setValue("content", content ? content + emoji : emoji);
+                    form.setValue("content",  content ? `${JSON.parse(content)}${emoji}` : emoji);
 
                     emojiDisclosure.close();
                   }}

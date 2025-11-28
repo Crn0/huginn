@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { dateDiffInDays } from "@/lib/date";
-import { formatDate, formatDistance } from "@/utils/format-date";
+import { format, formatDistanceStrict } from "@/utils/format-date";
 import { parse } from "../utils/parse";
 import { linkifyHtml } from "../utils/linkify-html";
 import { nFormatter } from "@/lib/number-formatter";
@@ -131,10 +131,8 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
                 dateTime={tweet.createdAt}
               >
                 {dateDiffInDays(laterDate, currentDate) < 1
-                  ? formatDistance(laterDate, currentDate, {
-                      isUnitFirstChar: true,
-                    })
-                  : formatDate(tweet.createdAt, "MMM cc")}
+                  ? `• ${formatDistanceStrict(laterDate, currentDate)}`
+                  : format(tweet.createdAt, "MMM d")}
               </time>
             </div>
 
