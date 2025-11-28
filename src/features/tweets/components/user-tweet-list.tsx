@@ -7,9 +7,8 @@ import {
 import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Spinner } from "@/components/ui/spinner";
-import { Separator } from "@/components/ui/separator";
-import { Tweet } from "./tweet";
 import { LogoSplash } from "@/components/ui/logo-splash";
+import { PlaceTweetTree } from "./place-tweet-tree";
 
 export interface UserTweetListProps {
   username: string;
@@ -53,43 +52,39 @@ export function UserTweetList({
     );
   }
 
-  const renderedParentTweetIds = new Set<string>();
-
   return (
     <>
       <ul
         aria-label='tweets'
         className='flex flex-1 flex-col items-center-safe justify-center-safe gap-2'
       >
-        {tweets.map((tweet) => (
+              {scope !== "replies" && tweets.map((tweet) => {
+             
+          return (
           <li
             key={tweet.id}
             className='grid w-full sm:w-xl'
             aria-label={`comment-${tweet.content}-${tweet.id}`}
           >
-            {withReply &&
-              tweet.replyTo &&
-              (() => {
-                if (renderedParentTweetIds.has(tweet.id)) return null;
-
-                renderedParentTweetIds.add(tweet.replyTo.id);
-
-                return (
-                  <>
-                    <Tweet user={user} tweet={tweet.replyTo} />
-                    <Separator
-                      orientation='vertical'
-                      className='ml-12 border-2 data-[orientation=vertical]:h-25'
-                    />
-                  </>
-                );
-              })()}
-
-            {!renderedParentTweetIds.has(tweet.id) && (
-              <Tweet user={user} tweet={tweet} />
-            )}
+           <PlaceTweetTree key={tweet.id} user={user} tweet={tweet} replies={[]} />
           </li>
-        ))}
+        )
+        })}
+        {scope === "replies" && tweets.map((tweet) => {
+                    const replies = tweets.filter((tw) => tw.replyTo?.id === tweet.id)
+
+                 if (tweet.replyTo && replies.length <= 0) return   
+           
+          return (
+          <li
+            key={tweet.id}
+            className='grid w-full gap-2 sm:w-xl'
+            aria-label={`comment-${tweet.content}-${tweet.id}`}
+          >
+           <PlaceTweetTree key={tweet.id} user={user} tweet={tweet} replies={ scope !== "replies" ? [] : replies} maxDepth={3} />
+          </li>
+        )
+        })}
       </ul>
 
       {tweetsQuery.hasNextPage && (
