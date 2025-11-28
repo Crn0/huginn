@@ -29,7 +29,7 @@ import { Route as ProtectedSettingsDeleteRouteImport } from './routes/_protected
 import { Route as ProtectedSettingsAccountRouteImport } from './routes/_protected/settings/account'
 import { Route as ProtectedComposePostRouteImport } from './routes/_protected/compose/post'
 import { Route as ProtectedSettingsMeAccountRouteImport } from './routes/_protected/settings/me.account'
-import { Route as ProtectedUsernameStatusTweetIdRouteImport } from './routes/_protected/$username_.status.$tweetId'
+import { Route as ProtectedUsernameStatusTweetIdRouteImport } from './routes/_protected/$username_/status.$tweetId'
 
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
