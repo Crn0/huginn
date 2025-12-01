@@ -1,6 +1,9 @@
 export const userKeys = {
   all: ["users"] as const,
-  infinite: (by: string) => ["infinite-users", { by }] as const,
-  list: (by: string) => [...userKeys.all, "list", { by }] as const,
+  infinite: {
+    all: ["infinite-users"] as const,
+    list: () => [...userKeys.infinite.all, "list"] as const,
+    lists:(by: string) => [...userKeys.infinite.list(), { by }] as const
+  },
   detail: (username: string) => [...userKeys.all, "detail", username] as const,
 };
