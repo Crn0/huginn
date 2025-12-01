@@ -32,7 +32,6 @@ export type User = Entity<{
     following: number;
     tweets: number;
   };
-  updatedAt: string | null;
 }>;
 
 export type FollowUser = Omit<User, "updatedAt" | "_count" | "profile"> & {

@@ -30,10 +30,6 @@ export const authUserSchema = z.object({
   }),
 
   createdAt: z.coerce.date().transform((d) => d.toISOString()),
-  updatedAt: z.coerce
-    .date()
-    .transform((d) => d.toISOString())
-    .nullable(),
   accountLevel: z.enum(["DEMO", "USER", "ADMIN"]),
 
   openIds: z.array(
