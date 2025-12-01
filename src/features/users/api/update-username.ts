@@ -15,7 +15,7 @@ import { userKeys } from "./query-key-factory";
 
 export const usernameRegex = /^[a-zA-Z0-9{_,.}]+$/;
 
-export const MIN_USERNAME_LENGTH = 4 as const;
+export const MIN_USERNAME_LENGTH = 3 as const;
 export const MAX_USERNAME_LENGTH = 15 as const;
 
 export const updateUsernameInput = z.object({
@@ -23,11 +23,11 @@ export const updateUsernameInput = z.object({
     .string()
     .min(
       MIN_USERNAME_LENGTH,
-      "Username must be at least 4 characters and no more than 15 characters long"
+      "Username must be at least 3 characters and no more than 15 characters long"
     )
     .max(
       MAX_USERNAME_LENGTH,
-      "Username must be at least 4 characters and no more than 15 characters long"
+      "Username must be at least 3 characters and no more than 15 characters long"
     )
     .refine((val) => usernameRegex.test(val), {
       message:
