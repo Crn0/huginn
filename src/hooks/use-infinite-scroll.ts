@@ -32,7 +32,7 @@ export const useInfiniteScroll = (
 
     observer.current = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           if (delay) {
             if (timeoutId.current) clearTimeout(timeoutId.current);
 
