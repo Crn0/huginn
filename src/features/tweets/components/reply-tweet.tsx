@@ -276,7 +276,7 @@ export function ReplyTweet({
                     accept={ACCEPTED_ATTACHMENTS_TYPES.join(",")}
                     aria-invalid={fieldState.invalid}
                     aria-disabled={media.length > MAX_MEDIA_LENGTH}
-                    disabled={media.length === MAX_MEDIA_LENGTH}
+                    disabled={media.length >= MAX_MEDIA_LENGTH}
                     ref={(e) => {
                       mediaRef.current = e;
                       field.ref(e);
@@ -301,7 +301,7 @@ export function ReplyTweet({
                   size='icon-sm'
                   type='button'
                   onClick={() => mediaRef.current?.click()}
-                  disabled={media.length === MAX_MEDIA_LENGTH}
+                  disabled={media.length >= MAX_MEDIA_LENGTH}
                 >
                   <ImageIcon className='size-7 text-blue-400' />
                 </Button>
@@ -413,7 +413,8 @@ export function ReplyTweet({
               disabled={
                 tweetMutation.isPending ||
                 (!content.length && !media.length) ||
-                content.length > MAX_CONTENT_LENGTH
+                content.length > MAX_CONTENT_LENGTH ||
+                media.length > MAX_MEDIA_LENGTH
               }
             >
               Post

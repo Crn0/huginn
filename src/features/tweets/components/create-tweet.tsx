@@ -204,7 +204,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
                 size='icon-sm'
                 type='button'
                 onClick={() => mediaRef.current?.click()}
-                disabled={media.length === MAX_MEDIA_LENGTH}
+                disabled={media.length >= MAX_MEDIA_LENGTH}
               >
                 <ImageIcon className='size-7 text-blue-400' />
               </Button>
@@ -316,7 +316,8 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
             disabled={
               tweetMutation.isPending ||
               (!content.length && !media.length) ||
-              content.length > MAX_CONTENT_LENGTH
+              content.length > MAX_CONTENT_LENGTH ||
+              media.length > MAX_MEDIA_LENGTH
             }
           >
             Post
