@@ -79,7 +79,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
 
   const onSubmit = (data: CreateTweetInput) => tweetMutation.mutate(data);
 
-  const content = JSON.stringify(form.watch("content")) ?? "";
+  const content = form.watch("content") ? JSON.stringify(form.watch("content")) : "";
   const media =
     form
       .watch("media")

@@ -103,7 +103,7 @@ export function ReplyTweet({
 
   const onSubmit = (data: ReplyTweetInput) => tweetMutation.mutate(data);
 
-  const content = JSON.stringify(form.watch("content")) ?? "";
+  const content = form.watch("content") ? JSON.stringify(form.watch("content")) : "";
   const media =
     form
       .watch("media")
