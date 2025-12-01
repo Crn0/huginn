@@ -15,8 +15,6 @@ import {
 
 import { dateDiffInDays } from "@/lib/date";
 import { format, formatDistanceStrict } from "@/utils/format-date";
-import { parse } from "../utils/parse";
-import { linkifyHtml } from "../utils/linkify-html";
 import { nFormatter } from "@/lib/number-formatter";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
@@ -206,8 +204,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
       <CardContent className='flex flex-col gap-2'>
         <MDPreview
           data-navigates='true'
-          parse={parse}
-          value={linkifyHtml(tweet.content ?? "")}
+          value={tweet.content ?? ""}
         />
 
         <TweetMedia media={tweet.media} />

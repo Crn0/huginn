@@ -1,15 +1,44 @@
 import createDOMPurify, { type Config } from "dompurify";
-
-import type { parse as Parse } from "marked";
+import linkify from "linkify-html";
+import { marked } from "marked";
 
 import { cn } from "@/utils/cn";
 
-export type MDPreviewProps = {
-  value: string;
-  parse: typeof Parse;
-  className?: string;
-  config?: Config;
-} & React.ComponentProps<"div">;
+const linkifyHtml = (value: string) =>
+  linkify(value, {
+    validate: (_: string, type: string) => {
+      if (type === "email") return false;
+
+      return true;
+    },
+    formatHref: (value: string) => {
+      if (/^http:\/\//.test(value)) {
+        value = value.replace("http", "https");
+      }
+      return value;
+    },
+    format: (value: string) => {
+      if (/^http:\/\//.test(value)) {
+        value = value.replace("http", "https");
+      }
+      return value;
+    },
+    defaultProtocol: "https",
+    target: "_blank",
+    rel: "noopener",
+  });
+
+marked.use({
+  renderer: {
+    link({ href, title, text }) {
+      if (href && href.startsWith("mailto:")) {
+        return text;
+      }
+
+      return `<a href="${href}"${title ? ` title="${title}"` : ""}>${text}</a>`;
+    },
+  },
+});
 
 const DOMPurify = createDOMPurify(window);
 
@@ -19,8 +48,13 @@ DOMPurify.addHook("afterSanitizeAttributes", (node) => {
   }
 });
 
+export type MDPreviewProps = {
+  value: string;
+  className?: string;
+  config?: Config;
+} & React.ComponentProps<"div">;
+
 export function MDPreview({
-  parse,
   value,
   className,
   config,
@@ -34,7 +68,9 @@ export function MDPreview({
         className
       )}
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(parse(value) as string, { ...config }),
+        __html: DOMPurify.sanitize(marked.parse(linkifyHtml(value)) as string, {
+          ...config,
+        }),
       }}
     />
   );

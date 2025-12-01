@@ -68,8 +68,6 @@ import { Link } from "@/components/ui/link";
 import { dateDiffInDays } from "@/lib/date";
 import { format, formatDistanceStrict } from "@/utils/format-date";
 import { MDPreview } from "@/components/ui/md-preview/md-preview";
-import { parse } from "../utils/parse";
-import linkifyHtml from "linkify-html";
 import { TweetMedia } from "./tweet-media";
 import { Separator } from "@/components/ui/separator";
 
@@ -160,8 +158,7 @@ export function ReplyTweet({
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
               <MDPreview
-                parse={parse}
-                value={linkifyHtml(tweet.content ?? "")}
+                value={tweet.content ?? ""}
               />
 
               <TweetMedia media={tweet.media} />

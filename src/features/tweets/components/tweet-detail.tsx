@@ -12,8 +12,6 @@ import {
   ShareIcon,
 } from "lucide-react";
 
-import { parse } from "../utils/parse";
-import { linkifyHtml } from "../utils/linkify-html";
 import { format } from "@/utils/format-date";
 import { nFormatter } from "@/lib/number-formatter";
 
@@ -155,7 +153,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col gap-2'>
-        <MDPreview parse={parse} value={linkifyHtml(tweet.content ?? "")} />
+        <MDPreview value={tweet.content ?? ""} />
 
         <TweetMedia media={tweet.media} />
       </CardContent>
