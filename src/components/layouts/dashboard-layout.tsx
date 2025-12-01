@@ -35,10 +35,10 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerHeader,
+  DrawerTitle,
   DrawerTrigger,
 } from "../ui/drawer";
 import { VisuallyHidden } from "../ui/visually-hidden";
-import { DialogTitle } from "../ui/dialog";
 
 export type SideNavigationLink = {
   name: string;
@@ -242,8 +242,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       </header>
       <main className='flex flex-2 flex-col'>
         {!username &&
-          location.pathname !== "/compose/post" &&
-          !location.pathname.includes("/settings") && (
+         ["/compose/post", "/settings", "/explore"].every((path) => !location.pathname.includes(path)) && (
             <header
               id='dashboard-header'
               className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
@@ -272,9 +271,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     className='bg-background overflow-hidden border-r border-neutral-600 pt-10 text-white'
                   >
                     <VisuallyHidden>
-                      <DialogTitle>
+                      <DrawerTitle>
                         <span>User menu</span>
-                      </DialogTitle>
+                      </DrawerTitle>
                     </VisuallyHidden>
                     <DrawerHeader className='mb-5 text-white'>
                       <Link
