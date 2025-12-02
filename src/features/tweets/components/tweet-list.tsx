@@ -12,15 +12,16 @@ import { Tweet } from "./tweet";
 
 export interface TweetListProps {
   filter: TweetFilter;
+  enabled?: boolean
 }
 
-export function TweetList({ filter }: TweetListProps) {
+export function TweetList({ filter, enabled = true }: TweetListProps) {
   const params = useParams({ strict: false });
 
   const authUserQuery = useAuthUser();
   const userQuery = useUser(params.username ?? "", !!params.username);
 
-  const tweetsQuery = useInfiniteTweets(filter);
+  const tweetsQuery = useInfiniteTweets(filter, { enabled });
 
   if (!authUserQuery.isSuccess || userQuery.isLoading) {
     return <LogoSplash />;
@@ -34,15 +35,14 @@ export function TweetList({ filter }: TweetListProps) {
     );
   }
 
-  if (!tweetsQuery.isSuccess) {
+  if (tweetsQuery.isError) {
     return (
-      <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} />
+      <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} defaultMessage/>
     );
   }
 
   const user = userQuery.data ?? authUserQuery.data;
-
-  const tweets = tweetsQuery.data.pages?.flatMap(({ data }) => data);
+  const tweets = tweetsQuery.data?.pages?.flatMap(({ data }) => data) ?? [];
 
   if (!tweets.length) {
     return (
