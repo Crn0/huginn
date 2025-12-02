@@ -3,7 +3,6 @@ import {
   CalendarDaysIcon,
   LinkIcon,
   MapPinXInsideIcon,
-  SearchIcon,
   Undo2Icon,
 } from "lucide-react";
 
@@ -112,12 +111,6 @@ function RouteComponent() {
               </span>
             </div>
           </div>
-
-          <Button variant='ghost' className='text-foreground' asChild>
-            <Link to='/explore'>
-              <SearchIcon className='size-6' />
-            </Link>
-          </Button>
         </>
       }
     >
@@ -173,7 +166,7 @@ function RouteComponent() {
 
           <div className='grid gap-2'>
             {user.profile.bio && (
-              <div className='w-sm wrap-break-word sm:w-5xl'>
+              <div className='w-sm wrap-break-word text-balance sm:w-2xl'>
                 <span>{user.profile.bio}</span>
               </div>
             )}
