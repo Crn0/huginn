@@ -9,8 +9,10 @@ import { TweetDetail } from "@/features/tweets/components/tweet-detail";
 import { TweetReplyList } from "@/features/tweets/components/tweet-reply-list";
 import { useUser } from "@/features/users/api/get-user";
 import { useAuthUser } from "@/lib/auth";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/$username_/status/$tweetId")({
+        errorComponent: ErrorComponent,
   component: RouteComponent,
   params: { parse: (p) => p },
 });

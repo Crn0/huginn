@@ -24,6 +24,7 @@ export const Route = createFileRoute("/_protected")({
   loader: async ({ context }) => {
     context.queryClient.ensureQueryData(authUserQueryOptions(context.client));
   },
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

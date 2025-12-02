@@ -6,8 +6,10 @@ import { ContentLayout } from "@/components/layouts/content-layout";
 import { LogoSplash } from "@/components/ui/logo-splash";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/settings")({
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

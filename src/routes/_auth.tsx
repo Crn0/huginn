@@ -34,6 +34,7 @@ export const Route = createFileRoute("/_auth")({
 
     return { refreshToken };
   },
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

@@ -4,8 +4,10 @@ import { useAuthUser } from "@/lib/auth";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tweets } from "@/features/tweets/components/tweets";
 import { ContentLayout } from "@/components/layouts/content-layout";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/home")({
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

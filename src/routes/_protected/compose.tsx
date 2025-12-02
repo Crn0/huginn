@@ -6,6 +6,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { ContentLayout } from "@/components/layouts/content-layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 const searchParamSchema = z.object({
   replyTo: z.uuidv7().optional().catch(undefined),
@@ -15,6 +16,7 @@ export type ComposeSearchParam = z.infer<typeof searchParamSchema>;
 
 export const Route = createFileRoute("/_protected/compose")({
   validateSearch: (search) => searchParamSchema.parse(search),
+    errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

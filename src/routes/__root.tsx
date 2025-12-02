@@ -9,6 +9,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { env } from "@/configs/env";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 interface RouterContext {
   client: ApiClient;
@@ -41,6 +42,7 @@ export type RootSearchParam = z.infer<typeof searchParamSchema>;
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   validateSearch: (search) => searchParamSchema.parse(search),
+  errorComponent: ErrorComponent,
   component: RootComponent,
 });
 

@@ -5,6 +5,7 @@ import { refreshToken as silentLogin } from "@/lib/auth";
 
 import { SilentLogin } from "@/features/auth/components/silent-login";
 import { LogoSplash } from "@/components/ui/logo-splash";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/")({
   beforeLoad: ({ context, search }) => {
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/")({
 
     return { refreshToken };
   },
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

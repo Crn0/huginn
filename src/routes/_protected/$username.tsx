@@ -31,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
 import { MediaList } from "@/features/media/components/media-list";
+import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/$username")({
   loader: ({ context, params }) => {
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/_protected/$username")({
       userQueryOption(context.client)(params.username)
     );
   },
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

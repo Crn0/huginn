@@ -1,11 +1,14 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+import { ErrorComponent } from "@/components/errors/error-component";
 import { LogoSplash } from "@/components/ui/logo-splash";
 import { useTweet } from "@/features/tweets/api/get-tweet";
 import { CreateTweet } from "@/features/tweets/components/create-tweet";
 import { ReplyTweet } from "@/features/tweets/components/reply-tweet";
 import { useAuthUser } from "@/lib/auth";
-import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_protected/compose/post")({
+        errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 
