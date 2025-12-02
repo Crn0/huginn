@@ -2,6 +2,7 @@ import type { ValidationError } from "@/lib/errors";
 import type { ApiClient } from "@/lib/api-client";
 import type { Tweet } from "@/types/api";
 
+import { useSearch } from "@tanstack/react-router";
 import {
   useMutation,
   useQueryClient,
@@ -37,6 +38,7 @@ export const useToggleLikeTweet = (
   options?: UseToggleLikeTweetOptions
 ) => {
   const queryClient = useQueryClient();
+  const search = useSearch({ strict: false })
   const client = useClient();
 
   return useMutation({
@@ -57,9 +59,12 @@ export const useToggleLikeTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         }),
-        !pageTweet ? Promise.resolve() : queryClient.cancelQueries({
+        pageTweet ?  queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.replies(pageTweet.id),
-        })
+        }) : Promise.resolve() ,
+        search.f === "posts" && search.q ?  queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.list("all", search.q ),
+        }) : Promise.resolve(),
       ]);
 
       if (pageTweet) {
@@ -83,6 +88,13 @@ export const useToggleLikeTweet = (
         tweetKeys.infinite.listByUser(username, "likes"),
         filterLikeTweet(tweet)
       );
+
+      if (search.f === "posts" && search.q) {
+      queryClient.setQueryData(
+        tweetKeys.infinite.list("all", search.q),
+        transformLikeTweets(tweet)
+      );
+      }
     },
     onSettled: (_data, _error, { tweet }) => {
       if (
@@ -103,6 +115,12 @@ export const useToggleLikeTweet = (
           queryClient.invalidateQueries({
             queryKey: tweetKeys.infinite.reply()
           });
+        
+      if (search.f === "posts" && search.q) {
+      queryClient.invalidateQueries(
+        {queryKey:  tweetKeys.infinite.list("all", search.q)}
+      );
+      }
       }
     },
     mutationFn: ({ tweet }) => 

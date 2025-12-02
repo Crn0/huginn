@@ -20,6 +20,7 @@ import { useClient } from "@/hooks/use-client";
 import { userKeys } from "@/features/users/api/query-key-factory";
 import { followKeys } from "./query-key-factory";
 import { tweetKeys } from "@/features/tweets/api/query-key-factory";
+import { useSearch } from "@tanstack/react-router";
 
 const transformUser =
   (action: "add" | "sub", isAuthUser: boolean) =>
@@ -113,6 +114,7 @@ export const useToggleFollowUser = (
   options?: UseToggleFollowOptions
 ) => {
   const queryClient = useQueryClient();
+  const search = useSearch({ strict: false })
   const client = useClient();
 
   return useMutation({
@@ -128,6 +130,9 @@ export const useToggleFollowUser = (
         queryClient.cancelQueries({
           queryKey: userKeys.detail(targetUser.username),
         }),
+      search.f === "posts" && search.q ?  queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.list("all", search.q ),
+        }) : Promise.resolve(),
         queryClient.cancelQueries({
           queryKey: followKeys.list(username, "following"),
         }),
@@ -181,6 +186,13 @@ export const useToggleFollowUser = (
         tweetKeys.infinite.listByUser(username, "likes"),
         transformFollowTweetAuthor
       );
+
+               if (search.f === "posts" && search.q) {
+                  queryClient.setQueryData(
+                    tweetKeys.infinite.list("all", search.q),
+                    transformFollowTweetAuthor
+                  );
+                  }
     },
     onSettled: (_data, _error, targetUser) => {
       if (queryClient.isMutating({ mutationKey: followKeys.mutation }) === 1) {
@@ -193,6 +205,9 @@ export const useToggleFollowUser = (
         queryClient.invalidateQueries({
           queryKey: userKeys.detail(targetUser.username),
         });
+        queryClient.invalidateQueries({
+          queryKey: userKeys.infinite.list(),
+        })
         queryClient.invalidateQueries({
           queryKey: followKeys.list(username, "following"),
         });
