@@ -30,7 +30,7 @@ import { UpdateProfile } from "@/features/users/components/update-profile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
-import { MediaList } from "@/features/media/components/media-list";
+import { UserMediaList } from "@/features/media/components/user-media-list";
 import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/$username")({
@@ -267,7 +267,7 @@ function RouteComponent() {
             </TabsContent>
 
             <TabsContent value='media'>
-              <MediaList username={user.username} />
+              <UserMediaList username={user.username} />
             </TabsContent>
 
             <Authorization
