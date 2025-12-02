@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 export function ErrorComponent({
   error,
   reset = () => {},
+  defaultMessage = true,
 }: {
   error: InstanceType<typeof Error> | null;
   reset?: () => void;
+  defaultMessage?: boolean
 }) {
   return (
     <div
@@ -13,7 +15,7 @@ export function ErrorComponent({
       role='alert'
     >
       <pre className='text-red-600'>
-        {error?.message ?? "Something went wrong."}
+        { defaultMessage ? "Something went wrong. Try reloading." : error?.message ?? "Something went wrong. Try reloading." }
       </pre>
       <Button type='button' onClick={() => reset()}>
         Try again
