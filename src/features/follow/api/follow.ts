@@ -114,7 +114,7 @@ export const useToggleFollowUser = (
   options?: UseToggleFollowOptions
 ) => {
   const queryClient = useQueryClient();
-  const search = useSearch({ strict: false })
+  const search = useSearch({ strict: false });
   const client = useClient();
 
   return useMutation({
@@ -130,9 +130,11 @@ export const useToggleFollowUser = (
         queryClient.cancelQueries({
           queryKey: userKeys.detail(targetUser.username),
         }),
-      search.f === "posts" && search.q ?  queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.list("all", search.q ),
-        }) : Promise.resolve(),
+        search.f === "posts" && search.q
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.infinite.list("all", search.q),
+            })
+          : Promise.resolve(),
         queryClient.cancelQueries({
           queryKey: followKeys.list(username, "following"),
         }),
@@ -187,12 +189,12 @@ export const useToggleFollowUser = (
         transformFollowTweetAuthor
       );
 
-               if (search.f === "posts" && search.q) {
-                  queryClient.setQueryData(
-                    tweetKeys.infinite.list("all", search.q),
-                    transformFollowTweetAuthor
-                  );
-                  }
+      if (search.f === "posts" && search.q) {
+        queryClient.setQueryData(
+          tweetKeys.infinite.list("all", search.q),
+          transformFollowTweetAuthor
+        );
+      }
     },
     onSettled: (_data, _error, targetUser) => {
       if (queryClient.isMutating({ mutationKey: followKeys.mutation }) === 1) {
@@ -207,7 +209,7 @@ export const useToggleFollowUser = (
         });
         queryClient.invalidateQueries({
           queryKey: userKeys.infinite.list(),
-        })
+        });
         queryClient.invalidateQueries({
           queryKey: followKeys.list(username, "following"),
         });

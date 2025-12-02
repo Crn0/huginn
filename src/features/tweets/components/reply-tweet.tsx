@@ -103,7 +103,9 @@ export function ReplyTweet({
 
   const onSubmit = (data: ReplyTweetInput) => tweetMutation.mutate(data);
 
-  const content = form.watch("content") ? JSON.stringify(form.watch("content")) : "";
+  const content = form.watch("content")
+    ? JSON.stringify(form.watch("content"))
+    : "";
   const media =
     form
       .watch("media")
@@ -148,18 +150,16 @@ export function ReplyTweet({
                       className='font-light opacity-50'
                       dateTime={tweet.createdAt}
                     >
-                {dateDiffInDays(laterDate, currentDate) < 1
-                  ? `• ${formatDistanceStrict(laterDate, currentDate)}`
-                  : format(tweet.createdAt, "MMM d")}
+                      {dateDiffInDays(laterDate, currentDate) < 1
+                        ? `• ${formatDistanceStrict(laterDate, currentDate)}`
+                        : format(tweet.createdAt, "MMM d")}
                     </time>
                   </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent className='flex flex-col gap-2'>
-              <MDPreview
-                value={tweet.content ?? ""}
-              />
+              <MDPreview value={tweet.content ?? ""} />
 
               <TweetMedia media={tweet.media} />
             </CardContent>
@@ -392,7 +392,10 @@ export function ReplyTweet({
                 <EmojiPicker
                   className='h-[342px]'
                   onEmojiSelect={({ emoji }) => {
-                    form.setValue("content",  content ? `${JSON.parse(content)}${emoji}` : emoji);
+                    form.setValue(
+                      "content",
+                      content ? `${JSON.parse(content)}${emoji}` : emoji
+                    );
 
                     emojiDisclosure.close();
                   }}

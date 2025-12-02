@@ -16,7 +16,7 @@ export type ComposeSearchParam = z.infer<typeof searchParamSchema>;
 
 export const Route = createFileRoute("/_protected/compose")({
   validateSearch: (search) => searchParamSchema.parse(search),
-    errorComponent: ErrorComponent,
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

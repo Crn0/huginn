@@ -16,13 +16,13 @@ export interface UserTweetListProps {
   withReply?: boolean;
 }
 
-export function UserTweetList({
-  username,
-  scope,
-}: UserTweetListProps) {
+export function UserTweetList({ username, scope }: UserTweetListProps) {
   const userQuery = useUser(username);
 
-  const tweetsQuery = useInfiniteUserTweets(username, scope === "likes" ? "likes" : "posts");
+  const tweetsQuery = useInfiniteUserTweets(
+    username,
+    scope === "likes" ? "likes" : "posts"
+  );
 
   if (!userQuery.isSuccess) {
     return <LogoSplash />;
@@ -57,33 +57,45 @@ export function UserTweetList({
         aria-label='tweets'
         className='flex flex-1 flex-col items-center-safe justify-center-safe gap-2'
       >
-              {scope !== "replies" && tweets.map((tweet) => {
-             
-          return (
-          <li
-            key={tweet.id}
-            className='grid w-full sm:w-xl'
-            aria-label={`comment-${tweet.content}-${tweet.id}`}
-          >
-           <PlaceTweetTree key={tweet.id} user={user} tweet={tweet} replies={[]} />
-          </li>
-        )
-        })}
-        {scope === "replies" && tweets.map((tweet) => {
-                    const replies = tweets.filter((tw) => tw.replyTo?.id === tweet.id)
+        {scope !== "replies" &&
+          tweets.map((tweet) => {
+            return (
+              <li
+                key={tweet.id}
+                className='grid w-full sm:w-xl'
+                aria-label={`comment-${tweet.content}-${tweet.id}`}
+              >
+                <PlaceTweetTree
+                  key={tweet.id}
+                  user={user}
+                  tweet={tweet}
+                  replies={[]}
+                />
+              </li>
+            );
+          })}
+        {scope === "replies" &&
+          tweets.map((tweet) => {
+            const replies = tweets.filter((tw) => tw.replyTo?.id === tweet.id);
 
-                 if (tweet.replyTo && replies.length <= 0) return   
-           
-          return (
-          <li
-            key={tweet.id}
-            className='grid w-full gap-2 sm:w-xl'
-            aria-label={`comment-${tweet.content}-${tweet.id}`}
-          >
-           <PlaceTweetTree key={tweet.id} user={user} tweet={tweet} replies={ scope !== "replies" ? [] : replies} maxDepth={3} />
-          </li>
-        )
-        })}
+            if (tweet.replyTo && replies.length <= 0) return;
+
+            return (
+              <li
+                key={tweet.id}
+                className='grid w-full gap-2 sm:w-xl'
+                aria-label={`comment-${tweet.content}-${tweet.id}`}
+              >
+                <PlaceTweetTree
+                  key={tweet.id}
+                  user={user}
+                  tweet={tweet}
+                  replies={scope !== "replies" ? [] : replies}
+                  maxDepth={3}
+                />
+              </li>
+            );
+          })}
       </ul>
 
       {tweetsQuery.hasNextPage && (

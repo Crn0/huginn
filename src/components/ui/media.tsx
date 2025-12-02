@@ -16,10 +16,13 @@ export function Media({
       ? media.variants.sort((a, b) => a.width - b.width)
       : media.variants.sort((a, b) => a.bitRate - b.bitRate);
 
-
   return media.type !== "VIDEO" ? (
     <ImageZoom className={className}>
-      <Image bgImage={lowRes?.url} src={highRes?.url ?? media.url} alt={media.url}/>
+      <Image
+        bgImage={lowRes?.url}
+        src={highRes?.url ?? media.url}
+        alt={media.url}
+      />
     </ImageZoom>
   ) : (
     <div className={className}>

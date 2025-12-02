@@ -12,7 +12,7 @@ import { useAuthUser } from "@/lib/auth";
 import { ErrorComponent } from "@/components/errors/error-component";
 
 export const Route = createFileRoute("/_protected/$username_/status/$tweetId")({
-        errorComponent: ErrorComponent,
+  errorComponent: ErrorComponent,
   component: RouteComponent,
   params: { parse: (p) => p },
 });

@@ -1,7 +1,6 @@
 import type { AuthUser } from "@/lib/auth";
 import type { Tweet } from "@/types/api";
 
-
 import { useInfiniteReplies } from "../api/get-replies";
 
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
@@ -10,17 +9,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { PlaceTweetTree } from "./place-tweet-tree";
 
 export interface TweetReplyListProps {
-  user: AuthUser
+  user: AuthUser;
   parent: Tweet;
 }
 
-export function TweetReplyList({
-user,
-  parent,
-}: TweetReplyListProps) {
-
+export function TweetReplyList({ user, parent }: TweetReplyListProps) {
   const tweetsQuery = useInfiniteReplies(parent.id);
-
 
   if (!tweetsQuery.data && tweetsQuery.isLoading)
     return (
@@ -53,10 +47,19 @@ user,
         {tweets.map((tweet) => (
           <li
             key={tweet.id}
-            className='grid gap-2 w-full sm:w-xl'
+            className='grid w-full gap-2 sm:w-xl'
             aria-label={`comment-${tweet.content}-${tweet.id}`}
           >
-            <PlaceTweetTree user={user} tweet={tweet} pageTweet={parent} replies={ typeof tweet.replies[0] === "undefined" ? [] : [tweet.replies[0]]}/>
+            <PlaceTweetTree
+              user={user}
+              tweet={tweet}
+              pageTweet={parent}
+              replies={
+                typeof tweet.replies[0] === "undefined"
+                  ? []
+                  : [tweet.replies[0]]
+              }
+            />
           </li>
         ))}
       </ul>

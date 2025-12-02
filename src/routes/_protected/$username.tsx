@@ -168,7 +168,7 @@ function RouteComponent() {
 
           <div className='grid gap-2'>
             {user.profile.bio && (
-              <div className='w-sm wrap-break-word text-balance sm:w-2xl'>
+              <div className='w-sm text-balance wrap-break-word sm:w-2xl'>
                 <span>{user.profile.bio}</span>
               </div>
             )}

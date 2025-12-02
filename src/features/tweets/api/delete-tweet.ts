@@ -14,7 +14,12 @@ import { mediaKeys } from "@/features/media/api/query-key-factory";
 import { authUserQueryOptions } from "@/lib/auth";
 
 import { isTweetReplies } from "../utils/is-tweet-replies";
-import { transformUserTweetCount, filterDeletedReplies, filterDeletedTweets, transformTweetReplyCount } from "./mapper";
+import {
+  transformUserTweetCount,
+  filterDeletedReplies,
+  filterDeletedTweets,
+  transformTweetReplyCount,
+} from "./mapper";
 
 import { useClient } from "@/hooks/use-client";
 import { useSearch } from "@tanstack/react-router";
@@ -29,7 +34,7 @@ export const deleteTweet = (client: ApiClient) => async (tweet: Tweet) => {
 export type UseDeleteTweetOptions = UseMutationOptions<
   Response,
   ErrorType,
-  { tweet: Tweet, pageTweet?: Tweet }
+  { tweet: Tweet; pageTweet?: Tweet }
 >;
 
 export const useDeleteTweet = (
@@ -37,17 +42,17 @@ export const useDeleteTweet = (
   options?: UseDeleteTweetOptions
 ) => {
   const queryClient = useQueryClient();
-  const search = useSearch({ strict: false })
+  const search = useSearch({ strict: false });
   const client = useClient();
 
   return useMutation({
     ...options,
     mutationKey: tweetKeys.mutation.delete,
-    onMutate: async ({tweet, pageTweet}) => {
+    onMutate: async ({ tweet, pageTweet }) => {
       await Promise.all([
-                queryClient.cancelQueries({
-            queryKey: userKeys.detail(username),
-          }),
+        queryClient.cancelQueries({
+          queryKey: userKeys.detail(username),
+        }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
@@ -57,49 +62,72 @@ export const useDeleteTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         }),
-        tweet.replyTo ?  queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.replies(tweet.replyTo.id)
-        }): Promise.resolve() ,
-        tweet.liked ?          queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-        }): Promise.resolve() ,
-         username === tweet.author.username ?   queryClient.cancelQueries({
-            queryKey: authUserQueryOptions().queryKey,
-          }): Promise.resolve() ,
-          pageTweet ?  queryClient.cancelQueries({
-            queryKey: tweetKeys.infinite.replies(pageTweet.id)
-          }): Promise.resolve() ,
-          tweet.media.length ?  queryClient.cancelQueries({
-            queryKey: mediaKeys.list(username)
-          }) : Promise.resolve(),
-                  search.f === "posts" && search.q ?  queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.list("all", search.q ),
-        }) : Promise.resolve(),
+        tweet.replyTo
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.infinite.replies(tweet.replyTo.id),
+            })
+          : Promise.resolve(),
+        tweet.liked
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+            })
+          : Promise.resolve(),
+        username === tweet.author.username
+          ? queryClient.cancelQueries({
+              queryKey: authUserQueryOptions().queryKey,
+            })
+          : Promise.resolve(),
+        pageTweet
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.infinite.replies(pageTweet.id),
+            })
+          : Promise.resolve(),
+        tweet.media.length
+          ? queryClient.cancelQueries({
+              queryKey: mediaKeys.list(username),
+            })
+          : Promise.resolve(),
+        search.f === "posts" && search.q
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.infinite.list("all", search.q),
+            })
+          : Promise.resolve(),
       ]);
 
       if (username === tweet.author.username) {
-        queryClient.setQueryData(authUserQueryOptions().queryKey, transformUserTweetCount("delete"));
+        queryClient.setQueryData(
+          authUserQueryOptions().queryKey,
+          transformUserTweetCount("delete")
+        );
       }
 
       if (pageTweet) {
-        queryClient.setQueryData(tweetKeys.infinite.replies(pageTweet.id), !isTweetReplies(tweet) ? filterDeletedTweets(tweet) : filterDeletedReplies(tweet))
+        queryClient.setQueryData(
+          tweetKeys.infinite.replies(pageTweet.id),
+          !isTweetReplies(tweet)
+            ? filterDeletedTweets(tweet)
+            : filterDeletedReplies(tweet)
+        );
       }
 
       if (tweet.replyTo) {
-        console.log(tweet.content, tweet.replyTo.id)
-         queryClient.setQueryData(
-        tweetKeys.detail(tweet.replyTo.id),
-        transformTweetReplyCount("delete")
-      );
+        console.log(tweet.content, tweet.replyTo.id);
+        queryClient.setQueryData(
+          tweetKeys.detail(tweet.replyTo.id),
+          transformTweetReplyCount("delete")
+        );
       }
 
       if (tweet.liked) {
-              queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "likes"),
-        filterDeletedTweets(tweet)
-      );
+        queryClient.setQueryData(
+          tweetKeys.infinite.listByUser(username, "likes"),
+          filterDeletedTweets(tweet)
+        );
       }
-      queryClient.setQueryData(userKeys.detail(username), transformUserTweetCount("delete"));
+      queryClient.setQueryData(
+        userKeys.detail(username),
+        transformUserTweetCount("delete")
+      );
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
         filterDeletedTweets(tweet)
@@ -109,28 +137,26 @@ export const useDeleteTweet = (
         filterDeletedTweets(tweet)
       );
 
-
-            if (search.f === "posts" && search.q) {
-            queryClient.setQueryData(
-              tweetKeys.infinite.list("all", search.q),
-              filterDeletedTweets(tweet)
-            );
-            }
+      if (search.f === "posts" && search.q) {
+        queryClient.setQueryData(
+          tweetKeys.infinite.list("all", search.q),
+          filterDeletedTweets(tweet)
+        );
+      }
     },
-    onSettled: (_data, _error, {tweet}) => {
+    onSettled: (_data, _error, { tweet }) => {
       if (
         queryClient.isMutating({ mutationKey: tweetKeys.mutation.delete }) === 1
       ) {
-             queryClient.invalidateQueries({
-            queryKey: userKeys.detail(username),
-          });
+        queryClient.invalidateQueries({
+          queryKey: userKeys.detail(username),
+        });
 
         if (username === tweet.author.username) {
           queryClient.invalidateQueries({
             queryKey: authUserQueryOptions().queryKey,
           });
         }
-
 
         if (tweet.media.length > 0) {
           queryClient.invalidateQueries({
@@ -139,9 +165,9 @@ export const useDeleteTweet = (
         }
 
         if (tweet.liked) {
-                  queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-        });
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+          });
         }
 
         queryClient.invalidateQueries({
@@ -151,16 +177,16 @@ export const useDeleteTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
         queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.reply()
-          });
+          queryKey: tweetKeys.infinite.reply(),
+        });
 
-                if (search.f === "posts" && search.q) {
-      queryClient.invalidateQueries(
-        {queryKey:  tweetKeys.infinite.list("all", search.q)}
-      );
-      }
+        if (search.f === "posts" && search.q) {
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.list("all", search.q),
+          });
+        }
       }
     },
-    mutationFn: ({tweet}) => deleteTweet(client)(tweet),
+    mutationFn: ({ tweet }) => deleteTweet(client)(tweet),
   });
 };

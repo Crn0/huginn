@@ -21,7 +21,7 @@ export function DeleteTweet({
   onSuccess,
 }: {
   tweet: Tweet;
-  pageTweet?: Tweet
+  pageTweet?: Tweet;
   onSuccess?: () => void;
 }) {
   const tweetMutation = useDeleteTweet(tweet.author.username, { onSuccess });
@@ -56,7 +56,7 @@ export function DeleteTweet({
           <DialogClose asChild>
             <Button
               variant='destructive'
-              onClick={() => tweetMutation.mutate({tweet, pageTweet})}
+              onClick={() => tweetMutation.mutate({ tweet, pageTweet })}
               disabled={tweetMutation.isPending}
             >
               Delete

@@ -35,7 +35,6 @@ export function DeleteAccount({ user }: DeleteAccountProps) {
 
   const deleteAccountMutation = useDeleteAccount({
     onSuccess: () => {
-      //   close()
       navigate({ to: "/login", replace: true });
     },
   });

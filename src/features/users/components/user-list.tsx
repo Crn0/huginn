@@ -8,11 +8,11 @@ import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { User } from "./user";
 
-export function UserList () {
+export function UserList() {
   const search = useSearch({ strict: false });
 
   const authUserQuery = useAuthUser();
-  const usersQuery = useInfiniteUsers(search.q ?? "", !!search.q)
+  const usersQuery = useInfiniteUsers(search.q ?? "", !!search.q);
 
   if (!authUserQuery.isSuccess) {
     return <LogoSplash />;
@@ -28,7 +28,11 @@ export function UserList () {
 
   if (usersQuery.isError) {
     return (
-      <ErrorComponent error={usersQuery.error} reset={usersQuery.refetch} defaultMessage/>
+      <ErrorComponent
+        error={usersQuery.error}
+        reset={usersQuery.refetch}
+        defaultMessage
+      />
     );
   }
 
@@ -58,11 +62,8 @@ export function UserList () {
         className='flex flex-1 flex-col items-center-safe justify-center-safe gap-1'
       >
         {users.map((user) => (
-          <li
-            key={user.id}
-            className='w-full sm:w-xl'
-          >
-            <User key={user.id} authUser={authUser}  user={user} />
+          <li key={user.id} className='w-full sm:w-xl'>
+            <User key={user.id} authUser={authUser} user={user} />
           </li>
         ))}
       </ul>

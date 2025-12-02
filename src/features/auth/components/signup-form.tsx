@@ -216,7 +216,7 @@ export function SignupForm({ onSuccess, close }: SignupFormProps) {
                             </span>
                           </span>
                         </TooltipTrigger>
-                        <TooltipContent className="text-wrap w-sm sm:w-full">
+                        <TooltipContent className='w-sm text-wrap sm:w-full'>
                           <span>
                             Password must be at least 8 characters long and at
                             most 64 characters

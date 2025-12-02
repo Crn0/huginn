@@ -88,9 +88,11 @@ type BaseTweet = Entity<{
 }>;
 
 export type Tweet = Entity<
-      BaseTweet & {
-        replyTo: Pick<BaseEntity, "id"> | null;
-      }
-    >;
+  BaseTweet & {
+    replyTo: Pick<BaseEntity, "id"> | null;
+  }
+>;
 
-export type TweetReply = Tweet & { replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string}})[]  };
+export type TweetReply = Tweet & {
+  replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string } })[];
+};

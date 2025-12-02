@@ -7,7 +7,7 @@ import { buildResourcePath } from "@/lib/build-resource-path";
 import { mediaKeys } from "../query-key-factory";
 import { useClient } from "@/hooks/use-client";
 
-export const getTweets =
+export const getMedia =
   (client: Client) =>
   async (username: string, page: string): Promise<Pagination<Media[]>> => {
     const resource = buildResourcePath(`users/${username}/media`, page);
@@ -30,7 +30,7 @@ export const useInfiniteMedia = (
     enabled,
     initialPageParam: "",
     queryKey: mediaKeys.list(username),
-    queryFn: ({ pageParam }) => getTweets(client)(username, pageParam),
+    queryFn: ({ pageParam }) => getMedia(client)(username, pageParam),
     getNextPageParam: (pagination) => pagination.nextHref,
     getPreviousPageParam: (pagination) => pagination.prevHref,
   });

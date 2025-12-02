@@ -29,7 +29,7 @@ export interface SearchProps {
   focus: (value: boolean) => void;
 }
 
-export function Search({ isFocus, focus}: SearchProps) {
+export function Search({ isFocus, focus }: SearchProps) {
   const navigate = useNavigate({ from: "/explore" });
   const search = useSearch({ from: "/_protected/explore" });
 
@@ -42,15 +42,14 @@ export function Search({ isFocus, focus}: SearchProps) {
 
   const searchTerm = (form.watch("searchTerm") ?? "").trim();
 
-  const [enableNavigate, setEnableNavigate] = useState(false)
+  const [enableNavigate, setEnableNavigate] = useState(false);
   const [debouncedTerm] = useDebounce(searchTerm, 800);
 
   const usersQuery = useUsers(debouncedTerm, debouncedTerm.length > 0);
 
-  const users =
-    usersQuery.data?.data ?? [];
+  const users = usersQuery.data?.data ?? [];
 
-  const showResults = usersQuery.isEnabled && isFocus
+  const showResults = usersQuery.isEnabled && isFocus;
 
   const onSubmit = (data: GetUserFilter) => {
     if (data.searchTerm) {
@@ -65,7 +64,7 @@ export function Search({ isFocus, focus}: SearchProps) {
 
   return (
     <Command
-      className={cn("overflow-initial sm:p-5 sm:h-2/6", !isFocus && "h-9")}
+      className={cn("overflow-initial sm:h-2/6 sm:p-5", !isFocus && "h-9")}
       onKeyDown={(e) => {
         if (e.key !== "Escape") return;
 
@@ -86,39 +85,37 @@ export function Search({ isFocus, focus}: SearchProps) {
             {...rest}
             placeholder='Search'
             onValueChange={(value) => {
-              focus(true)
-              onChange(value)
+              focus(true);
+              onChange(value);
             }}
             onFocus={() => {
               focus(true);
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                  form.handleSubmit(onSubmit)(e)
-                  focus(false)
+                form.handleSubmit(onSubmit)(e);
+                focus(false);
               }
 
               if (e.key === "ArrowDown") {
-                setEnableNavigate(true)
+                setEnableNavigate(true);
               }
-
-                
             }}
           />
         )}
       />
 
       {showResults && (
-        <CommandList className='border-border h-full max-h-full rounded-lg border '>
+        <CommandList className='border-border h-full max-h-full rounded-lg border'>
           {!usersQuery.isLoading && !usersQuery.isError && (
             <CommandEmpty>No results found.</CommandEmpty>
           )}
 
-          {
-            !usersQuery.isLoading && usersQuery.isError && <CommandEmpty className="break-all p-5">{`Search for "${debouncedTerm}"`}</CommandEmpty>
-          }
+          {!usersQuery.isLoading && usersQuery.isError && (
+            <CommandEmpty className='p-5 break-all'>{`Search for "${debouncedTerm}"`}</CommandEmpty>
+          )}
 
-          {users.length <=0 && usersQuery.isLoading && (
+          {users.length <= 0 && usersQuery.isLoading && (
             <CommandEmpty className='grid place-content-center-safe place-items-center-safe'>
               <Spinner className='text-spinner size-10' />
             </CommandEmpty>
@@ -128,16 +125,14 @@ export function Search({ isFocus, focus}: SearchProps) {
             {users.map((user) => (
               <CommandItem
                 key={user.id}
-                onSelect={() =>
-                 {
+                onSelect={() => {
                   if (enableNavigate) {
                     navigate({
-                    to: "/$username",
-                    params: { username: user.username },
-                  })
+                      to: "/$username",
+                      params: { username: user.username },
+                    });
                   }
-                 }
-                }
+                }}
                 tabIndex={0}
                 asChild
               >

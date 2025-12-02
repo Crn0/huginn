@@ -12,7 +12,7 @@ import { Tweet } from "./tweet";
 
 export interface TweetListProps {
   filter: TweetFilter;
-  enabled?: boolean
+  enabled?: boolean;
 }
 
 export function TweetList({ filter, enabled = true }: TweetListProps) {
@@ -37,7 +37,11 @@ export function TweetList({ filter, enabled = true }: TweetListProps) {
 
   if (tweetsQuery.isError) {
     return (
-      <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} defaultMessage/>
+      <ErrorComponent
+        error={tweetsQuery.error}
+        reset={tweetsQuery.refetch}
+        defaultMessage
+      />
     );
   }
 

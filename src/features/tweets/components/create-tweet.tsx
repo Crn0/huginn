@@ -79,7 +79,9 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
 
   const onSubmit = (data: CreateTweetInput) => tweetMutation.mutate(data);
 
-  const content = form.watch("content") ? JSON.stringify(form.watch("content")) : "";
+  const content = form.watch("content")
+    ? JSON.stringify(form.watch("content"))
+    : "";
   const media =
     form
       .watch("media")
@@ -295,7 +297,10 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
               <EmojiPicker
                 className='h-[342px]'
                 onEmojiSelect={({ emoji }) => {
-                  form.setValue("content",  content ? `${JSON.parse(content)}${emoji}` : emoji);
+                  form.setValue(
+                    "content",
+                    content ? `${JSON.parse(content)}${emoji}` : emoji
+                  );
 
                   emojiDisclosure.close();
                 }}

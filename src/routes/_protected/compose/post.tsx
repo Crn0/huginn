@@ -8,7 +8,7 @@ import { ReplyTweet } from "@/features/tweets/components/reply-tweet";
 import { useAuthUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/_protected/compose/post")({
-        errorComponent: ErrorComponent,
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 });
 

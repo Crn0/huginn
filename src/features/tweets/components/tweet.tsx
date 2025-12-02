@@ -192,7 +192,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
                         </Button>
                       }
                     >
-                      <DeleteTweet tweet={tweet} pageTweet={pageTweet}/>
+                      <DeleteTweet tweet={tweet} pageTweet={pageTweet} />
                     </Authorization>
                   )}
                 </PopoverContent>
@@ -202,10 +202,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col gap-2'>
-        <MDPreview
-          data-navigates='true'
-          value={tweet.content ?? ""}
-        />
+        <MDPreview data-navigates='true' value={tweet.content ?? ""} />
 
         <TweetMedia media={tweet.media} />
       </CardContent>
@@ -248,7 +245,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
             <Button
               variant='ghost'
               className={cn(tweet.liked && "text-rose-400")}
-              onClick={() => toggleLikeMutation.mutate({tweet, pageTweet})}
+              onClick={() => toggleLikeMutation.mutate({ tweet, pageTweet })}
               disabled={toggleLikeMutation.isPending}
             >
               <HeartIcon />

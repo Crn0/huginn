@@ -63,7 +63,10 @@ function RouteComponent() {
         </TabsContent>
 
         <TabsContent value='posts'>
-          <TweetList filter={{ scope: "all", search: search.q ?? " "}} enabled={!!search.q}/>
+          <TweetList
+            filter={{ scope: "all", search: search.q ?? " " }}
+            enabled={!!search.q}
+          />
         </TabsContent>
       </Tabs>
     </ContentLayout>

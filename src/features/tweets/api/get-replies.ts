@@ -10,7 +10,7 @@ import { useClient } from "@/hooks/use-client";
 export const getReplies =
   (client: Client) =>
   async (id: string, page: string): Promise<Pagination<TweetReply[]>> => {
-    const resource = buildResourcePath(`tweets/${id}/replies`, page, );
+    const resource = buildResourcePath(`tweets/${id}/replies`, page);
 
     const res = await client.callApi(resource, {
       isAuth: true,
@@ -21,7 +21,7 @@ export const getReplies =
   };
 
 export const useInfiniteReplies = (
-    id: string,
+  id: string,
   { enabled = true }: { enabled?: boolean } = {}
 ) => {
   const client = useClient();

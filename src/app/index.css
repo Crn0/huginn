@@ -4,6 +4,27 @@
 @custom-variant dark (&:is(.dark *));
 @tailwind utilities;
 
+@utility cmdk-scrollbar {
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: oklch(0.24 0 284.82);
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: oklch(0.3667 0 328.24);
+    border-radius: 0.5rem;
+  }
+}
+
+@utility overflow-initial {
+  overflow: initial;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -61,8 +82,8 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent: oklch(0.205 0 0);
+  --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.38 0.0123 273.18);
   --input: oklch(0.922 0 0);
@@ -80,7 +101,7 @@
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.5735 0.1801 256.24);
   --popover: oklch(0 0 262);
   --popover-foreground: oklch(0.9676 0.0074 262);
   --spinner: oklch(0.7352 0.1628 241.41);
@@ -126,6 +147,33 @@
   }
   body {
     @apply bg-background text-foreground;
-    overflow: hidden
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  .input-wrapper-focus {
+    &:focus {
+      outline-style: none;
+      --tw-outline-style: none;
+      --tw-ring-color: var(--sidebar-ring);
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+        calc(2px + var(--tw-ring-offset-width))
+        var(--tw-ring-color, currentcolor);
+      box-shadow:
+        var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+        var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+    &:has(input:focus) {
+      outline-style: none;
+      --tw-outline-style: none;
+      --tw-ring-color: var(--sidebar-ring);
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+        calc(2px + var(--tw-ring-offset-width))
+        var(--tw-ring-color, currentcolor);
+      box-shadow:
+        var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+        var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
   }
 }
