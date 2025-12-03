@@ -10,10 +10,11 @@ import { Search } from "@/features/explore/components/search";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserList } from "@/features/users/components/user-list";
 import { TweetList } from "@/features/tweets/components/tweet-list";
+import { MediaList } from "@/features/media/components/media-list";
 
 const searchParamSchema = z.object({
   q: z.string().min(1, { error: "Required" }).optional(),
-  f: z.enum(["users", "posts"]).default("users").catch("users"),
+  f: z.enum(["users", "posts", "media"]).default("users").catch("users"),
 });
 
 export const Route = createFileRoute("/_protected/explore")({
@@ -28,6 +29,21 @@ function RouteComponent() {
 
   const [isFocus, setIsFocus] = useState(false);
 
+  const triggerButtons = [
+    {
+      value: "users",
+      name: "People",
+    },
+    {
+      value: "posts",
+      name: "Latest",
+    },
+    {
+      value: "media",
+      name: "Media",
+    },
+  ] as const
+
   return (
     <ContentLayout
       headerClassName='flex-1 justify-baseline gap-5 p-1  lg:flex static'
@@ -40,22 +56,16 @@ function RouteComponent() {
     >
       <Tabs defaultValue={search.f} className='flex-1'>
         <TabsList className='flex w-full rounded-none'>
-          <TabsTrigger
-            value='users'
-            onClick={() => navigate({ search: { q: search.q, f: "users" } })}
+          {
+            triggerButtons.map(({ value, name }) =>  <TabsTrigger key={value}
+            value={value}
+            onClick={() => navigate({ search: { q: search.q, f: value } })}
           >
             <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-              People
+              {name}
             </span>
-          </TabsTrigger>
-          <TabsTrigger
-            value='posts'
-            onClick={() => navigate({ search: { q: search.q, f: "posts" } })}
-          >
-            <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-              Latest
-            </span>
-          </TabsTrigger>
+          </TabsTrigger>)
+          }         
         </TabsList>
 
         <TabsContent value='users'>
@@ -67,6 +77,10 @@ function RouteComponent() {
             filter={{ scope: "all", search: search.q ?? " " }}
             enabled={!!search.q}
           />
+        </TabsContent>
+
+        <TabsContent value="media">
+          <MediaList search={search.q ?? ""}/>
         </TabsContent>
       </Tabs>
     </ContentLayout>
