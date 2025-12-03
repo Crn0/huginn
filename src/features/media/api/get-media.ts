@@ -4,13 +4,13 @@ import type { Pagination, Media } from "@/types/api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { buildResourcePath } from "@/lib/build-resource-path";
-import { mediaKeys } from "../query-key-factory";
+import { mediaKeys } from "./query-key-factory";
 import { useClient } from "@/hooks/use-client";
 
 export const getMedia =
   (client: Client) =>
-  async (username: string, page: string): Promise<Pagination<Media[]>> => {
-    const resource = buildResourcePath(`users/${username}/media`, page);
+  async (search: string, page: string): Promise<Pagination<Media[]>> => {
+    const resource = buildResourcePath("media", page, { search });
 
     const res = await client.callApi(resource, {
       isAuth: true,
@@ -21,7 +21,7 @@ export const getMedia =
   };
 
 export const useInfiniteMedia = (
-  username: string,
+  search: string,
   { enabled = true }: { enabled?: boolean } = {}
 ) => {
   const client = useClient();
@@ -29,8 +29,8 @@ export const useInfiniteMedia = (
   return useInfiniteQuery({
     enabled,
     initialPageParam: "",
-    queryKey: mediaKeys.listByUser(username),
-    queryFn: ({ pageParam }) => getMedia(client)(username, pageParam),
+    queryKey: mediaKeys.list(search),
+    queryFn: ({ pageParam }) => getMedia(client)(search, pageParam),
     getNextPageParam: (pagination) => pagination.nextHref,
     getPreviousPageParam: (pagination) => pagination.prevHref,
   });

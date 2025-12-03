@@ -84,7 +84,7 @@ export const useDeleteTweet = (
           : Promise.resolve(),
         tweet.media.length
           ? queryClient.cancelQueries({
-              queryKey: mediaKeys.list(username),
+          queryKey: mediaKeys.listByUser(username),
             })
           : Promise.resolve(),
         search.f === "posts" && search.q
@@ -160,7 +160,7 @@ export const useDeleteTweet = (
 
         if (tweet.media.length > 0) {
           queryClient.invalidateQueries({
-            queryKey: mediaKeys.list(username),
+          queryKey: mediaKeys.listByUser(username),
           });
         }
 

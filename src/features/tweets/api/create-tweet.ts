@@ -129,7 +129,7 @@ export const useCreateTweet = (
 
       if (media.length > 0) {
         queryClient.invalidateQueries({
-          queryKey: mediaKeys.list(username),
+          queryKey: mediaKeys.listByUser(username),
         });
       }
 
