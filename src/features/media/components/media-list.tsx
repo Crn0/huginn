@@ -34,7 +34,7 @@ export function MediaList({ search }: { search: string }) {
     <>
       <ul
         aria-label='media'
-        className='grid flex-1 grid-cols-2 gap-1 xl:grid-cols-4'
+        className='grid flex-1 grid-cols-2 gap-1 xl:grid-cols-4 p-5'
       >
         {media.map((m) => (
           <li key={m.id} className='w-full max-w-lg'>

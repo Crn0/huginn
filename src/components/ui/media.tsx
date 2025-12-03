@@ -19,6 +19,7 @@ export function Media({
   return media.type !== "VIDEO" ? (
     <ImageZoom className={className}>
       <Image
+        className="rounded-md"
         bgImage={lowRes?.url}
         src={highRes?.url ?? media.url}
         alt={media.url}

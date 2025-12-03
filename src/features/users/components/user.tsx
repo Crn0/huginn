@@ -93,7 +93,7 @@ export function User({ authUser, user }: UserProps) {
             {user.profile.bio && (
               <div
                 data-navigates='true'
-                className='wrap-break-word sm:w-xl'
+                className='wrap-break-word text-balance'
                 onClick={onNavigate}
                 onKeyDown={onNavigate}
               >
