@@ -1,12 +1,12 @@
-import { useInfiniteMedia } from "../api/[username]/get-media";
+import { useInfiniteMedia } from "../api/get-media";
 
 import { Spinner } from "@/components/ui/spinner";
 import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Media } from "@/components/ui/media";
 
-export function MediaList({ username }: { username: string }) {
-  const mediaQuery = useInfiniteMedia(username);
+export function MediaList({ search }: { search: string }) {
+  const mediaQuery = useInfiniteMedia(search, { enabled: !!search});
 
   if (!mediaQuery.data && mediaQuery.isLoading)
     return (
@@ -15,12 +15,12 @@ export function MediaList({ username }: { username: string }) {
       </div>
     );
 
-  if (!mediaQuery.isSuccess)
+  if (mediaQuery.isError)
     return (
       <ErrorComponent error={mediaQuery.error} reset={mediaQuery.refetch} />
     );
 
-  const media = mediaQuery.data.pages?.flatMap(({ data }) => data);
+  const media = mediaQuery.data?.pages?.flatMap(({ data }) => data) ?? [];
 
   if (!media.length) {
     return (
