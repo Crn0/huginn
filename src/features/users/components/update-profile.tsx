@@ -40,6 +40,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { handleServerError } from "@/lib/handle-form-server-error";
 
 export interface UpdateProfileProps {
   user: AuthUser;
@@ -78,6 +79,7 @@ export function UpdateProfile({
     onSuccess: () => {
       close();
     },
+    onError: (e) => handleServerError(e, form.setError)
   });
   const avatarRef = useRef<HTMLInputElement | null>(null);
   const bannerRef = useRef<HTMLInputElement | null>(null);
@@ -87,6 +89,8 @@ export function UpdateProfile({
 
   const avatarFile = form.watch("avatar");
   const bannerFile = form.watch("banner");
+
+  const bio = form.watch("bio") ? JSON.stringify(form.watch("bio")) : "";
 
   const onSubmit = (data: UpdateProfileInput) => {
     profileMutation.mutate(data);
@@ -350,15 +354,15 @@ export function UpdateProfile({
                         id='form-bio'
                         placeholder='Bio'
                         onChange={(e) => {
-                          if (e.currentTarget.value.length <= BIO_LENGTH) {
+                          if (JSON.stringify(e.currentTarget.value).length <= BIO_LENGTH) {
                             field.onChange(e);
                           }
                         }}
                         value={field.value ?? undefined}
                         aria-invalid={fieldState.invalid}
-                        aria-disabled={field.value?.length === BIO_LENGTH}
+                        aria-disabled={bio?.length >= BIO_LENGTH}
                       />
-                      {!field.value?.length ? null : (
+                      {!bio.length ? null : (
                         <InputGroupAddon
                           align='block-start'
                           className='flex justify-between'
@@ -367,7 +371,7 @@ export function UpdateProfile({
                             Bio
                           </InputGroupText>
                           <InputGroupText className='tabular-nums'>
-                            {field.value.length}/{BIO_LENGTH}
+                            {bio.length}/{BIO_LENGTH}
                           </InputGroupText>
                         </InputGroupAddon>
                       )}
