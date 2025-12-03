@@ -68,6 +68,7 @@ export const useUpdateUsername = (options?: UseUpdateUsernameOption) => {
         queryKey: authUserQueryOptions().queryKey,
       });
       queryClient.invalidateQueries({ queryKey: userKeys.detail(username) });
+      queryClient.invalidateQueries({ queryKey: userKeys.list() });
 
       onSuccess?.(...args);
     },

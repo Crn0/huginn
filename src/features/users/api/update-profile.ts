@@ -34,10 +34,11 @@ const mediaSchema = z
   .refine((file) => file.size <= MAX_FILE_SIZE, "Max media size is 10MB.");
 
 export const updateProfileInputSchema = z.object({
-  displayName: z.string().min(1, "Required").max(DISPLAY_NAME_LENGTH),
-  bio: z.string().max(BIO_LENGTH).nullish(),
-  location: z.string().max(LOCATION_LENGTH).nullable(),
-  website: z.url().max(WEBSITE_LENGTH).nullish(),
+  displayName: z.string().trim().min(1, "Required").max(DISPLAY_NAME_LENGTH),
+  bio: z.string().trim().max(BIO_LENGTH).nullish(),
+  location: z.string().trim().max(LOCATION_LENGTH).nullable(),
+  website: z.url().max(WEBSITE_LENGTH).refine((v) => !/^http:\/\//.test(v), { error: "Invalid URL" })
+    .optional().nullish(),
   birthday: z.coerce
     .date()
     .refine((birthday) => new Date() > birthday, {
@@ -94,6 +95,7 @@ export const useUpdateProfile = (
         queryKey: authUserQueryOptions().queryKey,
       });
       queryClient.invalidateQueries({ queryKey: userKeys.detail(username) });
+      queryClient.invalidateQueries({ queryKey: userKeys.list() });
 
       onSuccess?.(...args);
     },
