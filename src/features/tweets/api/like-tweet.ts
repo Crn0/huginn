@@ -18,19 +18,21 @@ import {
   transformLikeTweets,
 } from "./mapper";
 
-export const likeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/likes`, {
-    isAuth: true,
-    method: "POST",
-  });
-};
+export const likeTweet =
+  (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+    return client.callApi(`tweets/${tweet.id}/likes`, {
+      isAuth: true,
+      method: "POST",
+    });
+  };
 
-export const unlikeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/likes`, {
-    isAuth: true,
-    method: "DELETE",
-  });
-};
+export const unlikeTweet =
+  (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+    return client.callApi(`tweets/${tweet.id}/likes`, {
+      isAuth: true,
+      method: "DELETE",
+    });
+  };
 
 export type UseToggleLikeTweetOptions = UseMutationOptions<
   Response,
@@ -90,11 +92,11 @@ export const useToggleLikeTweet = (
         tweetKeys.infinite.list("all", ""),
         transformLikeTweets(tweet)
       );
-            queryClient.setQueryData(
+      queryClient.setQueryData(
         tweetKeys.infinite.list("following", ""),
         transformLikeTweets(tweet)
       );
-      
+
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
         transformLikeTweets(tweet)
@@ -121,7 +123,7 @@ export const useToggleLikeTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
-                queryClient.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("following", ""),
         });
         queryClient.invalidateQueries({

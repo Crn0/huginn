@@ -79,7 +79,7 @@ export function UpdateProfile({
     onSuccess: () => {
       close();
     },
-    onError: (e) => handleServerError(e, form.setError)
+    onError: (e) => handleServerError(e, form.setError),
   });
   const avatarRef = useRef<HTMLInputElement | null>(null);
   const bannerRef = useRef<HTMLInputElement | null>(null);
@@ -354,7 +354,10 @@ export function UpdateProfile({
                         id='form-bio'
                         placeholder='Bio'
                         onChange={(e) => {
-                          if (JSON.stringify(e.currentTarget.value).length <= BIO_LENGTH) {
+                          if (
+                            JSON.stringify(e.currentTarget.value).length <=
+                            BIO_LENGTH
+                          ) {
                             field.onChange(e);
                           }
                         }}

@@ -130,7 +130,6 @@ export const useCreateTweet = (
         queryKey: tweetKeys.infinite.list("following", ""),
       });
 
-
       if (media.length > 0) {
         queryClient.invalidateQueries({
           queryKey: mediaKeys.listByUser(username),

@@ -42,7 +42,7 @@ function RouteComponent() {
       value: "media",
       name: "Media",
     },
-  ] as const
+  ] as const;
 
   return (
     <ContentLayout
@@ -56,16 +56,17 @@ function RouteComponent() {
     >
       <Tabs defaultValue={search.f} className='flex-1'>
         <TabsList className='flex w-full rounded-none'>
-          {
-            triggerButtons.map(({ value, name }) =>  <TabsTrigger key={value}
-            value={value}
-            onClick={() => navigate({ search: { q: search.q, f: value } })}
-          >
-            <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
-              {name}
-            </span>
-          </TabsTrigger>)
-          }         
+          {triggerButtons.map(({ value, name }) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              onClick={() => navigate({ search: { q: search.q, f: value } })}
+            >
+              <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
+                {name}
+              </span>
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <TabsContent value='users'>
@@ -79,8 +80,8 @@ function RouteComponent() {
           />
         </TabsContent>
 
-        <TabsContent value="media">
-          <MediaList search={search.q ?? ""}/>
+        <TabsContent value='media'>
+          <MediaList search={search.q ?? ""} />
         </TabsContent>
       </Tabs>
     </ContentLayout>

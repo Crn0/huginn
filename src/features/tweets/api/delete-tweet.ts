@@ -24,12 +24,13 @@ import {
 import { useClient } from "@/hooks/use-client";
 import { useSearch } from "@tanstack/react-router";
 
-export const deleteTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}`, {
-    isAuth: true,
-    method: "DELETE",
-  });
-};
+export const deleteTweet =
+  (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+    return client.callApi(`tweets/${tweet.id}`, {
+      isAuth: true,
+      method: "DELETE",
+    });
+  };
 
 export type UseDeleteTweetOptions = UseMutationOptions<
   Response,
@@ -84,7 +85,7 @@ export const useDeleteTweet = (
           : Promise.resolve(),
         tweet.media.length
           ? queryClient.cancelQueries({
-          queryKey: mediaKeys.listByUser(username),
+              queryKey: mediaKeys.listByUser(username),
             })
           : Promise.resolve(),
         search.f === "posts" && search.q
@@ -164,7 +165,7 @@ export const useDeleteTweet = (
 
         if (tweet.media.length > 0) {
           queryClient.invalidateQueries({
-          queryKey: mediaKeys.listByUser(username),
+            queryKey: mediaKeys.listByUser(username),
           });
         }
 
@@ -177,9 +178,9 @@ export const useDeleteTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
-              queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.list("following", ""),
-      });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("following", ""),
+        });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });

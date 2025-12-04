@@ -18,19 +18,21 @@ import {
   transformRepostTweets,
 } from "./mapper";
 
-export const repostTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/repost`, {
-    isAuth: true,
-    method: "POST",
-  });
-};
+export const repostTweet =
+  (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+    return client.callApi(`tweets/${tweet.id}/repost`, {
+      isAuth: true,
+      method: "POST",
+    });
+  };
 
-export const unRepostTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/repost`, {
-    isAuth: true,
-    method: "DELETE",
-  });
-};
+export const unRepostTweet =
+  (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+    return client.callApi(`tweets/${tweet.id}/repost`, {
+      isAuth: true,
+      method: "DELETE",
+    });
+  };
 
 export type UseToggleRepostTweetOptions = UseMutationOptions<
   Response,
@@ -60,7 +62,7 @@ export const useToggleRepostTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
-                queryClient.cancelQueries({
+        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "following"),
         }),
         queryClient.cancelQueries({
@@ -85,12 +87,18 @@ export const useToggleRepostTweet = (
         );
       }
 
-      queryClient.setQueryData(tweetKeys.detail(tweet.id), transformRepostTweet);
+      queryClient.setQueryData(
+        tweetKeys.detail(tweet.id),
+        transformRepostTweet
+      );
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
         transformRepostTweets(tweet)
       );
-                    queryClient.setQueryData(tweetKeys.infinite.list("following", ""), transformRepostTweets(tweet));
+      queryClient.setQueryData(
+        tweetKeys.infinite.list("following", ""),
+        transformRepostTweets(tweet)
+      );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
         filterRepostTweet(tweet)
@@ -117,7 +125,7 @@ export const useToggleRepostTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
-                queryClient.invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("following", ""),
         });
         queryClient.invalidateQueries({
@@ -138,7 +146,8 @@ export const useToggleRepostTweet = (
       }
     },
     mutationFn: ({ tweet }) =>
-      tweet.reposted ? unRepostTweet(client)(tweet) : repostTweet(client)(tweet),
-   
+      tweet.reposted
+        ? unRepostTweet(client)(tweet)
+        : repostTweet(client)(tweet),
   });
 };

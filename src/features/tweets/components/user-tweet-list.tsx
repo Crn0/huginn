@@ -67,11 +67,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
                 className='grid w-full sm:w-xl'
                 aria-label={`comment-${tweet.content}-${tweet.id}`}
               >
-                <PlaceTweetTree
-                  user={user}
-                  tweet={tweet}
-                  replies={[]}
-                />
+                <PlaceTweetTree user={user} tweet={tweet} replies={[]} />
               </li>
             );
           })}

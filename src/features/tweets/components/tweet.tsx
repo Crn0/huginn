@@ -105,23 +105,26 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
       onKeyDown={onNavigateTweet}
     >
       <CardHeader>
-            {
-      isRepost(tweet) && <div data-navigates='true' className="flex gap-1">
-        <span className='font-light opacity-50'>
-                <Repeat2Icon/>
-
-        </span>
-              <span className='font-light opacity-50 flex gap-1'>
-                <span className={cn(tweet.reposter.id !== user.id && "overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto" )}>
-                  {
-                  tweet.reposter.id === user.id ? "You" : tweet.reposter.profile.displayName
-                }
-                </span>
-                <span>reposted</span>
+        {isRepost(tweet) && (
+          <div data-navigates='true' className='flex gap-1'>
+            <span className='font-light opacity-50'>
+              <Repeat2Icon />
+            </span>
+            <span className='flex gap-1 font-light opacity-50'>
+              <span
+                className={cn(
+                  tweet.reposter.id !== user.id &&
+                    "w-10 overflow-hidden overflow-ellipsis whitespace-nowrap sm:w-auto"
+                )}
+              >
+                {tweet.reposter.id === user.id
+                  ? "You"
+                  : tweet.reposter.profile.displayName}
               </span>
-
-      </div>
-    }
+              <span>reposted</span>
+            </span>
+          </div>
+        )}
         <div className='flex gap-2'>
           <div>
             <Link to='/$username' params={{ username: author.username }}>
@@ -140,8 +143,12 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               onClick={onNavigateTweet}
               className='text-foreground flex flex-1 gap-1'
             >
-              <span className='font-bold overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto'>{profile.displayName}</span>
-              <span className='font-light opacity-50 overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto'>@{author.username}</span>
+              <span className='w-10 overflow-hidden font-bold overflow-ellipsis whitespace-nowrap sm:w-auto'>
+                {profile.displayName}
+              </span>
+              <span className='w-10 overflow-hidden font-light overflow-ellipsis whitespace-nowrap opacity-50 sm:w-auto'>
+                @{author.username}
+              </span>
 
               <time
                 className='font-light opacity-50'
@@ -263,7 +270,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
             </Button>
           </TooltipTrigger>
           <TooltipContent side='bottom' sideOffset={-2}>
-              {tweet.liked ? "Undo repost" : "Repost"}
+            {tweet.liked ? "Undo repost" : "Repost"}
           </TooltipContent>
         </Tooltip>
 
@@ -297,16 +304,16 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
           </TooltipContent>
         </Tooltip>
 
-           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant='ghost'>
-                <ShareIcon />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side='bottom' sideOffset={-2}>
-              Share
-            </TooltipContent>
-          </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant='ghost'>
+              <ShareIcon />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+            Share
+          </TooltipContent>
+        </Tooltip>
       </CardFooter>
     </Card>
   );

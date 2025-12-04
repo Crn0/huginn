@@ -6,7 +6,7 @@ import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Media } from "@/components/ui/media";
 
 export function MediaList({ search }: { search: string }) {
-  const mediaQuery = useInfiniteMedia(search, { enabled: !!search});
+  const mediaQuery = useInfiniteMedia(search, { enabled: !!search });
 
   if (!mediaQuery.data && mediaQuery.isLoading)
     return (
@@ -34,7 +34,7 @@ export function MediaList({ search }: { search: string }) {
     <>
       <ul
         aria-label='media'
-        className='grid flex-1 grid-cols-2 gap-1 xl:grid-cols-4 p-5'
+        className='grid flex-1 grid-cols-2 gap-1 p-5 xl:grid-cols-4'
       >
         {media.map((m) => (
           <li key={m.id} className='w-full max-w-lg'>

@@ -22,7 +22,8 @@ export const transformUserTweetCount =
   };
 
 export const transformTweetReplyCount =
-  (action: "create" | "delete") => (tweet?: Omit<Tweet, "replies"> | TweetReply) => {
+  (action: "create" | "delete") =>
+  (tweet?: Omit<Tweet, "replies"> | TweetReply) => {
     if (!tweet) return;
 
     return {
@@ -38,7 +39,8 @@ export const transformTweetReplyCount =
   };
 
 export const transformTweetRepostCount =
-  (action: "create" | "delete") => (tweet?: Omit<Tweet, "replies"> | TweetReply) => {
+  (action: "create" | "delete") =>
+  (tweet?: Omit<Tweet, "replies"> | TweetReply) => {
     if (!tweet) return;
 
     return {
@@ -54,36 +56,37 @@ export const transformTweetRepostCount =
   };
 
 export const transformRepostTweet = (tweet: Omit<Tweet, "replies">) => {
-  if (!tweet) return tweet
+  if (!tweet) return tweet;
 
-  let count = tweet._count.repost
+  let count = tweet._count.repost;
 
   return {
     ...tweet,
     reposted: !tweet.reposted,
     _count: {
       ...tweet._count,
-      repost:  !tweet.reposted ? count += 1 : count -= 1
+      repost: !tweet.reposted ? (count += 1) : (count -= 1),
     },
-  }
-}
+  };
+};
 
 export const transformLikeTweet = (tweet: Omit<Tweet, "replies">) => {
-  if (!tweet) return tweet
+  if (!tweet) return tweet;
 
-  let count = tweet._count.likes
+  let count = tweet._count.likes;
 
   return {
     ...tweet,
     liked: !tweet.liked,
     _count: {
       ...tweet._count,
-      likes:  !tweet.liked ? count += 1 : count -= 1
+      likes: !tweet.liked ? (count += 1) : (count -= 1),
     },
-  }
-}
+  };
+};
 export const transformRepostTweets =
-  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) =>
+  (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data.map((tweet) =>
@@ -100,7 +103,8 @@ export const transformRepostTweets =
   };
 
 export const transformLikeTweets =
-  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) =>
+  (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data.map((tweet) =>
@@ -217,29 +221,29 @@ export const transformRepostReplies =
   };
 
 export const filterRepostTweet =
-  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) =>
+  (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
-        const newData = data.filter((tweet) => {
-          if ( isRepost(tweet) && isRepost(target)) {
-            return target.id !== tweet.id
-          }
+        const newData = data
+          .filter((tweet) => {
+            if (isRepost(tweet) && isRepost(target)) {
+              return target.id !== tweet.id;
+            }
 
-        if ( isRepost(tweet) && !isRepost(target)) {
-            return target.id !== tweet.id
-          }
+            if (isRepost(tweet) && !isRepost(target)) {
+              return target.id !== tweet.id;
+            }
 
-          return true
-        }).map((tweet) => {
-          if (target.id === tweet.id ) {
+            return true;
+          })
+          .map((tweet) => {
+            if (target.id === tweet.id) {
+              return transformRepostTweet(tweet);
+            }
 
-            return transformRepostTweet(tweet)
-          }
-
-
-          return tweet
-        });
-
+            return tweet;
+          });
 
         return { ...rest, data: newData };
       });
@@ -251,7 +255,8 @@ export const filterRepostTweet =
   };
 
 export const filterLikeTweet =
-  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) =>
+  (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data.filter((tweet) => tweet.id !== target.id);
@@ -265,13 +270,19 @@ export const filterLikeTweet =
     return prevPages;
   };
 
-export const filterTargetTweet = (tweet: Omit<Tweet, "replies">, target: Omit<Tweet, "replies">) =>  tweet.id !== target.id;
+export const filterTargetTweet = (
+  tweet: Omit<Tweet, "replies">,
+  target: Omit<Tweet, "replies">
+) => tweet.id !== target.id;
 
-export const filterDeletedTweet = (tweet: Omit<Tweet, "replies">, target: Omit<Tweet, "replies">) =>
-  filterTargetTweet(tweet, target) && tweet.replyTo?.id !== target.id;
+export const filterDeletedTweet = (
+  tweet: Omit<Tweet, "replies">,
+  target: Omit<Tweet, "replies">
+) => filterTargetTweet(tweet, target) && tweet.replyTo?.id !== target.id;
 
 export const filterDeletedTweets =
-  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) =>
+  (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data

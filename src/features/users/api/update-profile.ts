@@ -37,8 +37,12 @@ export const updateProfileInputSchema = z.object({
   displayName: z.string().trim().min(1, "Required").max(DISPLAY_NAME_LENGTH),
   bio: z.string().trim().max(BIO_LENGTH).nullish(),
   location: z.string().trim().max(LOCATION_LENGTH).nullable(),
-  website: z.url().max(WEBSITE_LENGTH).refine((v) => !/^http:\/\//.test(v), { error: "Invalid URL" })
-    .optional().nullish(),
+  website: z
+    .url()
+    .max(WEBSITE_LENGTH)
+    .refine((v) => !/^http:\/\//.test(v), { error: "Invalid URL" })
+    .optional()
+    .nullish(),
   birthday: z.coerce
     .date()
     .refine((birthday) => new Date() > birthday, {

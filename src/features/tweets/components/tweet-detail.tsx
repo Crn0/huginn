@@ -66,7 +66,6 @@ export function TweetDetail({ user, tweet }: TweetProps) {
     navigate({ to: "/home", replace: true });
   };
 
-
   return (
     <Card
       id={tweet.id}
@@ -191,24 +190,26 @@ export function TweetDetail({ user, tweet }: TweetProps) {
             </TooltipContent>
           </Tooltip>
 
-         <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant='ghost'
-              className={cn(tweet.reposted && "text-teal-400")}
-              onClick={() => toggleRepostMutation.mutate({ tweet, pageTweet: tweet })}
-              disabled={toggleRepostMutation.isPending}
-            >
-              <Repeat2Icon />
-              {tweet._count.repost ? (
-                <span>{nFormatter(tweet._count.repost, 0)}</span>
-              ) : null}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side='bottom' sideOffset={-2}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant='ghost'
+                className={cn(tweet.reposted && "text-teal-400")}
+                onClick={() =>
+                  toggleRepostMutation.mutate({ tweet, pageTweet: tweet })
+                }
+                disabled={toggleRepostMutation.isPending}
+              >
+                <Repeat2Icon />
+                {tweet._count.repost ? (
+                  <span>{nFormatter(tweet._count.repost, 0)}</span>
+                ) : null}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side='bottom' sideOffset={-2}>
               {tweet.liked ? "Undo repost" : "Repost"}
-          </TooltipContent>
-        </Tooltip>
+            </TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>
