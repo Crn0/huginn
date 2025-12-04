@@ -133,6 +133,10 @@ export const useDeleteTweet = (
         filterDeletedTweets(tweet)
       );
       queryClient.setQueryData(
+        tweetKeys.infinite.list("following", ""),
+        filterDeletedTweets(tweet)
+      );
+      queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
         filterDeletedTweets(tweet)
       );
@@ -173,6 +177,9 @@ export const useDeleteTweet = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
         });
+              queryClient.invalidateQueries({
+        queryKey: tweetKeys.infinite.list("following", ""),
+      });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });

@@ -42,6 +42,8 @@ export type TweetAuthor = Pick<User, "id" | "username" | "followed"> & {
   profile: Pick<User["profile"], "displayName" | "avatarUrl" | "bannerUrl">;
 };
 
+export type Reposter =  Omit<TweetAuthor, "followed" | "profile"> & { profile: Pick<TweetAuthor["profile"], "displayName"> }
+
 export type Video = Entity<{
   url: string;
   type: "VIDEO";
@@ -81,17 +83,22 @@ export type Media = Video | Image;
 type BaseTweet = Entity<{
   content: string | null;
   author: TweetAuthor;
+  reposted: boolean;
   liked: boolean;
   media: Media[];
+  replyTo: Pick<BaseEntity, "id"> | null;
   updatedAt: string | null;
-  _count: { replies: number; likes: number };
+  isRepost: boolean
+  _count: { replies: number; repost:number, likes: number };
 }>;
 
-export type Tweet = Entity<
-  BaseTweet & {
-    replyTo: Pick<BaseEntity, "id"> | null;
-  }
+export type Repost = Entity<
+  BaseTweet & {isRepost: true, repostId: string, reposter: Reposter }
 >;
+
+export type Tweet = Entity<
+  BaseTweet & { isRepost: false }
+> | Repost;
 
 export type TweetReply = Tweet & {
   replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string } })[];

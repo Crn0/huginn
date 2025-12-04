@@ -126,6 +126,10 @@ export const useCreateTweet = (
       queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.list("all", ""),
       });
+      queryClient.invalidateQueries({
+        queryKey: tweetKeys.infinite.list("following", ""),
+      });
+
 
       if (media.length > 0) {
         queryClient.invalidateQueries({
