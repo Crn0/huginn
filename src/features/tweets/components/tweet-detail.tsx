@@ -19,6 +19,7 @@ import { Authorization } from "@/lib/authorization";
 
 import { useToggleLikeTweet } from "../api/like-tweet";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
+import { useToggleRepostTweet } from "../api/repost-tweet";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import {
@@ -56,6 +57,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
 
   const toggleLikeMutation = useToggleLikeTweet(user.username);
   const toggleFollowMutation = useToggleFollowUser(user?.username);
+  const toggleRepostMutation = useToggleRepostTweet(user?.username ?? "");
 
   const author = tweet.author;
   const profile = author.profile;
@@ -63,6 +65,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
   const onSuccess = () => {
     navigate({ to: "/home", replace: true });
   };
+
 
   return (
     <Card
@@ -188,16 +191,24 @@ export function TweetDetail({ user, tweet }: TweetProps) {
             </TooltipContent>
           </Tooltip>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant='ghost'>
-                <Repeat2Icon />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side='bottom' sideOffset={-2}>
-              Repost
-            </TooltipContent>
-          </Tooltip>
+         <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant='ghost'
+              className={cn(tweet.reposted && "text-teal-400")}
+              onClick={() => toggleRepostMutation.mutate({ tweet, pageTweet: tweet })}
+              disabled={toggleRepostMutation.isPending}
+            >
+              <Repeat2Icon />
+              {tweet._count.repost ? (
+                <span>{nFormatter(tweet._count.repost, 0)}</span>
+              ) : null}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side='bottom' sideOffset={-2}>
+              {tweet.liked ? "Undo repost" : "Repost"}
+          </TooltipContent>
+        </Tooltip>
 
           <Tooltip>
             <TooltipTrigger asChild>

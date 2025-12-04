@@ -1,5 +1,7 @@
 import { useParams } from "@tanstack/react-router";
 
+import { isRepost } from "../utils/is-repost";
+
 import { useAuthUser } from "@/lib/auth";
 import { useUser } from "@/features/users/api/get-user";
 import { useInfiniteTweets, type TweetFilter } from "../api/get-tweets";
@@ -64,11 +66,11 @@ export function TweetList({ filter, enabled = true }: TweetListProps) {
       >
         {tweets.map((tweet) => (
           <li
-            key={tweet.id}
+            key={!isRepost(tweet) ? tweet.id : tweet.repostId}
             className='w-full sm:w-xl'
             aria-label={`comment-${tweet.content}-${tweet.id}`}
           >
-            <Tweet key={tweet.id} user={user} tweet={tweet} />
+            <Tweet user={user} tweet={tweet} />
           </li>
         ))}
       </ul>

@@ -4,6 +4,8 @@ import {
   type Scope,
 } from "../api/[username]/get-tweets";
 
+import { isRepost } from "../utils/is-repost";
+
 import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Spinner } from "@/components/ui/spinner";
@@ -61,12 +63,11 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
           tweets.map((tweet) => {
             return (
               <li
-                key={tweet.id}
+                key={!isRepost(tweet) ? tweet.id : tweet.repostId}
                 className='grid w-full sm:w-xl'
                 aria-label={`comment-${tweet.content}-${tweet.id}`}
               >
                 <PlaceTweetTree
-                  key={tweet.id}
                   user={user}
                   tweet={tweet}
                   replies={[]}
@@ -82,12 +83,11 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
 
             return (
               <li
-                key={tweet.id}
+                key={!isRepost(tweet) ? tweet.id : tweet.repostId}
                 className='grid w-full gap-2 sm:w-xl'
                 aria-label={`comment-${tweet.content}-${tweet.id}`}
               >
                 <PlaceTweetTree
-                  key={tweet.id}
                   user={user}
                   tweet={tweet}
                   replies={scope !== "replies" ? [] : replies}

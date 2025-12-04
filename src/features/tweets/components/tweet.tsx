@@ -3,7 +3,6 @@ import type { AuthUser } from "@/lib/auth";
 
 import { useNavigate } from "@tanstack/react-router";
 import {
-  BookmarkIcon,
   ChartColumnIcon,
   EllipsisIcon,
   HeartIcon,
@@ -16,6 +15,7 @@ import {
 import { dateDiffInDays } from "@/lib/date";
 import { format, formatDistanceStrict } from "@/utils/format-date";
 import { nFormatter } from "@/lib/number-formatter";
+import { isRepost } from "../utils/is-repost";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import {
@@ -56,6 +56,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
 
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
   const toggleFollowMutation = useToggleFollowUser(user?.username ?? "");
+  const toggleRepostMutation = useToggleRepostTweet(user?.username ?? "");
 
   const author = tweet.author;
   const profile = author.profile;
@@ -104,6 +105,23 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
       onKeyDown={onNavigateTweet}
     >
       <CardHeader>
+            {
+      isRepost(tweet) && <div data-navigates='true' className="flex gap-1">
+        <span className='font-light opacity-50'>
+                <Repeat2Icon/>
+
+        </span>
+              <span className='font-light opacity-50 flex gap-1'>
+                <span className={cn(tweet.reposter.id !== user.id && "overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto" )}>
+                  {
+                  tweet.reposter.id === user.id ? "You" : tweet.reposter.profile.displayName
+                }
+                </span>
+                <span>reposted</span>
+              </span>
+
+      </div>
+    }
         <div className='flex gap-2'>
           <div>
             <Link to='/$username' params={{ username: author.username }}>
@@ -122,8 +140,8 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               onClick={onNavigateTweet}
               className='text-foreground flex flex-1 gap-1'
             >
-              <span className='font-bold'>{profile.displayName}</span>
-              <span className='font-light opacity-50'>@{author.username}</span>
+              <span className='font-bold overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto'>{profile.displayName}</span>
+              <span className='font-light opacity-50 overflow-hidden overflow-ellipsis whitespace-nowrap w-10 sm:w-auto'>@{author.username}</span>
 
               <time
                 className='font-light opacity-50'
@@ -232,12 +250,20 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
 
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant='ghost'>
+            <Button
+              variant='ghost'
+              className={cn(tweet.reposted && "text-teal-400")}
+              onClick={() => toggleRepostMutation.mutate({ tweet, pageTweet })}
+              disabled={toggleRepostMutation.isPending}
+            >
               <Repeat2Icon />
+              {tweet._count.repost ? (
+                <span>{nFormatter(tweet._count.repost, 0)}</span>
+              ) : null}
             </Button>
           </TooltipTrigger>
           <TooltipContent side='bottom' sideOffset={-2}>
-            Repost
+              {tweet.liked ? "Undo repost" : "Repost"}
           </TooltipContent>
         </Tooltip>
 
@@ -271,19 +297,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
           </TooltipContent>
         </Tooltip>
 
-        <div>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant='ghost'>
-                <BookmarkIcon />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side='bottom' sideOffset={-2}>
-              Bookmark
-            </TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
+           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant='ghost'>
                 <ShareIcon />
@@ -293,7 +307,6 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               Share
             </TooltipContent>
           </Tooltip>
-        </div>
       </CardFooter>
     </Card>
   );
