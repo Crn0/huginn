@@ -1,4 +1,4 @@
-import type { Tweet, TweetReply, User } from "@/types/api";
+import type { Tweet, TweetLike, Replies, User } from "@/types/api";
 import type { AuthUser } from "@/lib/auth";
 
 import { Fragment } from "react";
@@ -8,9 +8,9 @@ import { Tweet as TweetComponent } from "./tweet";
 
 export interface PlaceTweetTreeProps {
   user: AuthUser | User;
-  tweet: Tweet | TweetReply | TweetReply["replies"][0];
+  tweet: TweetLike;
   pageTweet?: Tweet;
-  replies?: TweetReply["replies"] | Tweet[] | TweetReply[];
+  replies?: Replies;
   maxDepth?: number;
   depthCount?: number;
 }

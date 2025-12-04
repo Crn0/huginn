@@ -1,4 +1,4 @@
-import type { Tweet as TweetType, TweetReply, User } from "@/types/api";
+import type { Tweet as TweetType, TweetLike, User } from "@/types/api";
 import type { AuthUser } from "@/lib/auth";
 
 import { useNavigate } from "@tanstack/react-router";
@@ -43,10 +43,11 @@ import { Authorization } from "@/lib/authorization";
 import { DeleteTweet } from "./delete-tweet";
 import { useToggleLikeTweet } from "../api/like-tweet";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
+import { useToggleRepostTweet } from "../api/repost-tweet";
 
 export interface TweetProps {
   user: AuthUser | User;
-  tweet: TweetType | TweetReply | TweetReply["replies"][0];
+  tweet: TweetLike;
   pageTweet?: TweetType;
 }
 

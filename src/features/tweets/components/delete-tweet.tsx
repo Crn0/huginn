@@ -1,4 +1,4 @@
-import type { Tweet } from "@/types/api";
+import type { Tweet, TweetLike } from "@/types/api";
 
 import { Trash2Icon } from "lucide-react";
 
@@ -20,7 +20,7 @@ export function DeleteTweet({
   pageTweet,
   onSuccess,
 }: {
-  tweet: Tweet;
+  tweet: TweetLike;
   pageTweet?: Tweet;
   onSuccess?: () => void;
 }) {

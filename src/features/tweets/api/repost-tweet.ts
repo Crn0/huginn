@@ -12,35 +12,35 @@ import {
 import { tweetKeys } from "./query-key-factory";
 import { useClient } from "@/hooks/use-client";
 import {
-  filterLikeTweet,
-  transformLikeReplies,
-  transformLikeTweet,
-  transformLikeTweets,
+  filterRepostTweet,
+  transformRepostReplies,
+  transformRepostTweet,
+  transformRepostTweets,
 } from "./mapper";
 
-export const likeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/likes`, {
+export const repostTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+  return client.callApi(`tweets/${tweet.id}/repost`, {
     isAuth: true,
     method: "POST",
   });
 };
 
-export const unlikeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
-  return client.callApi(`tweets/${tweet.id}/likes`, {
+export const unRepostTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
+  return client.callApi(`tweets/${tweet.id}/repost`, {
     isAuth: true,
     method: "DELETE",
   });
 };
 
-export type UseToggleLikeTweetOptions = UseMutationOptions<
+export type UseToggleRepostTweetOptions = UseMutationOptions<
   Response,
   ValidationError,
   { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
 >;
 
-export const useToggleLikeTweet = (
+export const useToggleRepostTweet = (
   username: string,
-  options?: UseToggleLikeTweetOptions
+  options?: UseToggleRepostTweetOptions
 ) => {
   const queryClient = useQueryClient();
   const search = useSearch({ strict: false });
@@ -48,7 +48,7 @@ export const useToggleLikeTweet = (
 
   return useMutation({
     ...options,
-    mutationKey: tweetKeys.mutation.like,
+    mutationKey: tweetKeys.mutation.repost,
     onMutate: async ({ tweet, pageTweet }) => {
       await Promise.all([
         queryClient.cancelQueries({
@@ -58,10 +58,10 @@ export const useToggleLikeTweet = (
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.list("following", ""),
-        }),
-        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        }),
+                queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "following"),
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
@@ -78,42 +78,38 @@ export const useToggleLikeTweet = (
           : Promise.resolve(),
       ]);
 
-      if (pageTweet) {
+      if (pageTweet && pageTweet.id !== tweet.id) {
         queryClient.setQueryData(
           tweetKeys.infinite.replies(pageTweet.id),
-          transformLikeReplies(tweet)
+          transformRepostReplies(tweet)
         );
       }
 
-      queryClient.setQueryData(tweetKeys.detail(tweet.id), transformLikeTweet);
+      queryClient.setQueryData(tweetKeys.detail(tweet.id), transformRepostTweet);
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
-        transformLikeTweets(tweet)
+        transformRepostTweets(tweet)
       );
-            queryClient.setQueryData(
-        tweetKeys.infinite.list("following", ""),
-        transformLikeTweets(tweet)
-      );
-      
+                    queryClient.setQueryData(tweetKeys.infinite.list("following", ""), transformRepostTweets(tweet));
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "posts"),
-        transformLikeTweets(tweet)
+        filterRepostTweet(tweet)
       );
       queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "likes"),
-        filterLikeTweet(tweet)
+        transformRepostTweets(tweet)
       );
 
       if (search.f === "posts" && search.q) {
         queryClient.setQueryData(
           tweetKeys.infinite.list("all", search.q),
-          transformLikeTweets(tweet)
+          transformRepostTweets(tweet)
         );
       }
     },
     onSettled: (_data, _error, { tweet }) => {
       if (
-        queryClient.isMutating({ mutationKey: tweetKeys.mutation.like }) === 1
+        queryClient.isMutating({ mutationKey: tweetKeys.mutation.repost }) === 1
       ) {
         queryClient.invalidateQueries({
           queryKey: tweetKeys.detail(tweet.id),
@@ -142,6 +138,7 @@ export const useToggleLikeTweet = (
       }
     },
     mutationFn: ({ tweet }) =>
-      tweet.liked ? unlikeTweet(client)(tweet) : likeTweet(client)(tweet),
+      tweet.reposted ? unRepostTweet(client)(tweet) : repostTweet(client)(tweet),
+   
   });
 };

@@ -103,3 +103,7 @@ export type Tweet = Entity<
 export type TweetReply = Tweet & {
   replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string } })[];
 };
+
+export type TweetLike = Tweet | TweetReply | TweetReply["replies"][number]
+
+export type Replies = TweetReply["replies"] | Tweet[] | TweetReply[]
