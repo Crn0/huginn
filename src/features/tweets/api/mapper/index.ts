@@ -21,7 +21,7 @@ export const transformUserTweetCount =
   };
 
 export const transformTweetReplyCount =
-  (action: "create" | "delete") => (tweet?: Tweet | TweetReply) => {
+  (action: "create" | "delete") => (tweet?: Omit<Tweet, "replies"> | TweetReply) => {
     if (!tweet) return;
 
     return {
@@ -50,7 +50,7 @@ export const transformLikeTweet = (tweet: Tweet) =>
       };
 
 export const transformLikeTweets =
-  (target: Tweet) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data.map((tweet) =>
@@ -67,7 +67,7 @@ export const transformLikeTweets =
   };
 
 export const transformLikeReplies =
-  (tweet: Tweet | TweetReply) =>
+  (tweet: Omit<Tweet, "replies"> | TweetReply) =>
   (data: { pagesParam: string[]; pages: Pagination<TweetReply[]>[] }) => {
     const newTweet = {
       ...tweet,
@@ -117,7 +117,7 @@ export const transformLikeReplies =
   };
 
 export const filterLikeTweet =
-  (target: Tweet) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data.filter((tweet) => tweet.id !== target.id);
@@ -131,11 +131,13 @@ export const filterLikeTweet =
     return prevPages;
   };
 
-export const filterDeletedTweet = (tweet: Tweet, target: Tweet) =>
-  tweet.id !== target.id && tweet.replyTo?.id !== target.id;
+export const filterTargetTweet = (tweet: Omit<Tweet, "replies">, target: Omit<Tweet, "replies">) =>  tweet.id !== target.id;
+
+export const filterDeletedTweet = (tweet: Omit<Tweet, "replies">, target: Omit<Tweet, "replies">) =>
+  filterTargetTweet(tweet, target) && tweet.replyTo?.id !== target.id;
 
 export const filterDeletedTweets =
-  (target: Tweet) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
+  (target: Omit<Tweet, "replies">) => (prevPages?: InfiniteData<Pagination<Tweet[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {
         const newData = data
@@ -156,7 +158,7 @@ export const filterDeletedTweets =
   };
 
 export const filterDeletedReplies =
-  (target: TweetReply["replies"][0]) =>
+  (target: Omit<Tweet, "replies">) =>
   (prevPages?: InfiniteData<Pagination<TweetReply[]>>) => {
     if (prevPages) {
       const newPages = prevPages.pages.map(({ data, ...rest }) => {

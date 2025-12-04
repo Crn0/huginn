@@ -18,14 +18,14 @@ import {
   transformLikeTweets,
 } from "./mapper";
 
-export const likeTweet = (client: ApiClient) => async (tweet: Tweet) => {
+export const likeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
   return client.callApi(`tweets/${tweet.id}/likes`, {
     isAuth: true,
     method: "POST",
   });
 };
 
-export const unlikeTweet = (client: ApiClient) => async (tweet: Tweet) => {
+export const unlikeTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
   return client.callApi(`tweets/${tweet.id}/likes`, {
     isAuth: true,
     method: "DELETE",
@@ -35,7 +35,7 @@ export const unlikeTweet = (client: ApiClient) => async (tweet: Tweet) => {
 export type UseToggleLikeTweetOptions = UseMutationOptions<
   Response,
   ValidationError,
-  { tweet: Tweet; pageTweet?: Tweet }
+  { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
 >;
 
 export const useToggleLikeTweet = (

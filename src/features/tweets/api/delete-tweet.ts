@@ -24,7 +24,7 @@ import {
 import { useClient } from "@/hooks/use-client";
 import { useSearch } from "@tanstack/react-router";
 
-export const deleteTweet = (client: ApiClient) => async (tweet: Tweet) => {
+export const deleteTweet = (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
   return client.callApi(`tweets/${tweet.id}`, {
     isAuth: true,
     method: "DELETE",
@@ -34,7 +34,7 @@ export const deleteTweet = (client: ApiClient) => async (tweet: Tweet) => {
 export type UseDeleteTweetOptions = UseMutationOptions<
   Response,
   ErrorType,
-  { tweet: Tweet; pageTweet?: Tweet }
+  { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
 >;
 
 export const useDeleteTweet = (

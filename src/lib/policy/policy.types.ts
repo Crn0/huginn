@@ -19,7 +19,7 @@ export interface Policy {
     action: "view" | "update" | "follow" | "delete";
   };
   tweet: {
-    dataType: Tweet;
+    dataType:  Pick<Tweet, "id" | "author">
     action: "view" | "update" | "delete";
   };
   like: {
