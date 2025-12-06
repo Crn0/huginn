@@ -66,6 +66,9 @@ export const useToggleLikeTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+        }),
+        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         }),
         pageTweet
@@ -102,6 +105,10 @@ export const useToggleLikeTweet = (
         transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
+        tweetKeys.infinite.listByUser(username, "replies"),
+        transformLikeTweets(tweet)
+      );
+      queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "likes"),
         filterLikeTweet(tweet)
       );
@@ -128,6 +135,9 @@ export const useToggleLikeTweet = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),

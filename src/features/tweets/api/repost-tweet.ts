@@ -63,6 +63,9 @@ export const useToggleRepostTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        }),
+        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "following"),
         }),
         queryClient.cancelQueries({
@@ -104,6 +107,10 @@ export const useToggleRepostTweet = (
         filterRepostTweet(tweet)
       );
       queryClient.setQueryData(
+        tweetKeys.infinite.listByUser(username, "replies"),
+        filterRepostTweet(tweet)
+      );
+      queryClient.setQueryData(
         tweetKeys.infinite.listByUser(username, "likes"),
         transformRepostTweets(tweet)
       );
@@ -130,6 +137,9 @@ export const useToggleRepostTweet = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),

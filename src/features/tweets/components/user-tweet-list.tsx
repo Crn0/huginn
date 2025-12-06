@@ -21,10 +21,7 @@ export interface UserTweetListProps {
 export function UserTweetList({ username, scope }: UserTweetListProps) {
   const userQuery = useUser(username);
 
-  const tweetsQuery = useInfiniteUserTweets(
-    username,
-    scope === "likes" ? "likes" : "posts"
-  );
+  const tweetsQuery = useInfiniteUserTweets(username, scope);
 
   if (!userQuery.isSuccess) {
     return <LogoSplash />;

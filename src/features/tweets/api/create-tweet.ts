@@ -124,6 +124,9 @@ export const useCreateTweet = (
         queryKey: tweetKeys.infinite.listByUser(username, "posts"),
       });
       queryClient.invalidateQueries({
+        queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+      });
+      queryClient.invalidateQueries({
         queryKey: tweetKeys.infinite.list("all", ""),
       });
       queryClient.invalidateQueries({

@@ -141,6 +141,10 @@ export const useDeleteTweet = (
         tweetKeys.infinite.listByUser(username, "posts"),
         filterDeletedTweets(tweet)
       );
+      queryClient.setQueryData(
+        tweetKeys.infinite.listByUser(username, "replies"),
+        filterDeletedTweets(tweet)
+      );
 
       if (search.f === "posts" && search.q) {
         queryClient.setQueryData(
@@ -183,6 +187,9 @@ export const useDeleteTweet = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.reply(),
