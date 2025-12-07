@@ -18,7 +18,6 @@ import { Route as ProtectedNotificationsRouteImport } from './routes/_protected/
 import { Route as ProtectedHomeRouteImport } from './routes/_protected/home'
 import { Route as ProtectedExploreRouteImport } from './routes/_protected/explore'
 import { Route as ProtectedComposeRouteImport } from './routes/_protected/compose'
-import { Route as ProtectedBookmarksRouteImport } from './routes/_protected/bookmarks'
 import { Route as ProtectedUsernameRouteImport } from './routes/_protected/$username'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -72,11 +71,6 @@ const ProtectedExploreRoute = ProtectedExploreRouteImport.update({
 const ProtectedComposeRoute = ProtectedComposeRouteImport.update({
   id: '/compose',
   path: '/compose',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedBookmarksRoute = ProtectedBookmarksRouteImport.update({
-  id: '/bookmarks',
-  path: '/bookmarks',
   getParentRoute: () => ProtectedRoute,
 } as any)
 const ProtectedUsernameRoute = ProtectedUsernameRouteImport.update({
@@ -146,7 +140,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/$username': typeof ProtectedUsernameRoute
-  '/bookmarks': typeof ProtectedBookmarksRoute
   '/compose': typeof ProtectedComposeRouteWithChildren
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
@@ -167,7 +160,6 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/$username': typeof ProtectedUsernameRoute
-  '/bookmarks': typeof ProtectedBookmarksRoute
   '/compose': typeof ProtectedComposeRouteWithChildren
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
@@ -190,7 +182,6 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_protected/$username': typeof ProtectedUsernameRoute
-  '/_protected/bookmarks': typeof ProtectedBookmarksRoute
   '/_protected/compose': typeof ProtectedComposeRouteWithChildren
   '/_protected/explore': typeof ProtectedExploreRoute
   '/_protected/home': typeof ProtectedHomeRoute
@@ -213,7 +204,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/$username'
-    | '/bookmarks'
     | '/compose'
     | '/explore'
     | '/home'
@@ -234,7 +224,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/$username'
-    | '/bookmarks'
     | '/compose'
     | '/explore'
     | '/home'
@@ -256,7 +245,6 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/_protected/$username'
-    | '/_protected/bookmarks'
     | '/_protected/compose'
     | '/_protected/explore'
     | '/_protected/home'
@@ -342,13 +330,6 @@ declare module '@tanstack/react-router' {
       path: '/compose'
       fullPath: '/compose'
       preLoaderRoute: typeof ProtectedComposeRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
-    '/_protected/bookmarks': {
-      id: '/_protected/bookmarks'
-      path: '/bookmarks'
-      fullPath: '/bookmarks'
-      preLoaderRoute: typeof ProtectedBookmarksRouteImport
       parentRoute: typeof ProtectedRoute
     }
     '/_protected/$username': {
@@ -477,7 +458,6 @@ const ProtectedSettingsRouteWithChildren =
 
 interface ProtectedRouteChildren {
   ProtectedUsernameRoute: typeof ProtectedUsernameRoute
-  ProtectedBookmarksRoute: typeof ProtectedBookmarksRoute
   ProtectedComposeRoute: typeof ProtectedComposeRouteWithChildren
   ProtectedExploreRoute: typeof ProtectedExploreRoute
   ProtectedHomeRoute: typeof ProtectedHomeRoute
@@ -488,7 +468,6 @@ interface ProtectedRouteChildren {
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedUsernameRoute: ProtectedUsernameRoute,
-  ProtectedBookmarksRoute: ProtectedBookmarksRoute,
   ProtectedComposeRoute: ProtectedComposeRouteWithChildren,
   ProtectedExploreRoute: ProtectedExploreRoute,
   ProtectedHomeRoute: ProtectedHomeRoute,

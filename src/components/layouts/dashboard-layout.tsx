@@ -10,7 +10,6 @@ import {
   HomeIcon,
   SearchIcon,
   BellIcon,
-  BookmarkIcon,
   UserIcon,
   SettingsIcon,
   OrigamiIcon,
@@ -73,11 +72,6 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       name: "Notifications",
       to: "/notifications",
       icon: BellIcon,
-    },
-    {
-      name: "Bookmarks",
-      to: "/bookmarks",
-      icon: BookmarkIcon,
     },
     {
       name: "Profile",
