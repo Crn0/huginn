@@ -12,13 +12,15 @@ const LogoutHandler = () => {
   const { queryClient } = Route.useRouteContext();
   const navigate = useNavigate();
   const logout = useAuthActions().logout;
+  const setIsSilentLogin = useAuthActions().setIsSilentLogin;
 
   useEffect(() => {
     queryClient.cancelQueries();
     queryClient.clear();
     logout();
+    setIsSilentLogin();
     navigate({ from: "/logout", to: "/login", replace: true });
-  }, [queryClient, logout, navigate]);
+  }, [queryClient, logout, navigate, setIsSilentLogin]);
 
   return <LogoSplash />;
 };
