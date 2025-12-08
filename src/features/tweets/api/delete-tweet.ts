@@ -35,7 +35,7 @@ export const deleteTweet =
 export type UseDeleteTweetOptions = UseMutationOptions<
   Response,
   ErrorType,
-  { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
+  { tweet: Omit<Tweet, "with-replies">; pageTweet?: Tweet }
 >;
 
 export const useDeleteTweet = (
@@ -61,7 +61,7 @@ export const useDeleteTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         }),
         tweet.replyTo
           ? queryClient.cancelQueries({
@@ -112,7 +112,6 @@ export const useDeleteTweet = (
       }
 
       if (tweet.replyTo) {
-        console.log(tweet.content, tweet.replyTo.id);
         queryClient.setQueryData(
           tweetKeys.detail(tweet.replyTo.id),
           transformTweetReplyCount("delete")
@@ -142,7 +141,7 @@ export const useDeleteTweet = (
         filterDeletedTweets(tweet)
       );
       queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "replies"),
+        tweetKeys.infinite.listByUser(username, "with-replies"),
         filterDeletedTweets(tweet)
       );
 
@@ -189,7 +188,7 @@ export const useDeleteTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
         queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.reply(),

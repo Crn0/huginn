@@ -145,7 +145,7 @@ export const useToggleFollowUser = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
@@ -181,7 +181,7 @@ export const useToggleFollowUser = (
         transformFollowTweetAuthor
       );
       queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "replies"),
+        tweetKeys.infinite.listByUser(username, "with-replies"),
         transformFollowTweetAuthor
       );
       queryClient.setQueryData(
@@ -220,7 +220,7 @@ export const useToggleFollowUser = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
         queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),

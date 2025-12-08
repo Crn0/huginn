@@ -37,7 +37,7 @@ export const unlikeTweet =
 export type UseToggleLikeTweetOptions = UseMutationOptions<
   Response,
   ValidationError,
-  { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
+  { tweet: Omit<Tweet, "with-replies">; pageTweet?: Tweet }
 >;
 
 export const useToggleLikeTweet = (
@@ -66,7 +66,7 @@ export const useToggleLikeTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
@@ -105,7 +105,7 @@ export const useToggleLikeTweet = (
         transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "replies"),
+        tweetKeys.infinite.listByUser(username, "with-replies"),
         transformLikeTweets(tweet)
       );
       queryClient.setQueryData(
@@ -137,7 +137,7 @@ export const useToggleLikeTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
         queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),

@@ -37,7 +37,7 @@ export const unRepostTweet =
 export type UseToggleRepostTweetOptions = UseMutationOptions<
   Response,
   ValidationError,
-  { tweet: Omit<Tweet, "replies">; pageTweet?: Tweet }
+  { tweet: Omit<Tweet, "with-replies">; pageTweet?: Tweet }
 >;
 
 export const useToggleRepostTweet = (
@@ -60,13 +60,13 @@ export const useToggleRepostTweet = (
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+          queryKey: tweetKeys.infinite.list(username, "following"),
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "following"),
+          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
@@ -107,7 +107,7 @@ export const useToggleRepostTweet = (
         filterRepostTweet(tweet)
       );
       queryClient.setQueryData(
-        tweetKeys.infinite.listByUser(username, "replies"),
+        tweetKeys.infinite.listByUser(username, "with-replies"),
         filterRepostTweet(tweet)
       );
       queryClient.setQueryData(
@@ -139,7 +139,7 @@ export const useToggleRepostTweet = (
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         });
         queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "replies"),
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),

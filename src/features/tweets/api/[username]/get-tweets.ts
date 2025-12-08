@@ -7,7 +7,7 @@ import { buildResourcePath } from "@/lib/build-resource-path";
 import { tweetKeys } from "../query-key-factory";
 import { useClient } from "@/hooks/use-client";
 
-export type Scope = "posts" | "replies" | "likes";
+export type Scope = "posts" | "with-replies" | "likes";
 
 export const getTweets =
   (client: Client) =>

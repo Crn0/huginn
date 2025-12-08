@@ -18,7 +18,9 @@ export const tweetKeys = {
       [...tweetKeys.infinite.lists(), { scope, search }] as const,
     reply: () => [...tweetKeys.infinite.all, "replies"] as const,
     replies: (id: string) => [...tweetKeys.infinite.reply(), id] as const,
-    listByUser: (username: string, scope: string) =>
-      [...tweetKeys.infinite.lists(), username, { scope }] as const,
+    listByUser: (
+      username: string,
+      scope: "posts" | "with-replies" | "likes" | ""
+    ) => [...tweetKeys.infinite.lists(), username, { scope }] as const,
   } as const,
 };

@@ -56,7 +56,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
         aria-label='tweets'
         className='flex flex-1 flex-col items-center-safe justify-center-safe gap-2'
       >
-        {scope !== "replies" &&
+        {scope !== "with-replies" &&
           tweets.map((tweet) => {
             return (
               <li
@@ -68,9 +68,10 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
               </li>
             );
           })}
-        {scope === "replies" &&
+        {scope === "with-replies" &&
           tweets.map((tweet) => {
-            const replies = tweets.filter((tw) => tw.replyTo?.id === tweet.id);
+            const replies =
+              tweets.filter((tw) => tw.replyTo?.id === tweet.id) ?? [];
 
             if (tweet.replyTo && replies.length <= 0) return;
 
@@ -83,7 +84,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
                 <PlaceTweetTree
                   user={user}
                   tweet={tweet}
-                  replies={scope !== "replies" ? [] : replies}
+                  replies={replies}
                   maxDepth={3}
                 />
               </li>
