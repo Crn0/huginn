@@ -6,9 +6,12 @@ import {
   createFileRoute,
   Outlet,
   redirect,
+  useNavigate,
 } from "@tanstack/react-router";
 
 import { authUserQueryOptions, useAuthUser } from "@/lib/auth";
+
+import { TweetModalRoute } from "@/features/tweets/components/tweet-modal-route";
 import { LogoSplash } from "@/components/ui/logo-splash";
 
 export const Route = createFileRoute("/_protected")({
@@ -31,9 +34,14 @@ export const Route = createFileRoute("/_protected")({
 function RouteComponent() {
   const authUserQuery = useAuthUser();
 
+  const navigate = useNavigate();
+  const { modal } = Route.useSearch();
+
   if (!authUserQuery.isSuccess) {
     return <LogoSplash />;
   }
+
+  const user = authUserQuery.data;
 
   return (
     <DashboardLayout>
@@ -42,6 +50,13 @@ function RouteComponent() {
         onCatch={(error) => debugError(error)}
         errorComponent={ErrorComponent}
       >
+        <TweetModalRoute
+          user={user}
+          isOpen={!!modal?.open}
+          replyTo={modal?.id ?? ""}
+          close={() => navigate({ to: "." })}
+        />
+
         <Outlet />
       </CatchBoundary>
     </DashboardLayout>

@@ -239,8 +239,8 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
             <Button variant='ghost' asChild>
               <Link
                 className='text-foreground'
-                to='/compose/post'
-                search={{ replyTo: tweet.id }}
+                to='.'
+                search={{ modal: { open: true, id: tweet.id } }}
               >
                 <MessageCircleIcon />
 

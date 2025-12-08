@@ -36,6 +36,12 @@ const searchParamSchema = z.object({
     })
     .optional()
     .catch("/home"),
+  modal: z
+    .object({
+      open: z.coerce.boolean(),
+      id: z.uuidv7().optional(),
+    })
+    .optional(),
 });
 
 export type RootSearchParam = z.infer<typeof searchParamSchema>;

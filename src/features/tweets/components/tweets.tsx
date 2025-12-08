@@ -24,7 +24,7 @@ export function Tweets({ username, filter }: TweetsProps) {
           className='text-foreground rounded-full bg-blue-400'
           asChild
         >
-          <Link to='/compose/post'>
+          <Link to='.' search={{ modal: { open: true } }}>
             <FeatherIcon />
           </Link>
         </Button>

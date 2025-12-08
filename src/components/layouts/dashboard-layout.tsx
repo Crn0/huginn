@@ -130,8 +130,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
           <Button variant='secondary' asChild>
             <Link
-              to='/compose/post'
+              to='.'
               className='mt-2 hidden items-center-safe gap-2 rounded-4xl p-2 text-sm font-medium text-black lg:flex lg:w-full'
+              search={{ modal: { open: true } }}
               activeOptions={{ exact: true }}
             >
               <span>Post</span>
@@ -141,8 +142,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                to='/compose/post'
+                to='.'
                 className='flex items-center-safe gap-2 rounded-4xl p-2 text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white lg:hidden'
+                search={{ modal: { open: true } }}
                 activeOptions={{ exact: true }}
               >
                 {({ isActive }) => (
@@ -353,7 +355,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         <section className='flex-1'>{children}</section>
       </main>
 
-      <footer className='sticky bottom-0 bg-inherit pt-2 sm:hidden'>
+      <footer className='sticky bottom-0 z-[100] bg-inherit pt-2 sm:hidden'>
         <nav className='flex w-full justify-around sm:hidden'>
           {navLinks
             .filter(({ name }) =>

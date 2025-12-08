@@ -56,10 +56,15 @@ import { handleServerError } from "@/lib/handle-form-server-error";
 
 export interface CreateTweetProps {
   username: string;
+  formId?: string;
   onSuccess?: () => void;
 }
 
-export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
+export function CreateTweet({
+  username,
+  onSuccess,
+  formId = "create-tweet-form",
+}: CreateTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm({
@@ -90,7 +95,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
 
   return (
     <form
-      id='create-tweet'
+      id={formId}
       className='grid gap-5 p-5'
       role='form'
       onSubmit={form.handleSubmit(onSubmit)}
@@ -317,7 +322,7 @@ export function CreateTweet({ username, onSuccess }: CreateTweetProps) {
           <Button
             variant='secondary'
             type='submit'
-            form='create-tweet'
+            form={formId}
             disabled={
               tweetMutation.isPending ||
               (!content.length && !media.length) ||

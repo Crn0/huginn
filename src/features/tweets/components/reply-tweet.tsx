@@ -75,6 +75,7 @@ export interface ReplyTweetProps {
   username: string;
   tweet: Tweet;
   onSuccess?: () => void;
+  formId?: string;
   showReplyToContent?: boolean;
 }
 
@@ -82,6 +83,7 @@ export function ReplyTweet({
   username,
   tweet,
   onSuccess,
+  formId = "reply-tweet-form",
   showReplyToContent = true,
 }: ReplyTweetProps) {
   const mediaRef = useRef<HTMLInputElement | null>(null);
@@ -183,7 +185,7 @@ export function ReplyTweet({
       )}
 
       <form
-        id='create-tweet'
+        id={formId}
         className='grid gap-5 p-5'
         role='form'
         onSubmit={form.handleSubmit(onSubmit)}
@@ -412,7 +414,7 @@ export function ReplyTweet({
             <Button
               variant='secondary'
               type='submit'
-              form='create-tweet'
+              form={formId}
               disabled={
                 tweetMutation.isPending ||
                 (!content.length && !media.length) ||

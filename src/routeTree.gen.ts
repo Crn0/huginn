@@ -17,7 +17,6 @@ import { Route as ProtectedSettingsRouteImport } from './routes/_protected/setti
 import { Route as ProtectedNotificationsRouteImport } from './routes/_protected/notifications'
 import { Route as ProtectedHomeRouteImport } from './routes/_protected/home'
 import { Route as ProtectedExploreRouteImport } from './routes/_protected/explore'
-import { Route as ProtectedComposeRouteImport } from './routes/_protected/compose'
 import { Route as ProtectedUsernameRouteImport } from './routes/_protected/$username'
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
@@ -26,7 +25,6 @@ import { Route as ProtectedSettingsUsernameRouteImport } from './routes/_protect
 import { Route as ProtectedSettingsPasswordRouteImport } from './routes/_protected/settings/password'
 import { Route as ProtectedSettingsDeleteRouteImport } from './routes/_protected/settings/delete'
 import { Route as ProtectedSettingsAccountRouteImport } from './routes/_protected/settings/account'
-import { Route as ProtectedComposePostRouteImport } from './routes/_protected/compose/post'
 import { Route as ProtectedSettingsMeAccountRouteImport } from './routes/_protected/settings/me.account'
 import { Route as ProtectedUsernameStatusTweetIdRouteImport } from './routes/_protected/$username_/status.$tweetId'
 
@@ -66,11 +64,6 @@ const ProtectedHomeRoute = ProtectedHomeRouteImport.update({
 const ProtectedExploreRoute = ProtectedExploreRouteImport.update({
   id: '/explore',
   path: '/explore',
-  getParentRoute: () => ProtectedRoute,
-} as any)
-const ProtectedComposeRoute = ProtectedComposeRouteImport.update({
-  id: '/compose',
-  path: '/compose',
   getParentRoute: () => ProtectedRoute,
 } as any)
 const ProtectedUsernameRoute = ProtectedUsernameRouteImport.update({
@@ -116,11 +109,6 @@ const ProtectedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => ProtectedSettingsRoute,
   } as any)
-const ProtectedComposePostRoute = ProtectedComposePostRouteImport.update({
-  id: '/post',
-  path: '/post',
-  getParentRoute: () => ProtectedComposeRoute,
-} as any)
 const ProtectedSettingsMeAccountRoute =
   ProtectedSettingsMeAccountRouteImport.update({
     id: '/me/account',
@@ -140,12 +128,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/$username': typeof ProtectedUsernameRoute
-  '/compose': typeof ProtectedComposeRouteWithChildren
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
   '/notifications': typeof ProtectedNotificationsRoute
   '/settings': typeof ProtectedSettingsRouteWithChildren
-  '/compose/post': typeof ProtectedComposePostRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
@@ -160,11 +146,9 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/signup': typeof AuthSignupRoute
   '/$username': typeof ProtectedUsernameRoute
-  '/compose': typeof ProtectedComposeRouteWithChildren
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
   '/notifications': typeof ProtectedNotificationsRoute
-  '/compose/post': typeof ProtectedComposePostRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
@@ -182,12 +166,10 @@ export interface FileRoutesById {
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
   '/_protected/$username': typeof ProtectedUsernameRoute
-  '/_protected/compose': typeof ProtectedComposeRouteWithChildren
   '/_protected/explore': typeof ProtectedExploreRoute
   '/_protected/home': typeof ProtectedHomeRoute
   '/_protected/notifications': typeof ProtectedNotificationsRoute
   '/_protected/settings': typeof ProtectedSettingsRouteWithChildren
-  '/_protected/compose/post': typeof ProtectedComposePostRoute
   '/_protected/settings/account': typeof ProtectedSettingsAccountRoute
   '/_protected/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/_protected/settings/password': typeof ProtectedSettingsPasswordRoute
@@ -204,12 +186,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/$username'
-    | '/compose'
     | '/explore'
     | '/home'
     | '/notifications'
     | '/settings'
-    | '/compose/post'
     | '/settings/account'
     | '/settings/delete'
     | '/settings/password'
@@ -224,11 +204,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/$username'
-    | '/compose'
     | '/explore'
     | '/home'
     | '/notifications'
-    | '/compose/post'
     | '/settings/account'
     | '/settings/delete'
     | '/settings/password'
@@ -245,12 +223,10 @@ export interface FileRouteTypes {
     | '/_auth/login'
     | '/_auth/signup'
     | '/_protected/$username'
-    | '/_protected/compose'
     | '/_protected/explore'
     | '/_protected/home'
     | '/_protected/notifications'
     | '/_protected/settings'
-    | '/_protected/compose/post'
     | '/_protected/settings/account'
     | '/_protected/settings/delete'
     | '/_protected/settings/password'
@@ -325,13 +301,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedExploreRouteImport
       parentRoute: typeof ProtectedRoute
     }
-    '/_protected/compose': {
-      id: '/_protected/compose'
-      path: '/compose'
-      fullPath: '/compose'
-      preLoaderRoute: typeof ProtectedComposeRouteImport
-      parentRoute: typeof ProtectedRoute
-    }
     '/_protected/$username': {
       id: '/_protected/$username'
       path: '/$username'
@@ -388,13 +357,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedSettingsAccountRouteImport
       parentRoute: typeof ProtectedSettingsRoute
     }
-    '/_protected/compose/post': {
-      id: '/_protected/compose/post'
-      path: '/post'
-      fullPath: '/compose/post'
-      preLoaderRoute: typeof ProtectedComposePostRouteImport
-      parentRoute: typeof ProtectedComposeRoute
-    }
     '/_protected/settings/me/account': {
       id: '/_protected/settings/me/account'
       path: '/me/account'
@@ -424,17 +386,6 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface ProtectedComposeRouteChildren {
-  ProtectedComposePostRoute: typeof ProtectedComposePostRoute
-}
-
-const ProtectedComposeRouteChildren: ProtectedComposeRouteChildren = {
-  ProtectedComposePostRoute: ProtectedComposePostRoute,
-}
-
-const ProtectedComposeRouteWithChildren =
-  ProtectedComposeRoute._addFileChildren(ProtectedComposeRouteChildren)
-
 interface ProtectedSettingsRouteChildren {
   ProtectedSettingsAccountRoute: typeof ProtectedSettingsAccountRoute
   ProtectedSettingsDeleteRoute: typeof ProtectedSettingsDeleteRoute
@@ -458,7 +409,6 @@ const ProtectedSettingsRouteWithChildren =
 
 interface ProtectedRouteChildren {
   ProtectedUsernameRoute: typeof ProtectedUsernameRoute
-  ProtectedComposeRoute: typeof ProtectedComposeRouteWithChildren
   ProtectedExploreRoute: typeof ProtectedExploreRoute
   ProtectedHomeRoute: typeof ProtectedHomeRoute
   ProtectedNotificationsRoute: typeof ProtectedNotificationsRoute
@@ -468,7 +418,6 @@ interface ProtectedRouteChildren {
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedUsernameRoute: ProtectedUsernameRoute,
-  ProtectedComposeRoute: ProtectedComposeRouteWithChildren,
   ProtectedExploreRoute: ProtectedExploreRoute,
   ProtectedHomeRoute: ProtectedHomeRoute,
   ProtectedNotificationsRoute: ProtectedNotificationsRoute,
