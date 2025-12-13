@@ -44,7 +44,7 @@ function RouteComponent() {
   const user = authUserQuery.data;
 
   return (
-    <DashboardLayout>
+    <DashboardLayout user={user}>
       <CatchBoundary
         getResetKey={() => "reset"}
         onCatch={(error) => debugError(error)}

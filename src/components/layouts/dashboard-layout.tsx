@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
 import type { FileRouteTypes } from "@/routeTree.gen";
-import { useLocation, useParams, type LinkProps } from "@tanstack/react-router";
 import type { LucideProps } from "lucide-react";
+import type { AuthUser } from "@/lib/auth";
+
+import { useLocation, useParams, type LinkProps } from "@tanstack/react-router";
 
 import { cn } from "@/utils/cn";
 import { nFormatter } from "@/lib/number-formatter";
 
-import { useAuthUser } from "@/lib/auth";
 import { useInfiniteNotifications } from "@/features/notifications/api/get-notifications";
 
 import {
@@ -41,6 +42,7 @@ import {
   DrawerTrigger,
 } from "../ui/drawer";
 import { VisuallyHidden } from "../ui/visually-hidden";
+import { useNotificationSocket } from "@/hooks/use-notification-socket";
 
 export type SideNavigationLink = {
   name: string;
@@ -52,20 +54,17 @@ export type SideNavigationLink = {
 } & LinkProps &
   React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-export function DashboardLayout({ children }: { children: ReactNode }) {
+export function DashboardLayout({
+  user,
+  children,
+}: {
+  user: AuthUser;
+  children: ReactNode;
+}) {
   const { username } = useParams({ strict: false });
   const location = useLocation();
 
-  const authUserQuery = useAuthUser();
-
-  const notificationsQuery = useInfiniteNotifications(
-    authUserQuery.data?.username ?? "",
-    { enabled: !!authUserQuery.data?.username }
-  );
-
-  if (!authUserQuery.isSuccess) return null;
-
-  const authUser = authUserQuery.data;
+  const notificationsQuery = useInfiniteNotifications(user.username);
 
   const unreadNotifications =
     notificationsQuery.data?.pages.flatMap(({ data }) =>
@@ -96,7 +95,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     {
       name: "Profile",
       to: "/$username",
-      params: { username: authUser.username },
+      params: { username: user.username },
       icon: UserIcon,
     },
     {
@@ -105,6 +104,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       icon: SettingsIcon,
     },
   ] satisfies SideNavigationLink[];
+
+  useNotificationSocket(user.id);
 
   return (
     <div className='bg-background [&_input]:selection:bg-input-background [&_textarea]:selection:bg-input-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
@@ -194,15 +195,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 <Button className='bg-background flex w-full justify-start p-10'>
                   <UserAvatar
                     className='h-15 w-15'
-                    avatar={authUser.profile.avatarUrl}
-                    fallback={authUser.username}
+                    avatar={user.profile.avatarUrl}
+                    fallback={user.username}
                   />
                   <div className='hidden lg:flex lg:flex-col'>
                     <span className='font-bold'>
-                      {authUser.profile.displayName}
+                      {user.profile.displayName}
                     </span>
                     <span className='font-light opacity-50'>
-                      @{authUser.username}
+                      @{user.username}
                     </span>
                   </div>
                 </Button>
@@ -217,15 +218,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   <DropdownMenuItem className='pointer-events-none w-full'>
                     <div className='flex flex-1 gap-1'>
                       <UserAvatar
-                        avatar={authUser.profile.avatarUrl}
-                        fallback={authUser.username}
+                        avatar={user.profile.avatarUrl}
+                        fallback={user.username}
                       />
                       <div className='flex flex-col'>
                         <span className='font-bold'>
-                          {authUser.profile.displayName}
+                          {user.profile.displayName}
                         </span>
                         <span className='font-light opacity-50'>
-                          @{authUser.username}
+                          @{user.username}
                         </span>
                       </div>
                     </div>
@@ -253,7 +254,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                         preload={false}
                         replace
                       >
-                        <span>Log out @{authUser.username}</span>
+                        <span>Log out @{user.username}</span>
                       </Link>
                     </Button>
                   </DropdownMenuItem>
@@ -283,8 +284,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                       <>
                         <UserAvatar
                           className='h-12 w-12'
-                          avatar={authUser.profile.avatarUrl}
-                          fallback={authUser.username}
+                          avatar={user.profile.avatarUrl}
+                          fallback={user.username}
                         />
                         <span className='sr-only'>Toggle Menu</span>
                       </>
@@ -303,38 +304,33 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     <DrawerHeader className='mb-5 text-white'>
                       <Link
                         to='/$username'
-                        params={{ username: authUser.username }}
+                        params={{ username: user.username }}
                       >
                         <UserAvatar
                           className='h-15 w-15'
-                          avatar={authUser.profile.avatarUrl}
-                          fallback={authUser.username}
+                          avatar={user.profile.avatarUrl}
+                          fallback={user.username}
                         />
                       </Link>
 
                       <div className='flex flex-col items-start'>
                         <span className='font-bold'>
-                          {authUser.profile.displayName}
+                          {user.profile.displayName}
                         </span>
                         <span className='font-light opacity-50'>
-                          @{authUser.username}
+                          @{user.username}
                         </span>
                       </div>
 
                       <div className='flex items-center-safe gap-5'>
                         <div className='flex gap-1'>
-                          <span>
-                            {" "}
-                            {nFormatter(authUser._count.following, 0)}
-                          </span>
+                          <span> {nFormatter(user._count.following, 0)}</span>
                           <span className='font-light opacity-50'>
                             Following
                           </span>
                         </div>
                         <div className='flex gap-1'>
-                          <span>
-                            {nFormatter(authUser._count.followedBy, 0)}
-                          </span>
+                          <span>{nFormatter(user._count.followedBy, 0)}</span>
                           <span className='font-light opacity-50'>
                             Followers
                           </span>
