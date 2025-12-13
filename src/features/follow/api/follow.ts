@@ -149,6 +149,9 @@ export const useToggleFollowUser = (
           queryKey: tweetKeys.infinite.list("all", ""),
         }),
         queryClient.cancelQueries({
+          queryKey: tweetKeys.infinite.list("following", ""),
+        }),
+        queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
         }),
         queryClient.cancelQueries({
@@ -181,6 +184,10 @@ export const useToggleFollowUser = (
 
       queryClient.setQueryData(
         tweetKeys.infinite.list("all", ""),
+        transformFollowTweetAuthor
+      );
+      queryClient.setQueryData(
+        tweetKeys.infinite.list("following", ""),
         transformFollowTweetAuthor
       );
       queryClient.setQueryData(
@@ -252,6 +259,9 @@ export const useToggleFollowUser = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.list("all", ""),
+        });
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("following", ""),
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "posts"),
