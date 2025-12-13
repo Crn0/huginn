@@ -9,8 +9,6 @@ import { debug, debugError } from "@/lib/logger";
 export const useNotificationSocket = (userId?: string) => {
   const queryClient = useQueryClient();
 
-  console.log(notificationSocket.connected);
-
   useEffect(() => {
     if (env.NODE_ENV === "test" || !userId) return;
 
