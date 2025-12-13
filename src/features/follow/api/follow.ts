@@ -240,41 +240,43 @@ export const useToggleFollowUser = (
         );
       }
     },
-    onSettled: (_data, _error, targetUser) => {
+    onSettled: async (_data, _error, targetUser) => {
       if (queryClient.isMutating({ mutationKey: followKeys.mutation }) === 1) {
-        queryClient.invalidateQueries({
-          queryKey: authUserQueryOptions().queryKey,
-        });
-        queryClient.invalidateQueries({
-          queryKey: userKeys.detail(username),
-        });
-        queryClient.invalidateQueries({
-          queryKey: userKeys.detail(targetUser.username),
-        });
-        queryClient.invalidateQueries({
-          queryKey: userKeys.infinite.list(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: followKeys.list(username, "following"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("all", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("following", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: notificationKeys.list(username),
-        });
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: authUserQueryOptions().queryKey,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: userKeys.detail(username),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: userKeys.detail(targetUser.username),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: userKeys.infinite.list(),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: followKeys.list(username, "following"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.list("all", ""),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.list("following", ""),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: notificationKeys.list(username),
+          }),
+        ]);
       }
     },
     mutationFn: (targetUser) =>

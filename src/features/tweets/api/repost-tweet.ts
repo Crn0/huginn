@@ -122,37 +122,38 @@ export const useToggleRepostTweet = (
         );
       }
     },
-    onSettled: (_data, _error, { tweet }) => {
+    onSettled: async (_data, _error, { tweet }) => {
       if (
         queryClient.isMutating({ mutationKey: tweetKeys.mutation.repost }) === 1
       ) {
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.detail(tweet.id),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("all", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("following", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.reply(),
-        });
-
-        if (search.f === "posts" && search.q) {
+        await Promise.all([
           queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.list("all", search.q),
-          });
-        }
+            queryKey: tweetKeys.detail(tweet.id),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.list("all", ""),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.list("following", ""),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.reply(),
+          }),
+          search.f === "posts" && search.q
+            ? queryClient.invalidateQueries({
+                queryKey: tweetKeys.infinite.list("all", search.q),
+              })
+            : Promise.resolve(),
+        ]);
       }
     },
     mutationFn: ({ tweet }) =>

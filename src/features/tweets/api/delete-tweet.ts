@@ -152,47 +152,46 @@ export const useDeleteTweet = (
         );
       }
     },
-    onSettled: (_data, _error, { tweet }) => {
+    onSettled: async (_data, _error, { tweet }) => {
       if (
         queryClient.isMutating({ mutationKey: tweetKeys.mutation.delete }) === 1
       ) {
-        queryClient.invalidateQueries({
-          queryKey: userKeys.detail(username),
-        });
-
-        if (username === tweet.author.username) {
+        await Promise.all([
           queryClient.invalidateQueries({
-            queryKey: authUserQueryOptions().queryKey,
-          });
-        }
+            queryKey: userKeys.detail(username),
+          }),
+          username === tweet.author.username
+            ? queryClient.invalidateQueries({
+                queryKey: authUserQueryOptions().queryKey,
+              })
+            : Promise.resolve(),
 
-        if (tweet.media.length > 0) {
+          tweet.media.length > 0
+            ? queryClient.invalidateQueries({
+                queryKey: mediaKeys.listByUser(username),
+              })
+            : Promise.resolve(),
+          tweet.liked
+            ? queryClient.invalidateQueries({
+                queryKey: tweetKeys.infinite.listByUser(username, "likes"),
+              })
+            : Promise.resolve(),
           queryClient.invalidateQueries({
-            queryKey: mediaKeys.listByUser(username),
-          });
-        }
-
-        if (tweet.liked) {
+            queryKey: tweetKeys.infinite.list("all", ""),
+          }),
           queryClient.invalidateQueries({
-            queryKey: tweetKeys.infinite.listByUser(username, "likes"),
-          });
-        }
-
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("all", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.list("following", ""),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
-        });
-        queryClient.invalidateQueries({
-          queryKey: tweetKeys.infinite.reply(),
-        });
+            queryKey: tweetKeys.infinite.list("following", ""),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
+          }),
+          queryClient.invalidateQueries({
+            queryKey: tweetKeys.infinite.reply(),
+          }),
+        ]);
 
         if (search.f === "posts" && search.q) {
           queryClient.invalidateQueries({
