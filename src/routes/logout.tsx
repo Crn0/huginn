@@ -5,6 +5,8 @@ import {
   useNavigate,
   redirect,
 } from "@tanstack/react-router";
+
+import { notificationSocket } from "@/lib/socket/notification";
 import { useAuthActions } from "@/hooks/use-auth-store";
 import { LogoSplash } from "@/components/ui/logo-splash";
 
@@ -32,6 +34,10 @@ export const Route = createFileRoute("/logout")({
     }
   },
   loader: async ({ context: { client } }) => {
+    if (notificationSocket.connected) {
+      notificationSocket.disconnect();
+    }
+
     return {
       p: client.callApi("auth/logout", {
         method: "POST",
