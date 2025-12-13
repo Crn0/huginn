@@ -7,6 +7,7 @@ import { Link } from "@/components/ui/link";
 import { CardAction } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
 import { useAuthActions } from "@/hooks/use-auth-store";
+import { useLogin } from "@/lib/auth";
 
 export function LoginCard() {
   const navigate = useNavigate();
@@ -22,13 +23,38 @@ export function LoginCard() {
     navigate({ to: redirectTo, replace: true });
   };
 
+  const login = useLogin({
+    onSuccess,
+  });
+
   return !isOpen ? (
     <AuthCard
       title='Sign in to Huginn'
       content={
         <div className='grid gap-2'>
-          <Button variant='secondary' className='w-full' onClick={open}>
+          <Button
+            variant='secondary'
+            className='w-full'
+            onClick={open}
+            aria-disabled={login.isPending}
+            disabled={login.isPending}
+          >
             Continue with Huginn
+          </Button>
+
+          <Button
+            variant='secondary'
+            className='w-full'
+            onClick={() =>
+              login.mutate({
+                email: "demo-user@gmail.com",
+                password: "odinproject",
+              })
+            }
+            aria-disabled={login.isPending}
+            disabled={login.isPending}
+          >
+            Guess Login
           </Button>
         </div>
       }
@@ -36,7 +62,12 @@ export function LoginCard() {
         <>
           <span>Don't have an account?</span>
           <CardAction>
-            <Link to='/signup' preload={false}>
+            <Link
+              to='/signup'
+              preload={false}
+              aria-disabled={login.isPending}
+              disabled={login.isPending}
+            >
               Sign up
             </Link>
           </CardAction>
