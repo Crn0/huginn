@@ -1,4 +1,4 @@
-import type { Tweet as TweetType, TweetLike, User } from "@/types/api";
+import type { TweetLike, User } from "@/types/api";
 import type { AuthUser } from "@/lib/auth";
 
 import { useNavigate } from "@tanstack/react-router";
@@ -15,7 +15,7 @@ import {
 import { dateDiffInDays } from "@/lib/date";
 import { format, formatDistanceStrict } from "@/utils/format-date";
 import { nFormatter } from "@/lib/number-formatter";
-import { isRepost } from "../utils/is-repost";
+import { cn } from "@/utils/cn";
 
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import {
@@ -32,26 +32,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { MDPreview } from "@/components/ui/md-preview/md-preview";
-import { TweetMedia } from "./tweet-media";
-import { cn } from "@/utils/cn";
+import { TweetMedia } from "@/features/tweets/components/tweet-media";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Authorization } from "@/lib/authorization";
-import { DeleteTweet } from "./delete-tweet";
-import { useToggleLikeTweet } from "../api/like-tweet";
+import { DeleteTweet } from "@/features/tweets/components/delete-tweet";
+import { useToggleLikeTweet } from "@/features/tweets/api/like-tweet";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
-import { useToggleRepostTweet } from "../api/repost-tweet";
+import { useToggleRepostTweet } from "@/features/tweets/api/repost-tweet";
 
-export interface TweetProps {
+export interface NotificationTweet {
   user: AuthUser | User;
   tweet: TweetLike;
-  pageTweet?: TweetType;
 }
 
-export function Tweet({ user, tweet, pageTweet }: TweetProps) {
+export function NotificationTweet({ user, tweet }: NotificationTweet) {
   const navigate = useNavigate();
 
   const toggleLikeMutation = useToggleLikeTweet(user?.username ?? "");
@@ -100,31 +98,11 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
       role='button'
       id={tweet.id}
       tabIndex={0}
-      className='bg-background text-foreground w-full'
+      className='bg-background text-foreground w-full cursor-pointer rounded-none border-t-0 border-r-0 border-b-1 border-l-0'
       onClick={onNavigateTweet}
       onKeyDown={onNavigateTweet}
     >
       <CardHeader>
-        {isRepost(tweet) && (
-          <div data-navigates='true' className='flex gap-1'>
-            <span className='font-light opacity-50'>
-              <Repeat2Icon />
-            </span>
-            <span className='flex gap-1 font-light opacity-50'>
-              <span
-                className={cn(
-                  tweet.reposter.id !== user.id &&
-                    "w-10 overflow-hidden overflow-ellipsis whitespace-nowrap sm:w-auto"
-                )}
-              >
-                {tweet.reposter.id === user.id
-                  ? "You"
-                  : tweet.reposter.profile.displayName}
-              </span>
-              <span>reposted</span>
-            </span>
-          </div>
-        )}
         <div className='flex gap-2'>
           <div>
             <Link to='/$username' params={{ username: author.username }}>
@@ -218,7 +196,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
                         </Button>
                       }
                     >
-                      <DeleteTweet tweet={tweet} pageTweet={pageTweet} />
+                      <DeleteTweet tweet={tweet} />
                     </Authorization>
                   )}
                 </PopoverContent>
@@ -228,6 +206,16 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </div>
       </CardHeader>
       <CardContent className='flex flex-col gap-2'>
+        <div data-navigates='true' className='flex items-center-safe gap-1'>
+          <span data-navigates='true' className='text-lg font-light opacity-50'>
+            Replying to
+          </span>
+
+          <Link to='/$username' params={{ username: tweet.author.username }}>
+            <span className='text-lg'>{tweet.author.username}</span>
+          </Link>
+        </div>
+
         <MDPreview data-navigates='true' value={tweet.content ?? ""} />
 
         <TweetMedia media={tweet.media} />
@@ -260,7 +248,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
             <Button
               variant='ghost'
               className={cn(tweet.reposted && "text-teal-400")}
-              onClick={() => toggleRepostMutation.mutate({ tweet, pageTweet })}
+              onClick={() => toggleRepostMutation.mutate({ tweet })}
               disabled={toggleRepostMutation.isPending}
             >
               <Repeat2Icon />
@@ -279,7 +267,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
             <Button
               variant='ghost'
               className={cn(tweet.liked && "text-rose-400")}
-              onClick={() => toggleLikeMutation.mutate({ tweet, pageTweet })}
+              onClick={() => toggleLikeMutation.mutate({ tweet })}
               disabled={toggleLikeMutation.isPending}
             >
               <HeartIcon />

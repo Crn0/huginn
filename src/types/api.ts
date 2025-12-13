@@ -107,3 +107,23 @@ export type TweetReply = Tweet & {
 export type TweetLike = Tweet | TweetReply | TweetReply["replies"][number];
 
 export type Replies = TweetReply["replies"] | Tweet[] | TweetReply[];
+
+export type NotificationType = "FOLLOW" | "MENTION" | "REPLY";
+
+type BaseNotification = Entity<{
+  type: NotificationType;
+  isRead: boolean;
+  sender: Pick<User, "id" | "username"> & {
+    profile: Pick<User["profile"], "displayName" | "avatarUrl" | "bannerUrl">;
+  };
+}>;
+
+type FollowNotification = BaseNotification & {
+  type: Exclude<NotificationType, "MENTION" | "REPLY">;
+};
+type TweetNotification = BaseNotification & {
+  type: Exclude<NotificationType, "FOLLOW">;
+  tweet: Tweet;
+};
+
+export type Notification = FollowNotification | TweetNotification;

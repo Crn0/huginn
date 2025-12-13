@@ -2,7 +2,7 @@ import type { AuthUser } from "@/lib/auth";
 
 import { useTweet } from "../api/get-tweet";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ReplyTweet } from "./reply-tweet";
 import { CreateTweet } from "./create-tweet";
 import { Spinner } from "@/components/ui/spinner";
@@ -28,6 +28,7 @@ export function TweetModalRoute({
 
   return (
     <Dialog open={isOpen} onOpenChange={close}>
+      <DialogTitle className='sr-only'>Tweet Modal</DialogTitle>
       <DialogContent
         className='h-full w-full max-w-sm border-0 sm:h-fit sm:max-w-lg sm:border'
         showCloseButton

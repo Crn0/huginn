@@ -70,7 +70,7 @@ export const getAuthUser = (client?: ApiClient) => async () => {
 export const authUserQueryOptions = (client?: ApiClient) =>
   queryOptions<AuthUser, ErrorType>({
     ...queryConfig,
-    queryKey: ["authenticated-user"],
+    queryKey: ["authenticated-user"] as const,
     queryFn: getAuthUser(client),
   });
 

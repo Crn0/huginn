@@ -6,6 +6,7 @@ import type {
   User,
   TweetAuthor,
   Tweet,
+  Notification,
 } from "@/types/api";
 
 import {
@@ -15,12 +16,15 @@ import {
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
+import { useSearch } from "@tanstack/react-router";
+
 import { authUserQueryOptions } from "@/lib/auth";
-import { useClient } from "@/hooks/use-client";
 import { userKeys } from "@/features/users/api/query-key-factory";
 import { followKeys } from "./query-key-factory";
 import { tweetKeys } from "@/features/tweets/api/query-key-factory";
-import { useSearch } from "@tanstack/react-router";
+import { notificationKeys } from "@/features/notifications/api/query-key-factory";
+
+import { useClient } from "@/hooks/use-client";
 
 const transformUser =
   (action: "add" | "sub", isAuthUser: boolean) =>
@@ -86,18 +90,18 @@ const filterFollowUsers =
     return prevPages;
   };
 
-export const followUser = (client: ApiClient) => async (username: string) => {
+export const followUser = (client: ApiClient) => async (followId: string) => {
   return client.callApi(`users/me/follow`, {
     isAuth: true,
     method: "POST",
     data: {
-      username,
+      followId,
     },
   });
 };
 
-export const unFollowUser = (client: ApiClient) => async (username: string) => {
-  return client.callApi(`users/me/follow/${username}`, {
+export const unFollowUser = (client: ApiClient) => async (followId: string) => {
+  return client.callApi(`users/me/follow/${followId}`, {
     isAuth: true,
     method: "DELETE",
   });
@@ -129,6 +133,9 @@ export const useToggleFollowUser = (
         }),
         queryClient.cancelQueries({
           queryKey: userKeys.detail(targetUser.username),
+        }),
+        queryClient.cancelQueries({
+          queryKey: notificationKeys.list(username),
         }),
         search.f === "posts" && search.q
           ? queryClient.cancelQueries({
@@ -189,6 +196,36 @@ export const useToggleFollowUser = (
         transformFollowTweetAuthor
       );
 
+      queryClient.setQueryData(
+        notificationKeys.list(username),
+        (
+          prevPages: InfiniteData<
+            Pagination<Notification[]> & { unreadCount: number }
+          >
+        ) => {
+          const newPages = prevPages.pages.map(({ data, ...rest }) => {
+            const newData = data.map((n) => {
+              if (n.type === "FOLLOW") return n;
+
+              return {
+                ...n,
+                tweet: {
+                  ...n.tweet,
+                  author: {
+                    ...n.tweet.author,
+                    followed: !!n.tweet.author.followed,
+                  },
+                },
+              };
+            });
+
+            return { ...rest, data: newData };
+          });
+
+          return { ...prevPages, pages: newPages };
+        }
+      );
+
       if (search.f === "posts" && search.q) {
         queryClient.setQueryData(
           tweetKeys.infinite.list("all", search.q),
@@ -225,11 +262,14 @@ export const useToggleFollowUser = (
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         });
+        queryClient.invalidateQueries({
+          queryKey: notificationKeys.list(username),
+        });
       }
     },
     mutationFn: (targetUser) =>
       targetUser.followed
-        ? unFollowUser(client)(targetUser.username)
-        : followUser(client)(targetUser.username),
+        ? unFollowUser(client)(targetUser.id)
+        : followUser(client)(targetUser.id),
   });
 };

@@ -1,22 +1,25 @@
 import type { ValidationError } from "@/lib/errors";
 import type { ApiClient } from "@/lib/api-client";
-import type { Tweet } from "@/types/api";
+import type { Notification, Pagination, Tweet } from "@/types/api";
 
 import { useSearch } from "@tanstack/react-router";
 import {
   useMutation,
   useQueryClient,
+  type InfiniteData,
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
 import { tweetKeys } from "./query-key-factory";
-import { useClient } from "@/hooks/use-client";
+import { notificationKeys } from "@/features/notifications/api/query-key-factory";
 import {
   filterLikeTweet,
   transformLikeReplies,
   transformLikeTweet,
   transformLikeTweets,
 } from "./mapper";
+
+import { useClient } from "@/hooks/use-client";
 
 export const likeTweet =
   (client: ApiClient) => async (tweet: Pick<Tweet, "id">) => {
@@ -71,6 +74,9 @@ export const useToggleLikeTweet = (
         queryClient.cancelQueries({
           queryKey: tweetKeys.infinite.listByUser(username, "likes"),
         }),
+        queryClient.cancelQueries({
+          queryKey: notificationKeys.list(username),
+        }),
         pageTweet
           ? queryClient.cancelQueries({
               queryKey: tweetKeys.infinite.replies(pageTweet.id),
@@ -113,6 +119,30 @@ export const useToggleLikeTweet = (
         filterLikeTweet(tweet)
       );
 
+      queryClient.setQueryData(
+        notificationKeys.list(username),
+        (
+          prevPages: InfiniteData<
+            Pagination<Notification[]> & { unreadCount: number }
+          >
+        ) => {
+          const newPages = prevPages.pages.map(({ data, ...rest }) => {
+            const newData = data.map((n) => {
+              if (n.type === "FOLLOW") return n;
+
+              return {
+                ...n,
+                tweet: transformLikeTweet(n.tweet),
+              };
+            });
+
+            return { ...rest, data: newData };
+          });
+
+          return { ...prevPages, pages: newPages };
+        }
+      );
+
       if (search.f === "posts" && search.q) {
         queryClient.setQueryData(
           tweetKeys.infinite.list("all", search.q),
@@ -144,6 +174,9 @@ export const useToggleLikeTweet = (
         });
         queryClient.invalidateQueries({
           queryKey: tweetKeys.infinite.reply(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: notificationKeys.list(username),
         });
 
         if (search.f === "posts" && search.q) {

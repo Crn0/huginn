@@ -17,7 +17,7 @@ export const getTweet =
     return res.json();
   };
 
-export const getAuthUserQueryOptions = (client: Client, id: string) =>
+export const geTweetQueryOptions = (client: Client, id: string) =>
   queryOptions<Tweet, ErrorType>({
     queryKey: tweetKeys.detail(id),
     queryFn: () => getTweet(client)(id),
@@ -30,7 +30,7 @@ export const useTweet = (
   const client = useClient();
 
   return useQuery({
-    ...getAuthUserQueryOptions(client, id),
+    ...geTweetQueryOptions(client, id),
     enabled,
   });
 };

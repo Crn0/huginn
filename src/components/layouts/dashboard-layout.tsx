@@ -5,7 +5,10 @@ import type { LucideProps } from "lucide-react";
 
 import { cn } from "@/utils/cn";
 import { nFormatter } from "@/lib/number-formatter";
+
 import { useAuthUser } from "@/lib/auth";
+import { useInfiniteNotifications } from "@/features/notifications/api/get-notifications";
+
 import {
   HomeIcon,
   SearchIcon,
@@ -45,7 +48,9 @@ export type SideNavigationLink = {
   icon: React.ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
   >;
-} & LinkProps;
+  count?: number;
+} & LinkProps &
+  React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
   const { username } = useParams({ strict: false });
@@ -53,9 +58,21 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
   const authUserQuery = useAuthUser();
 
+  const notificationsQuery = useInfiniteNotifications(
+    authUserQuery.data?.username ?? "",
+    { enabled: !!authUserQuery.data?.username }
+  );
+
   if (!authUserQuery.isSuccess) return null;
 
   const authUser = authUserQuery.data;
+
+  const unreadNotifications =
+    notificationsQuery.data?.pages.flatMap(({ data }) =>
+      data.filter((n) => !n.isRead)
+    ) ?? [];
+
+  const unreadNotificationCount = unreadNotifications.length ?? 0;
 
   const navLinks = [
     {
@@ -72,6 +89,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       name: "Notifications",
       to: "/notifications",
       icon: BellIcon,
+      count: unreadNotificationCount,
+      preload: false,
+      disabled: notificationsQuery.isLoading,
     },
     {
       name: "Profile",
@@ -111,7 +131,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   {({ isActive }) => {
                     return (
                       <>
-                        <link.icon strokeWidth={!isActive ? 1 : 2} />
+                        <div className='relative'>
+                          {!!link.count && (
+                            <span className='text-foreground absolute -top-2 left-2 h-4 w-4 rounded-full bg-blue-400 text-center text-xs'>
+                              {link.count}
+                            </span>
+                          )}
+                          <link.icon strokeWidth={!isActive ? 1 : 2} />
+                        </div>
                         <span className='hidden lg:block'>{link.name}</span>
                       </>
                     );
@@ -243,7 +270,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           ) && (
             <header
               id='dashboard-header'
-              className='bg-background sticky top-0 z-30 flex items-center gap-4 p-1 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
+              className='bg-background sticky top-0 z-30 flex items-center gap-4 p-5 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
             >
               <aside>
                 <Drawer>
@@ -326,7 +353,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                             replace: true,
                             icon: LogOutIcon,
                           },
-                        ] satisfies SideNavigationLink[]
+                        ] as SideNavigationLink[]
                       ).map((link) => (
                         <DrawerClose key={link.name} asChild>
                           <Link
@@ -335,13 +362,20 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                             className='flex items-center-safe gap-2 rounded-4xl p-2 text-white focus-visible:rounded-md focus-visible:ring-[2px] focus-visible:ring-white'
                             activeOptions={{ exact: true }}
                           >
-                            <link.icon
-                              className={cn(
-                                "text-gray-400 group-hover:text-gray-300",
-                                "mr-4 size-6 shrink-0"
+                            <div className='relative'>
+                              {!!link.count && (
+                                <span className='text-foreground absolute -top-2 left-2 h-5 w-5 rounded-full bg-blue-400 text-center'>
+                                  {link.count}
+                                </span>
                               )}
-                              aria-hidden='true'
-                            />
+                              <link.icon
+                                className={cn(
+                                  "text-gray-400 group-hover:text-gray-300",
+                                  "mr-4 size-6 shrink-0"
+                                )}
+                                aria-hidden='true'
+                              />
+                            </div>
                             {link.name}
                           </Link>
                         </DrawerClose>
@@ -375,7 +409,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     {({ isActive }) => {
                       return (
                         <>
-                          <link.icon strokeWidth={!isActive ? 1 : 2} />
+                          <div className='relative'>
+                            {!!link.count && (
+                              <span className='text-foreground absolute -top-2 left-2 h-5 w-5 rounded-full bg-blue-400 text-center'>
+                                {link.count}
+                              </span>
+                            )}
+                            <link.icon strokeWidth={!isActive ? 1 : 2} />
+                          </div>
+
                           <span className='hidden lg:block'>{link.name}</span>
                         </>
                       );
