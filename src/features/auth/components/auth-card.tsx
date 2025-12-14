@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+
+import { cn } from "@/utils/cn";
 import { env } from "@/configs/env";
+
 import {
   Card,
   CardContent,
@@ -34,14 +37,11 @@ export function AuthCard({
       </CardHeader>
 
       <CardContent>
-        <Button
-          variant='secondary'
-          className='w-full'
-          aria-disabled={googleAuthDisabled}
-          disabled={googleAuthDisabled}
-          asChild
-        >
-          <a href={GOOGLE_URL}>
+        <Button variant='secondary' className='w-full' asChild>
+          <a
+            href={GOOGLE_URL}
+            className={cn(googleAuthDisabled && "pointer-events-none")}
+          >
             <GoogleSvg /> Continue with Google
           </a>
         </Button>
