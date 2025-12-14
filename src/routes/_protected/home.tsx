@@ -21,7 +21,7 @@ function RouteComponent() {
   return (
     <ContentLayout>
       <Tabs defaultValue='all' className='p-5'>
-        <TabsList className='sticky top-10 z-30 w-full sm:top-0'>
+        <TabsList className='z-30 w-full sm:sticky sm:top-0'>
           <TabsTrigger value='all'>
             <span className='group-data-[state=active]:border-b-5 group-data-[state=active]:border-b-blue-400'>
               For you

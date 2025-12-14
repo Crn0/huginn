@@ -385,8 +385,8 @@ export function DashboardLayout({
         <section className='flex-1'>{children}</section>
       </main>
 
-      <footer className='sticky bottom-0 z-[100] bg-inherit pt-2 sm:hidden'>
-        <nav className='flex w-full justify-around sm:hidden'>
+      <footer className='sticky bottom-0 z-50 bg-inherit pt-2 sm:hidden'>
+        <nav className='flex justify-around sm:hidden'>
           {navLinks
             .filter(({ name }) =>
               ["Home", "Explore", "Notifications", "Bookmarks"].includes(name)

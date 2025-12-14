@@ -145,7 +145,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               onClick={onNavigateTweet}
               className='text-foreground flex flex-1 gap-1'
             >
-              <span className='w-10 overflow-hidden font-bold overflow-ellipsis whitespace-nowrap sm:w-auto'>
+              <span className='w-15 overflow-hidden font-bold overflow-ellipsis whitespace-nowrap sm:w-auto'>
                 {profile.displayName}
               </span>
               <span className='w-10 overflow-hidden font-light overflow-ellipsis whitespace-nowrap opacity-50 sm:w-auto'>
