@@ -16,7 +16,7 @@ export type PolicyCheckMap = {
 export interface Policy {
   user: {
     dataType: Pick<User, "id">;
-    action: "view" | "update" | "follow" | "delete";
+    action: "view" | "update" | "follow" | "delete" | "updatePassword";
   };
   tweet: {
     dataType: Pick<Tweet, "id" | "author">;

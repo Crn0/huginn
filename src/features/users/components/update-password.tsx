@@ -24,6 +24,16 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
+import { Authorization } from "@/lib/authorization";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export interface UpdatePasswordProps {
   user: AuthUser;
@@ -47,6 +57,9 @@ export function UpdatePassword({ user, onSuccess }: UpdatePasswordProps) {
         if (e.message === "Incorrect old password.") {
           form.setError("oldPassword", { message: e.message });
         }
+      }
+      if (e.kind === "FORBIDDEN_ERROR") {
+        form.setError("oldPassword", { message: e.message });
       }
     },
   });
@@ -201,18 +214,51 @@ export function UpdatePassword({ user, onSuccess }: UpdatePasswordProps) {
         </form>
 
         <CardAction className='mt-5'>
-          <Button
-            type='submit'
-            variant='secondary'
-            form='form-update-username'
-            className='text-foreground hover:text-foreground bg-blue-400 hover:bg-blue-400'
-            disabled={
-              passwordMutation.isPending ||
-              password.length < MIN_PASSWORD_LENGTH
+          <Authorization
+            user={user}
+            resource='user'
+            action='updatePassword'
+            data={user}
+            forbiddenFallback={
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant='secondary'
+                    className='text-foreground hover:text-foreground bg-blue-400 hover:bg-blue-400'
+                  >
+                    Save
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Update Password</DialogTitle>
+
+                    <DialogDescription>
+                      Demo account cannot update their password.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <DialogClose asChild>
+                    <Button variant='secondary'>Cancel</Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
             }
           >
-            {passwordMutation.isPending ? <Spinner /> : <span>Save</span>}
-          </Button>
+            <Button
+              type='submit'
+              variant='secondary'
+              form='form-update-username'
+              className='text-foreground hover:text-foreground bg-blue-400 hover:bg-blue-400'
+              disabled={
+                passwordMutation.isPending ||
+                password.length < MIN_PASSWORD_LENGTH
+              }
+            >
+              {passwordMutation.isPending ? <Spinner /> : <span>Save</span>}
+            </Button>
+          </Authorization>
         </CardAction>
       </CardContent>
     </Card>

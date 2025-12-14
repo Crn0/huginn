@@ -24,6 +24,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDisclosure } from "@/hooks/use-disclosure";
+import { Authorization } from "@/lib/authorization";
 
 export interface DeleteAccountProps {
   user: AuthUser;
@@ -63,45 +64,75 @@ export function DeleteAccount({ user }: DeleteAccountProps) {
       </CardContent>
 
       <CardFooter>
-        <Dialog open={isOpen || deleteAccountMutation.isPending}>
-          <DialogTrigger asChild>
-            <Button
-              variant='destructive'
-              className='w-full'
-              onClick={() => open()}
-            >
-              Delete
-            </Button>
-          </DialogTrigger>
+        <Authorization
+          user={user}
+          resource='user'
+          action='delete'
+          data={user}
+          forbiddenFallback={
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant='destructive' className='w-full'>
+                  Delete
+                </Button>
+              </DialogTrigger>
 
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Account</DialogTitle>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Delete Account</DialogTitle>
 
-              <DialogDescription>
-                Are you sure you to delete your account?
-              </DialogDescription>
-            </DialogHeader>
+                  <DialogDescription>
+                    Demo account cannot delete their account.
+                  </DialogDescription>
+                </DialogHeader>
 
-            <Button
-              variant='destructive'
-              className='w-full'
-              onClick={deleteAccountMutation.mutate}
-              disabled={deleteAccountMutation.isPending}
-            >
-              Confirm
-            </Button>
-            <DialogClose asChild>
+                <DialogClose asChild>
+                  <Button variant='secondary'>Cancel</Button>
+                </DialogClose>
+              </DialogContent>
+            </Dialog>
+          }
+        >
+          <Dialog open={isOpen || deleteAccountMutation.isPending}>
+            <DialogTrigger asChild>
               <Button
-                variant='secondary'
-                onClick={close}
+                variant='destructive'
+                className='w-full'
+                onClick={() => open()}
+              >
+                Delete
+              </Button>
+            </DialogTrigger>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Account</DialogTitle>
+
+                <DialogDescription>
+                  Are you sure you to delete your account?
+                </DialogDescription>
+              </DialogHeader>
+
+              <Button
+                variant='destructive'
+                className='w-full'
+                onClick={deleteAccountMutation.mutate}
                 disabled={deleteAccountMutation.isPending}
               >
-                Cancel
+                Confirm
               </Button>
-            </DialogClose>
-          </DialogContent>
-        </Dialog>
+              <DialogClose asChild>
+                <Button
+                  variant='secondary'
+                  onClick={close}
+                  disabled={deleteAccountMutation.isPending}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+            </DialogContent>
+          </Dialog>
+        </Authorization>
       </CardFooter>
     </Card>
   );
