@@ -30,6 +30,7 @@ export function LoginCard() {
   return !isOpen ? (
     <AuthCard
       title='Sign in to Huginn'
+      googleAuthDisabled={login.isPending}
       content={
         <div className='grid gap-2'>
           <Button

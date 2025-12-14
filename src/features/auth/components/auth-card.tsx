@@ -14,13 +14,19 @@ import { Separator } from "@/components/ui/separator";
 export interface AuthCardProps {
   title: string;
   content: ReactNode;
+  googleAuthDisabled?: boolean;
   footer?: ReactNode;
 }
 
 const API_VERSION = `v${env.API_VERSION}` as const;
 const GOOGLE_URL = `${env.SERVER_URL}/api/${API_VERSION}/auth/google` as const;
 
-export function AuthCard({ title, footer, content }: AuthCardProps) {
+export function AuthCard({
+  title,
+  footer,
+  content,
+  googleAuthDisabled = false,
+}: AuthCardProps) {
   return (
     <Card className='w-full bg-black text-white sm:max-w-md'>
       <CardHeader>
@@ -28,7 +34,13 @@ export function AuthCard({ title, footer, content }: AuthCardProps) {
       </CardHeader>
 
       <CardContent>
-        <Button variant='secondary' className='w-full' asChild>
+        <Button
+          variant='secondary'
+          className='w-full'
+          aria-disabled={googleAuthDisabled}
+          disabled={googleAuthDisabled}
+          asChild
+        >
           <a href={GOOGLE_URL}>
             <GoogleSvg /> Continue with Google
           </a>
