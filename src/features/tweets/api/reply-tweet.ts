@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 
 import { tweetKeys } from "./query-key-factory";
+import { mediaKeys } from "@/features/media/api/query-key-factory";
 import { useClient } from "@/hooks/use-client";
 import { createTweetInputSchema } from "./create-tweet";
 
@@ -59,19 +60,32 @@ export const useReplyTweet = (
   return useMutation({
     ...restConfig,
     mutationKey: tweetKeys.mutation.reply,
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.list("all", ""),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.replies(variables.replyTo),
-      });
+    onSuccess: async (data, variables, context) => {
+      const media = variables?.media ?? [];
+
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("all", ""),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("following", ""),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.replies(variables.replyTo),
+        }),
+        media.length > 0
+          ? queryClient.invalidateQueries({
+              queryKey: mediaKeys.listByUser(username),
+            })
+          : Promise.resolve(),
+      ]);
+
       onSuccess?.(data, variables, context);
     },
     onError: (...args) => {

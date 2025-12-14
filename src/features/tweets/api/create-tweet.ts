@@ -111,33 +111,34 @@ export const useCreateTweet = (
   return useMutation({
     ...restConfig,
     mutationKey: tweetKeys.mutation.create,
-    onSuccess: (data, variables, context) => {
+    onSuccess: async (data, variables, context) => {
       const media = variables?.media ?? [];
 
-      queryClient.invalidateQueries({
-        queryKey: authUserQueryOptions().queryKey,
-      });
-      queryClient.invalidateQueries({
-        queryKey: userKeys.detail(username),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username, "posts"),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.list("all", ""),
-      });
-      queryClient.invalidateQueries({
-        queryKey: tweetKeys.infinite.list("following", ""),
-      });
-
-      if (media.length > 0) {
+      await Promise.all([
         queryClient.invalidateQueries({
-          queryKey: mediaKeys.listByUser(username),
-        });
-      }
+          queryKey: authUserQueryOptions().queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: userKeys.detail(username),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "posts"),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.listByUser(username, "with-replies"),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("all", ""),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: tweetKeys.infinite.list("following", ""),
+        }),
+        media.length > 0
+          ? queryClient.invalidateQueries({
+              queryKey: mediaKeys.listByUser(username),
+            })
+          : Promise.resolve(),
+      ]);
 
       onSuccess?.(data, variables, context);
     },
