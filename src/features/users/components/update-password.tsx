@@ -58,9 +58,6 @@ export function UpdatePassword({ user, onSuccess }: UpdatePasswordProps) {
           form.setError("oldPassword", { message: e.message });
         }
       }
-      if (e.kind === "FORBIDDEN_ERROR") {
-        form.setError("oldPassword", { message: e.message });
-      }
     },
   });
 
