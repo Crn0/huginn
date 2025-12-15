@@ -11,7 +11,7 @@ export const PASSWORD_MIN_LENGTH = 8 as const;
 export const PASSWORD_MAX_LENGTH = 64 as const;
 
 export const registerInputSchema = z.object({
-  email: z.email().trim(),
+  email: z.email().trim().toLowerCase(),
   displayName: z
     .string()
     .trim()

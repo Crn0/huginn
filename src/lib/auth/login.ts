@@ -10,7 +10,7 @@ import { authUserQueryOptions } from "./auth-user";
 import { useClient } from "@/hooks/use-client";
 
 export const loginInputSchema = z.object({
-  email: z.email().trim(),
+  email: z.email().trim().toLowerCase(),
   password: z.string().trim().min(1, { error: "Required" }),
 });
 
