@@ -29,7 +29,11 @@ export function SilentLogin({
       setIsSilentLogin();
 
       navigate({
-        to: location.pathname === "/signup" ? location.pathname : "/login",
+        to: ["/login", "/signup", "/forgot-password"].includes(
+          location.pathname
+        )
+          ? location.pathname
+          : "/login",
         replace: true,
       });
     }

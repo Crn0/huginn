@@ -165,6 +165,15 @@ export function LoginForm({ onSuccess, close }: LoginFormProps) {
             >
               {login.isPending ? <Spinner /> : <span>Submit</span>}
             </Button>
+
+            <Button
+              type='button'
+              variant='secondary'
+              disabled={login.isPending}
+              asChild
+            >
+              <Link to='/forgot-password'>Forgot password ?</Link>
+            </Button>
           </Field>
 
           <Field orientation='horizontal'>

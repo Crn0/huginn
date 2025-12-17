@@ -10,9 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LogoutRouteImport } from './routes/logout'
+import { Route as ResetRouteImport } from './routes/_reset'
 import { Route as ProtectedRouteImport } from './routes/_protected'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ResetForgotPasswordRouteImport } from './routes/_reset/forgot-password'
 import { Route as ProtectedSettingsRouteImport } from './routes/_protected/settings'
 import { Route as ProtectedNotificationsRouteImport } from './routes/_protected/notifications'
 import { Route as ProtectedHomeRouteImport } from './routes/_protected/home'
@@ -21,6 +23,7 @@ import { Route as ProtectedUsernameRouteImport } from './routes/_protected/$user
 import { Route as AuthSignupRouteImport } from './routes/_auth/signup'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as ProtectedSettingsIndexRouteImport } from './routes/_protected/settings/index'
+import { Route as ResetResetPasswordTokenRouteImport } from './routes/_reset/reset-password.$token'
 import { Route as ProtectedSettingsUsernameRouteImport } from './routes/_protected/settings/username'
 import { Route as ProtectedSettingsPasswordRouteImport } from './routes/_protected/settings/password'
 import { Route as ProtectedSettingsDeleteRouteImport } from './routes/_protected/settings/delete'
@@ -31,6 +34,10 @@ import { Route as ProtectedUsernameStatusTweetIdRouteImport } from './routes/_pr
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetRoute = ResetRouteImport.update({
+  id: '/_reset',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProtectedRoute = ProtectedRouteImport.update({
@@ -45,6 +52,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ResetForgotPasswordRoute = ResetForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => ResetRoute,
 } as any)
 const ProtectedSettingsRoute = ProtectedSettingsRouteImport.update({
   id: '/settings',
@@ -85,6 +97,11 @@ const ProtectedSettingsIndexRoute = ProtectedSettingsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => ProtectedSettingsRoute,
+} as any)
+const ResetResetPasswordTokenRoute = ResetResetPasswordTokenRouteImport.update({
+  id: '/reset-password/$token',
+  path: '/reset-password/$token',
+  getParentRoute: () => ResetRoute,
 } as any)
 const ProtectedSettingsUsernameRoute =
   ProtectedSettingsUsernameRouteImport.update({
@@ -132,10 +149,12 @@ export interface FileRoutesByFullPath {
   '/home': typeof ProtectedHomeRoute
   '/notifications': typeof ProtectedNotificationsRoute
   '/settings': typeof ProtectedSettingsRouteWithChildren
+  '/forgot-password': typeof ResetForgotPasswordRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/reset-password/$token': typeof ResetResetPasswordTokenRoute
   '/settings/': typeof ProtectedSettingsIndexRoute
   '/$username/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
@@ -149,10 +168,12 @@ export interface FileRoutesByTo {
   '/explore': typeof ProtectedExploreRoute
   '/home': typeof ProtectedHomeRoute
   '/notifications': typeof ProtectedNotificationsRoute
+  '/forgot-password': typeof ResetForgotPasswordRoute
   '/settings/account': typeof ProtectedSettingsAccountRoute
   '/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/settings/password': typeof ProtectedSettingsPasswordRoute
   '/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/reset-password/$token': typeof ResetResetPasswordTokenRoute
   '/settings': typeof ProtectedSettingsIndexRoute
   '/$username/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/settings/me/account': typeof ProtectedSettingsMeAccountRoute
@@ -162,6 +183,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_protected': typeof ProtectedRouteWithChildren
+  '/_reset': typeof ResetRouteWithChildren
   '/logout': typeof LogoutRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/signup': typeof AuthSignupRoute
@@ -170,10 +192,12 @@ export interface FileRoutesById {
   '/_protected/home': typeof ProtectedHomeRoute
   '/_protected/notifications': typeof ProtectedNotificationsRoute
   '/_protected/settings': typeof ProtectedSettingsRouteWithChildren
+  '/_reset/forgot-password': typeof ResetForgotPasswordRoute
   '/_protected/settings/account': typeof ProtectedSettingsAccountRoute
   '/_protected/settings/delete': typeof ProtectedSettingsDeleteRoute
   '/_protected/settings/password': typeof ProtectedSettingsPasswordRoute
   '/_protected/settings/username': typeof ProtectedSettingsUsernameRoute
+  '/_reset/reset-password/$token': typeof ResetResetPasswordTokenRoute
   '/_protected/settings/': typeof ProtectedSettingsIndexRoute
   '/_protected/$username_/status/$tweetId': typeof ProtectedUsernameStatusTweetIdRoute
   '/_protected/settings/me/account': typeof ProtectedSettingsMeAccountRoute
@@ -190,10 +214,12 @@ export interface FileRouteTypes {
     | '/home'
     | '/notifications'
     | '/settings'
+    | '/forgot-password'
     | '/settings/account'
     | '/settings/delete'
     | '/settings/password'
     | '/settings/username'
+    | '/reset-password/$token'
     | '/settings/'
     | '/$username/status/$tweetId'
     | '/settings/me/account'
@@ -207,10 +233,12 @@ export interface FileRouteTypes {
     | '/explore'
     | '/home'
     | '/notifications'
+    | '/forgot-password'
     | '/settings/account'
     | '/settings/delete'
     | '/settings/password'
     | '/settings/username'
+    | '/reset-password/$token'
     | '/settings'
     | '/$username/status/$tweetId'
     | '/settings/me/account'
@@ -219,6 +247,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_auth'
     | '/_protected'
+    | '/_reset'
     | '/logout'
     | '/_auth/login'
     | '/_auth/signup'
@@ -227,10 +256,12 @@ export interface FileRouteTypes {
     | '/_protected/home'
     | '/_protected/notifications'
     | '/_protected/settings'
+    | '/_reset/forgot-password'
     | '/_protected/settings/account'
     | '/_protected/settings/delete'
     | '/_protected/settings/password'
     | '/_protected/settings/username'
+    | '/_reset/reset-password/$token'
     | '/_protected/settings/'
     | '/_protected/$username_/status/$tweetId'
     | '/_protected/settings/me/account'
@@ -240,6 +271,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRouteWithChildren
   ProtectedRoute: typeof ProtectedRouteWithChildren
+  ResetRoute: typeof ResetRouteWithChildren
   LogoutRoute: typeof LogoutRoute
 }
 
@@ -250,6 +282,13 @@ declare module '@tanstack/react-router' {
       path: '/logout'
       fullPath: '/logout'
       preLoaderRoute: typeof LogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_reset': {
+      id: '/_reset'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ResetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_protected': {
@@ -272,6 +311,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_reset/forgot-password': {
+      id: '/_reset/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ResetForgotPasswordRouteImport
+      parentRoute: typeof ResetRoute
     }
     '/_protected/settings': {
       id: '/_protected/settings'
@@ -328,6 +374,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/settings/'
       preLoaderRoute: typeof ProtectedSettingsIndexRouteImport
       parentRoute: typeof ProtectedSettingsRoute
+    }
+    '/_reset/reset-password/$token': {
+      id: '/_reset/reset-password/$token'
+      path: '/reset-password/$token'
+      fullPath: '/reset-password/$token'
+      preLoaderRoute: typeof ResetResetPasswordTokenRouteImport
+      parentRoute: typeof ResetRoute
     }
     '/_protected/settings/username': {
       id: '/_protected/settings/username'
@@ -429,10 +482,23 @@ const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
   ProtectedRouteChildren,
 )
 
+interface ResetRouteChildren {
+  ResetForgotPasswordRoute: typeof ResetForgotPasswordRoute
+  ResetResetPasswordTokenRoute: typeof ResetResetPasswordTokenRoute
+}
+
+const ResetRouteChildren: ResetRouteChildren = {
+  ResetForgotPasswordRoute: ResetForgotPasswordRoute,
+  ResetResetPasswordTokenRoute: ResetResetPasswordTokenRoute,
+}
+
+const ResetRouteWithChildren = ResetRoute._addFileChildren(ResetRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRouteWithChildren,
   ProtectedRoute: ProtectedRouteWithChildren,
+  ResetRoute: ResetRouteWithChildren,
   LogoutRoute: LogoutRoute,
 }
 export const routeTree = rootRouteImport
