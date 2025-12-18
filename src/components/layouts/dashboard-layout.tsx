@@ -43,6 +43,7 @@ import {
 } from "../ui/drawer";
 import { VisuallyHidden } from "../ui/visually-hidden";
 import { useNotificationSocket } from "@/hooks/use-notification-socket";
+import { useTweetSocket } from "@/hooks/use-tweet-socket";
 
 export type SideNavigationLink = {
   name: string;
@@ -106,6 +107,7 @@ export function DashboardLayout({
   ] satisfies SideNavigationLink[];
 
   useNotificationSocket(user.id);
+  useTweetSocket(user.id);
 
   return (
     <div className='bg-background [&_input]:selection:bg-input-background [&_textarea]:selection:bg-input-background flex h-dvh flex-col overflow-x-hidden text-white sm:w-dvw sm:flex-row'>
