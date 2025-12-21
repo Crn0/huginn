@@ -15,7 +15,7 @@ export function TweetMedia({ media, className }: TweetMediaProps) {
   return (
     <div
       className={cn(
-        "grid grid-cols-1 gap-1 w-xs self-center-safe",
+        "grid w-xs grid-cols-1 gap-1 self-center-safe",
         media.length > 1 && "grid-cols-2",
         media.length > 2 && "w-3xs",
         className

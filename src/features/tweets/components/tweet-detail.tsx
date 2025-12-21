@@ -17,6 +17,7 @@ import { nFormatter } from "@/lib/number-formatter";
 
 import { Authorization } from "@/lib/authorization";
 
+import { useDisclosure } from "@/hooks/use-disclosure";
 import { useToggleLikeTweet } from "../api/like-tweet";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
 import { useToggleRepostTweet } from "../api/repost-tweet";
@@ -55,6 +56,7 @@ export interface TweetProps {
 export function TweetDetail({ user, tweet }: TweetProps) {
   const navigate = useNavigate();
 
+  const popoverDisclosure = useDisclosure(false);
   const toggleLikeMutation = useToggleLikeTweet(user.username);
   const toggleFollowMutation = useToggleFollowUser(user?.username);
   const toggleRepostMutation = useToggleRepostTweet(user?.username ?? "");
@@ -106,7 +108,10 @@ export function TweetDetail({ user, tweet }: TweetProps) {
                 </TooltipContent>
               </Tooltip>
 
-              <Popover>
+              <Popover
+                open={popoverDisclosure.isOpen}
+                onOpenChange={popoverDisclosure.toggle}
+              >
                 <Tooltip>
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
@@ -136,10 +141,13 @@ export function TweetDetail({ user, tweet }: TweetProps) {
                       forbiddenFallback={
                         <Button
                           variant='secondary'
-                          onClick={() =>
-                            toggleFollowMutation.mutate(tweet.author)
-                          }
-                          disabled={toggleFollowMutation.isPending}
+                          onClick={() => {
+                            toggleFollowMutation.mutate({
+                              targetUser: tweet.author,
+                              tweetPage: tweet,
+                            });
+                            popoverDisclosure.close();
+                          }}
                         >
                           {tweet.author.followed ? "Unfollow" : "Follow"}
                         </Button>
@@ -198,7 +206,6 @@ export function TweetDetail({ user, tweet }: TweetProps) {
                 onClick={() =>
                   toggleRepostMutation.mutate({ tweet, pageTweet: tweet })
                 }
-                disabled={toggleRepostMutation.isPending}
               >
                 <Repeat2Icon />
                 {tweet._count.repost ? (
@@ -207,7 +214,7 @@ export function TweetDetail({ user, tweet }: TweetProps) {
               </Button>
             </TooltipTrigger>
             <TooltipContent side='bottom' sideOffset={-2}>
-              {tweet.liked ? "Undo repost" : "Repost"}
+              {tweet.reposted ? "Undo repost" : "Repost"}
             </TooltipContent>
           </Tooltip>
 
@@ -217,7 +224,6 @@ export function TweetDetail({ user, tweet }: TweetProps) {
                 variant='ghost'
                 className={cn(tweet.liked && "text-rose-400")}
                 onClick={() => toggleLikeMutation.mutate({ tweet })}
-                disabled={toggleLikeMutation.isPending}
               >
                 <HeartIcon />
                 {tweet._count.likes ? (

@@ -135,7 +135,7 @@ function RouteComponent() {
               forbiddenFallback={
                 <Button
                   variant='secondary'
-                  onClick={() => followMutation.mutate(user)}
+                  onClick={() => followMutation.mutate({ targetUser: user })}
                   disabled={followMutation.isPending}
                 >
                   {user.followed ? "Unfollow" : "Follow"}

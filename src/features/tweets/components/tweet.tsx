@@ -215,7 +215,9 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
                         <Button
                           variant='secondary'
                           onClick={() => {
-                            toggleFollowMutation.mutate(tweet.author);
+                            toggleFollowMutation.mutate({
+                              targetUser: tweet.author,
+                            });
                             popOverDisclosure.close();
                           }}
                           disabled={toggleFollowMutation.isPending}

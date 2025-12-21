@@ -112,7 +112,7 @@ export function User({ authUser, user }: UserProps) {
           <CardAction className='px-5'>
             <Button
               variant='secondary'
-              onClick={() => toggleFollowMutation.mutate(user)}
+              onClick={() => toggleFollowMutation.mutate({ targetUser: user })}
               disabled={toggleFollowMutation.isPending}
             >
               {user.followed ? "Unfollow" : "Follow"}

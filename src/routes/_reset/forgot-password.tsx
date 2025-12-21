@@ -11,12 +11,12 @@ export const Route = createFileRoute("/_reset/forgot-password")({
 
 function RouteComponent() {
   const onSuccess = () => {
-    toast.success("Email has been sent")
-  }
+    toast.success("Email has been sent");
+  };
 
   return (
-    <ContentLayout contentClassName="justify-center-safe items-center-safe">
-      <Toaster position="top-center" richColors/>
+    <ContentLayout contentClassName='justify-center-safe items-center-safe'>
+      <Toaster position='top-center' richColors />
       <RequestResetPasswordForm onSuccess={onSuccess} />
     </ContentLayout>
   );

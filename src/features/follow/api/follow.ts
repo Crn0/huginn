@@ -64,7 +64,7 @@ export const unFollowUser = (client: ApiClient) => async (followId: string) => {
 export type UseToggleFollowOptions = UseMutationOptions<
   Response,
   ValidationError,
-  User | TweetAuthor
+  { targetUser: User | TweetAuthor; tweetPage?: { id: string } }
 >;
 
 export const useToggleFollowUser = (
@@ -77,7 +77,7 @@ export const useToggleFollowUser = (
   return useMutation({
     ...options,
     mutationKey: followKeys.mutation,
-    onMutate: async (targetUser) => {
+    onMutate: async ({ targetUser, tweetPage }) => {
       const authUserKey = authUserQueryOptions().queryKey;
 
       await Promise.all([
@@ -90,6 +90,11 @@ export const useToggleFollowUser = (
         queryClient.cancelQueries({
           queryKey: notificationKeys.list(username),
         }),
+        tweetPage
+          ? queryClient.cancelQueries({
+              queryKey: tweetKeys.detail(tweetPage.id),
+            })
+          : Promise.resolve(),
       ]);
 
       queryClient.setQueryData(
@@ -101,7 +106,6 @@ export const useToggleFollowUser = (
         userKeys.detail(username),
         transformUser(!targetUser.followed ? "add" : "sub", false)
       );
-
       queryClient.setQueryData(
         userKeys.detail(targetUser.username),
         transformUser(!targetUser.followed ? "add" : "sub", false)
@@ -137,7 +141,7 @@ export const useToggleFollowUser = (
         }
       );
     },
-    onSettled: async (_data, _error, targetUser) => {
+    onSettled: async (_data, _error, { targetUser, tweetPage }) => {
       if (queryClient.isMutating({ mutationKey: followKeys.mutation }) === 1) {
         await Promise.all([
           queryClient.invalidateQueries({
@@ -173,10 +177,15 @@ export const useToggleFollowUser = (
           queryClient.invalidateQueries({
             queryKey: notificationKeys.list(username),
           }),
+          tweetPage
+            ? queryClient.invalidateQueries({
+                queryKey: tweetKeys.detail(tweetPage.id),
+              })
+            : Promise.resolve(),
         ]);
       }
     },
-    mutationFn: (targetUser) =>
+    mutationFn: ({ targetUser }) =>
       targetUser.followed
         ? unFollowUser(client)(targetUser.id)
         : followUser(client)(targetUser.id),

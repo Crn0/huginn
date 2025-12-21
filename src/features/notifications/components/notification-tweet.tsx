@@ -193,7 +193,9 @@ export function NotificationTweet({ user, tweet }: NotificationTweet) {
                         <Button
                           variant='secondary'
                           onClick={() => {
-                            toggleFollowMutation.mutate(tweet.author);
+                            toggleFollowMutation.mutate({
+                              targetUser: tweet.author,
+                            });
                             popOverDisclosure.close();
                           }}
                           disabled={toggleFollowMutation.isPending}
