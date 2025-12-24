@@ -8,6 +8,8 @@ import { useObjectUrl } from "../use-object-url";
 const file = new File(["Hello world"], "hello.txt", { type: "text/plain" });
 
 beforeAll(() => {
+  vi.stubGlobal("URL", MockUrl);
+
   const createObjectURL =
     URL.createObjectURL as (typeof MockUrl)["createObjectURL"];
 
