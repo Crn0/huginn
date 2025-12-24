@@ -1,5 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
-
 import { Button } from "@/components/ui/button";
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { AuthCard } from "./auth-card";
@@ -7,11 +5,8 @@ import { Link } from "@/components/ui/link";
 import { CardAction, CardDescription } from "@/components/ui/card";
 import { SignupForm } from "./signup-form";
 
-export function SignupCard() {
-  const navigate = useNavigate();
+export function SignupCard({ onSuccess }: { onSuccess: () => void }) {
   const { isOpen, open, close } = useDisclosure(false);
-
-  const onSuccess = () => navigate({ to: "/login", replace: true });
 
   return !isOpen ? (
     <AuthCard

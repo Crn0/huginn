@@ -1,27 +1,17 @@
-import { useNavigate, useSearch } from "@tanstack/react-router";
-
 import { Button } from "@/components/ui/button";
 import { useDisclosure } from "@/hooks/use-disclosure";
 import { AuthCard } from "./auth-card";
 import { Link } from "@/components/ui/link";
 import { CardAction } from "@/components/ui/card";
 import { LoginForm } from "./login-form";
-import { useAuthActions } from "@/hooks/use-auth-store";
 import { useLogin } from "@/lib/auth";
 
-export function LoginCard() {
-  const navigate = useNavigate();
-  const search = useSearch({ from: "/_auth/login" });
-  const setToken = useAuthActions().login;
+export function LoginCard({
+  onSuccess,
+}: {
+  onSuccess: ({ token }: { token: string }) => void;
+}) {
   const { isOpen, open, close } = useDisclosure(false);
-
-  const redirectTo = search.redirectTo ?? "/home";
-
-  const onSuccess = ({ token }: { token: string }) => {
-    setToken(token);
-
-    navigate({ to: redirectTo, replace: true });
-  };
 
   const login = useLogin({
     onSuccess,

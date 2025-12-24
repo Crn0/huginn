@@ -6,5 +6,9 @@ export const Route = createFileRoute("/_auth/signup")({
 });
 
 function RouteComponent() {
-  return <SignupCard />;
+  const navigate = Route.useNavigate();
+
+  const onSuccess = () => navigate({ to: "/login", replace: true });
+
+  return <SignupCard onSuccess={onSuccess} />;
 }
