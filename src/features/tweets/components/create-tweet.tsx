@@ -113,6 +113,10 @@ export function CreateTweet({
                 <InputGroupTextarea
                   {...field}
                   id='content'
+                  className={cn(
+                    "textarea-scrollbar h-50 overflow-y-scroll sm:h-auto",
+                    content.length >= 500 && "sm:h-50"
+                  )}
                   placeholder="what's happening?"
                   value={field.value ?? ""}
                   aria-invalid={fieldState.invalid}
@@ -174,7 +178,7 @@ export function CreateTweet({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <Label className='sr-only' htmlFor='media'>
-                  Avatar
+                  Media
                 </Label>
 
                 <Input

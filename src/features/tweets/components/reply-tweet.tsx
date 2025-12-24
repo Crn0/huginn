@@ -163,7 +163,7 @@ export function ReplyTweet({
             <CardContent className='flex flex-col gap-2'>
               <MDPreview value={tweet.content ?? ""} />
 
-              <TweetMedia media={tweet.media} />
+              <TweetMedia className='w-50 sm:w-xs' media={tweet.media} />
             </CardContent>
           </>
         )}
@@ -208,6 +208,7 @@ export function ReplyTweet({
                   <InputGroupTextarea
                     {...field}
                     id='content'
+                    className='textarea-scrollbar h-25 overflow-y-scroll'
                     placeholder='Post your reply'
                     value={field.value ?? ""}
                     aria-invalid={fieldState.invalid}

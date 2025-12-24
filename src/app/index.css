@@ -21,6 +21,22 @@
   }
 }
 
+@utility textarea-scrollbar {
+  &::-webkit-scrollbar {
+    width: 0.6rem;
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: oklch(0.3667 0 328.24);
+    border-radius: 0.5rem;
+  }
+}
+
 @utility overflow-initial {
   overflow: initial;
 }
