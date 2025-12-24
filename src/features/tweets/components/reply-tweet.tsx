@@ -105,14 +105,17 @@ export function ReplyTweet({
 
   const onSubmit = (data: ReplyTweetInput) => tweetMutation.mutate(data);
 
-  const content = form.watch("content")
-    ? JSON.stringify(form.watch("content"))
-    : "";
-  const media =
-    form
-      .watch("media")
-      ?.map((m, i) => ({ id: `${m.name}-${m.lastModified}-${i}`, item: m })) ??
-    [];
+  const watchedContent = form.watch("content") ?? "";
+  const watchedMedia = form.watch("media") ?? [];
+
+  const content = watchedContent
+    ? JSON.stringify(watchedContent)
+    : watchedContent;
+
+  const media = watchedMedia?.map((m, i) => ({
+    id: `${m.name}-${m.lastModified}-${i}`,
+    item: m,
+  }));
 
   const laterDate = new Date(tweet.createdAt);
   const currentDate = new Date();
