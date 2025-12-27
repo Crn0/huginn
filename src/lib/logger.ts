@@ -1,10 +1,10 @@
 import { env } from "@/configs/env";
 import log from "loglevel";
 
-if (env.NODE_ENV !== "prod") {
-  log.enableAll();
-} else {
+if (env.NODE_ENV === "test") {
   log.disableAll();
+} else {
+  log.enableAll();
 }
 
 export const debug = (...args: unknown[]) => {
