@@ -65,7 +65,7 @@ export function UpdateUsername({ user, onSuccess }: UpdateUsernameProps) {
                   <InputGroup className='border-border'>
                     <InputGroupInput
                       {...field}
-                      id='form-display-name'
+                      id='form-username'
                       placeholder='Username'
                       onChange={(e) => {
                         if (
