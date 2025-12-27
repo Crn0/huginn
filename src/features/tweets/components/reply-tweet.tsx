@@ -144,7 +144,7 @@ export function ReplyTweet({
                 </div>
                 <div className='flex w-full justify-between'>
                   <div className='text-foreground flex flex-1 justify-between'>
-                    <div className="flex gap-1">
+                    <div className='flex gap-1'>
                       <span className='w-20 overflow-hidden font-bold text-ellipsis whitespace-nowrap sm:w-fit'>
                         {tweet.author.profile.displayName}
                       </span>
@@ -170,7 +170,9 @@ export function ReplyTweet({
             <CardContent className='flex flex-col gap-2'>
               <MDPreview value={tweet.content ?? ""} />
 
-              <TweetMedia className='w-50 sm:w-xs' media={tweet.media} />
+              {!tweet.content && (
+                <TweetMedia className='w-50 sm:w-xs' media={tweet.media} />
+              )}
             </CardContent>
           </>
         )}
