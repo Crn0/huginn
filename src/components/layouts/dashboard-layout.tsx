@@ -273,7 +273,7 @@ export function DashboardLayout({
           ) && (
             <header
               id='dashboard-header'
-              className='bg-background sticky top-0 z-30 flex items-center gap-4 p-5 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
+              className='bg-background sticky top-0 z-50 flex items-center gap-4 p-5 sm:static sm:hidden sm:h-auto sm:border-0 sm:bg-transparent sm:p-2 sm:px-6'
             >
               <aside>
                 <Drawer>
