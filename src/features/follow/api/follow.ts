@@ -17,33 +17,6 @@ import { notificationKeys } from "@/features/notifications/api/query-key-factory
 
 import { useClient } from "@/hooks/use-client";
 
-const transformUser =
-  (action: "add" | "sub", isAuthUser: boolean) =>
-  <TUser extends { _count: { following: number; followedBy: number } }>(
-    user?: TUser
-  ) => {
-    if (!user || !user._count) return;
-
-    if (!isAuthUser) {
-      const followedByCount =
-        action === "add"
-          ? (user._count.followedBy += 1)
-          : (user._count.followedBy -= 1);
-
-      return {
-        ...user,
-        _count: { ...user._count, followedBy: followedByCount },
-      };
-    }
-
-    const followingCount =
-      action === "add"
-        ? (user._count.following += 1)
-        : (user._count.following -= 1);
-
-    return { ...user, _count: { ...user._count, following: followingCount } };
-  };
-
 export const followUser = (client: ApiClient) => async (followId: string) => {
   return client.callApi(`users/me/follow`, {
     isAuth: true,
@@ -78,12 +51,7 @@ export const useToggleFollowUser = (
     ...options,
     mutationKey: followKeys.mutation,
     onMutate: async ({ targetUser, tweetPage }) => {
-      const authUserKey = authUserQueryOptions().queryKey;
-
       await Promise.all([
-        queryClient.cancelQueries({
-          queryKey: authUserKey,
-        }),
         queryClient.cancelQueries({
           queryKey: userKeys.detail(targetUser.username),
         }),
@@ -98,17 +66,21 @@ export const useToggleFollowUser = (
       ]);
 
       queryClient.setQueryData(
-        authUserKey,
-        transformUser(!targetUser.followed ? "add" : "sub", true)
-      );
-
-      queryClient.setQueryData(
-        userKeys.detail(username),
-        transformUser(!targetUser.followed ? "add" : "sub", false)
-      );
-      queryClient.setQueryData(
         userKeys.detail(targetUser.username),
-        transformUser(!targetUser.followed ? "add" : "sub", false)
+        (user: User) => {
+          if (!user) return user;
+
+          return {
+            ...user,
+            followed: !user.followed,
+            _count: {
+              ...user?._count,
+              followedBy: !targetUser.followed
+                ? (user._count.followedBy += 1)
+                : (user._count.followedBy -= 1),
+            },
+          };
+        }
       );
 
       queryClient.setQueryData(
