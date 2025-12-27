@@ -143,22 +143,26 @@ export function ReplyTweet({
                   </Link>
                 </div>
                 <div className='flex w-full justify-between'>
-                  <div className='text-foreground flex gap-1'>
-                    <span className='font-bold'>
-                      {tweet.author.profile.displayName}
-                    </span>
-                    <span className='font-light opacity-50'>
-                      @{tweet.author.username}
-                    </span>
+                  <div className='text-foreground flex flex-1 justify-between'>
+                    <div className="flex gap-1">
+                      <span className='w-20 overflow-hidden font-bold text-ellipsis whitespace-nowrap sm:w-fit'>
+                        {tweet.author.profile.displayName}
+                      </span>
+                      <span className='w-20 overflow-hidden font-light text-ellipsis whitespace-nowrap opacity-50 sm:w-fit'>
+                        @{tweet.author.username}
+                      </span>
+                    </div>
 
-                    <time
-                      className='font-light opacity-50'
-                      dateTime={tweet.createdAt}
-                    >
-                      {dateDiffInDays(laterDate, currentDate) < 1
-                        ? `• ${formatDistanceStrict(laterDate, currentDate)}`
-                        : format(tweet.createdAt, "MMM d")}
-                    </time>
+                    <div>
+                      <time
+                        className='w-20 overflow-hidden font-light text-ellipsis whitespace-nowrap opacity-50 sm:w-fit'
+                        dateTime={tweet.createdAt}
+                      >
+                        {dateDiffInDays(laterDate, currentDate) < 1
+                          ? `• ${formatDistanceStrict(laterDate, currentDate)}`
+                          : format(tweet.createdAt, "MMM d")}
+                      </time>
+                    </div>
                   </div>
                 </div>
               </div>
