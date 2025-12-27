@@ -7,10 +7,8 @@ import { createSocket } from "./create-socket";
 interface ServerToClientEvents {
   notification: ({
     entity,
-    id,
   }: {
     entity: ["notifications", "list", string];
-    id: string;
   }) => void;
 }
 
