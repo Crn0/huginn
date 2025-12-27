@@ -158,7 +158,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               >
                 {dateDiffInDays(laterDate, currentDate) < 1
                   ? `• ${formatDistanceStrict(laterDate, currentDate)}`
-                  : format(tweet.createdAt, "MMM d")}
+                  : format(tweet.createdAt, "• MMM d")}
               </time>
             </div>
 
