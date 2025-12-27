@@ -113,7 +113,6 @@ export function User({ authUser, user }: UserProps) {
             <Button
               variant='secondary'
               onClick={() => toggleFollowMutation.mutate({ targetUser: user })}
-              disabled={toggleFollowMutation.isPending}
             >
               {user.followed ? "Unfollow" : "Follow"}
             </Button>

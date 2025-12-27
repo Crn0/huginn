@@ -136,7 +136,6 @@ function RouteComponent() {
                 <Button
                   variant='secondary'
                   onClick={() => followMutation.mutate({ targetUser: user })}
-                  disabled={followMutation.isPending}
                 >
                   {user.followed ? "Unfollow" : "Follow"}
                 </Button>
