@@ -1,128 +1,240 @@
-import type { ReactElement, ReactNode } from "react";
+import type { TweetModel, UserModel } from "./mocks/model";
+import type { User } from "@/types/api";
+
+import React from "react";
+
 import {
+  CatchBoundary,
+  createRootRoute,
   createRouter,
   RouterProvider,
-  Route,
-  createMemoryHistory,
-  CatchBoundary,
-  RootRoute,
-  createRootRoute,
-  Outlet,
-  createRoute,
 } from "@tanstack/react-router";
-import {
-  useAuthActions,
-  useAuthToken,
-  useIsAuthenticatedToken,
-} from "@/hooks/use-auth-store";
-import { useClient } from "@/hooks/use-client";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthStoreProvider, ClientProvider } from "@/lib/provider";
 import { render, type RenderOptions } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-type RoutePath = Route["fullPath"];
+import { NotFoundError } from "@/lib/errors";
+import {
+  generateUser,
+  createTweet as generateTweet,
+  transformTweet,
+} from "./data-generators";
+import { db } from "./mocks/db";
+import { authenticate, hash } from "./mocks/utils";
+import { setToken } from "@/lib/provider/auth/store";
 
-export type InitialEntries = RoutePath[];
-
-type TestAppProviderProps = {
-  children: ReactNode;
-  queryClient: QueryClient;
-};
-
-export function TestAppProvider({
-  children,
-  queryClient,
-}: TestAppProviderProps) {
-  return (
-    <CatchBoundary getResetKey={() => "reset"}>
-      <QueryClientProvider client={queryClient}>
-        <AuthStoreProvider>
-          <ClientProvider>{children}</ClientProvider>
-        </AuthStoreProvider>
-      </QueryClientProvider>
-    </CatchBoundary>
-  );
-}
-
-type TestRouterProviderProps = {
-  queryClient: QueryClient;
-  rootRoute: RootRoute;
-  initialEntries?: InitialEntries;
-};
-
-export function TestAppRouter({
-  queryClient,
-  rootRoute,
-  initialEntries = ["/"],
-}: TestRouterProviderProps) {
-  const authToken = useAuthToken();
-  const isAuthenticated = useIsAuthenticatedToken();
-  const authActions = useAuthActions();
-
-  const client = useClient();
-
-  const memoryHistory = createMemoryHistory({
-    initialEntries: initialEntries,
-  });
-
-  const router = createRouter({
-    routeTree: rootRoute,
-    context: {
-      queryClient,
-      client: undefined!,
-      auth: undefined!,
-    },
-    defaultPreload: "intent",
-    // Since we're using React Query, we don't want loader calls to ever be stale
-    // This will ensure that the loader is always called when the route is preloaded or visited
-    defaultPreloadStaleTime: 0,
-    scrollRestoration: true,
-    history: memoryHistory,
-  });
-
-  return (
-    <RouterProvider
-      router={router}
-      context={{
-        client,
-        auth: {
-          isAuthenticated,
-          token: authToken,
-          actions: authActions,
-        },
-      }}
-    />
-  );
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-export const initRootRoute = <
-  T extends { path: string; component: () => ReactElement },
->(
-  routes: ReadonlyArray<T>
+export const createUser = async (
+  overrides?: Partial<UserModel> & Partial<User>
 ) => {
-  const rootRoute = createRootRoute({
-    component: () => <Outlet />,
-  });
-
-  rootRoute.addChildren(
-    routes.map((route) =>
-      createRoute({
-        getParentRoute: () => rootRoute,
-        path: route.path,
-        component: route.component,
-      })
-    )
-  );
-
-  return rootRoute;
+  const user = generateUser(overrides);
+  try {
+    await db.user.create({ ...user, password: hash(user.password) });
+  } catch (error) {
+    console.log(error, "foo");
+  }
+  return user;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const renderAppWithRouter = (
-  rootRoute: RootRoute,
-  initialEntries: InitialEntries
+export const createTweet = async ({
+  content,
+  liked,
+  reposted,
+  author,
+}: {
+  content?: string;
+  liked?: boolean;
+  reposted?: boolean;
+  author: UserModel;
+}) => {
+  const tweet = generateTweet({ content, author });
+  const res = await db.tweet.create(tweet);
+  return transformTweet(res, { liked, reposted });
+};
+
+export const replyTo = async ({
+  content,
+  liked,
+  reposted,
+  replyTo,
+  author,
+}: {
+  content?: string;
+  liked?: boolean;
+  reposted?: boolean;
+  author: UserModel;
+  replyTo: TweetModel;
+}) => {
+  const tweet = generateTweet({ content, author });
+  const res = await db.reply.create({
+    ...tweet,
+    replyTo: {
+      ...replyTo,
+      author: replyTo.author ?? null,
+    },
+  });
+  return transformTweet(res, { liked, reposted });
+};
+
+export const followUser = async ({
+  user,
+  followUser,
+}: {
+  user: UserModel;
+  followUser: UserModel;
+}) => {
+  const [followedUser, followingUser] = await Promise.all([
+    db.user.update((q) => q.where({ id: followUser.id }), {
+      data(_user) {
+        _user.followedBy = [..._user.followedBy, user];
+      },
+    }),
+    db.user.update((q) => q.where({ id: user.id }), {
+      data(_user) {
+        _user.following = [..._user.following, followUser];
+      },
+    }),
+  ]);
+
+  return { user: followingUser, followUser: followedUser };
+};
+
+export const updateUsername = async (id: string, username: string) => {
+  const user = await db.user.update((q) => q.where({ id }), {
+    data(_user) {
+      _user.username = username;
+    },
+  });
+
+  return user;
+};
+
+export const updateUserProfile = async (
+  id: string,
+  profile: Partial<UserModel["profile"]>
+) => {
+  const user = await db.user.update((q) => q.where({ id }), {
+    data(_user) {
+      const _profile = _user.profile;
+
+      _user.profile = {
+        ..._profile,
+        displayName: profile.displayName ?? _profile.displayName,
+        bio: profile.bio ?? _profile.bio,
+        location: profile.location ?? _profile.location,
+        birthday: profile.birthday ?? _profile.birthday,
+        website: profile.website ?? _profile.website,
+        avatar: profile.avatar ?? _profile.avatar,
+        banner: profile.banner ?? _profile.banner,
+      };
+    },
+  });
+
+  return user;
+};
+
+export const updateUserPassword = async (id: string, password: string) => {
+  const user = await db.user.update((q) => q.where({ id }), {
+    data(_user) {
+      _user.password = password;
+    },
+  });
+
+  return user;
+};
+
+export const getUser = (id: string) => {
+  const user = db.user.findFirst((q) => q.where({ id }));
+
+  if (!user) {
+    throw new NotFoundError("User not found");
+  }
+
+  return user;
+};
+
+export const getTweet = (id: string) => {
+  const tweet = db.tweet.findFirst((q) => q.where({ id }));
+
+  if (!tweet) {
+    throw new NotFoundError("Tweet not found");
+  }
+
+  return tweet;
+};
+
+export const deleteAccount = (id: string) =>
+  db.user.delete((q) => q.where({ id }));
+
+export const unfollowUser = async ({
+  user,
+  unfollowUser,
+}: {
+  user: UserModel;
+  unfollowUser: UserModel;
+}) => {
+  const [followedUser, followingUser] = await Promise.all([
+    db.user.update((q) => q.where({ id: unfollowUser.id }), {
+      data(_user) {
+        _user.followedBy = _user.followedBy.filter((u) => u.id !== user.id);
+      },
+    }),
+    db.user.update((q) => q.where({ id: user.id }), {
+      data(_user) {
+        _user.following = _user.followedBy.filter(
+          (u) => u.id !== unfollowUser.id
+        );
+      },
+    }),
+  ]);
+
+  return { user: followingUser, unfollowUser: followedUser };
+};
+
+export const deleteTweet = (id: string) => {
+  const tweet = db.tweet.delete((q) => q.where({ id }));
+
+  if (!tweet) {
+    throw new NotFoundError("Tweet not found");
+  }
+
+  return tweet;
+};
+
+export const loginAsUser = (user: { email: string; password: string }) => {
+  const authUser = authenticate(user);
+
+  return authUser;
+};
+
+const initializeUser = async (
+  user?: Awaited<ReturnType<typeof createUser>> | null
+) => {
+  if (typeof user === "undefined") {
+    const newUser = await createUser();
+
+    const auth = loginAsUser(newUser);
+
+    setToken(auth.accessToken);
+
+    return auth;
+  } else if (user) {
+    const auth = loginAsUser(user);
+
+    setToken(auth.accessToken);
+
+    return auth;
+  } else {
+    return null;
+  }
+};
+
+export const renderApp = async (
+  ui: React.ReactElement,
+  options?: RenderOptions & {
+    user?: Awaited<ReturnType<typeof createUser>> | null;
+  }
 ) => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -131,26 +243,74 @@ export const renderAppWithRouter = (
       },
     },
   });
+  const user = options?.user;
+
+  if (options?.user) {
+    delete options.user;
+  }
+
+  const initializedUser = await initializeUser(user);
 
   return {
     queryClient,
+    initializedUser,
     user: userEvent.setup(),
     ...render(
-      <TestAppProvider queryClient={queryClient}>
-        <TestAppRouter
-          rootRoute={rootRoute}
-          initialEntries={initialEntries}
-          queryClient={queryClient}
-        />
-      </TestAppProvider>
+      <CatchBoundary getResetKey={() => "reset"}>
+        <QueryClientProvider client={queryClient}>
+          <AuthStoreProvider>
+            <ClientProvider>{ui}</ClientProvider>
+          </AuthStoreProvider>
+        </QueryClientProvider>
+      </CatchBoundary>,
+      options
     ),
   };
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const renderApp = (ui: ReactElement, options?: RenderOptions) => {
+export const renderAppWithRouter = async (
+  ui: React.ReactElement,
+  options?: RenderOptions & {
+    user?: Awaited<ReturnType<typeof createUser>> | null;
+  }
+) => {
+  const rootRoute = createRootRoute({
+    component: () => ui,
+  });
+  const router = createRouter({
+    routeTree: rootRoute,
+  });
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+  const user = options?.user;
+
+  if (options?.user) {
+    delete options.user;
+  }
+
+  const initializedUser = await initializeUser(user);
+
   return {
+    queryClient,
+    initializedUser,
     user: userEvent.setup(),
-    ...render(ui, options),
+    ...render(
+      <CatchBoundary getResetKey={() => "reset"}>
+        <QueryClientProvider client={queryClient}>
+          <AuthStoreProvider>
+            <ClientProvider>
+              <RouterProvider router={router} />
+            </ClientProvider>
+          </AuthStoreProvider>
+        </QueryClientProvider>
+      </CatchBoundary>,
+      options
+    ),
   };
 };
