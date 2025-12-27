@@ -1,25 +1,19 @@
-import type { Route as BaseRoute } from "@tanstack/react-router";
 import { it, expect } from "vitest";
 import { act, screen, within } from "@testing-library/react";
-import { initRootRoute, renderAppWithRouter } from "@/testing/test-utils";
-import { SignupCard } from "@/features/auth/components/signup-card";
 
-export declare const Route: BaseRoute;
+import { renderAppWithRouter } from "@/testing/test-utils";
+import { SignupCard } from "../signup-card";
 
 const renderSignupCard = () => {
-  const routes = [
-    { path: "/register", component: () => <SignupCard /> },
-  ] as const;
-
-  const routeRoot = initRootRoute(routes);
-
-  const utils = renderAppWithRouter(routeRoot, ["/register/"]);
+  const utils = renderAppWithRouter(<SignupCard onSuccess={() => {}} />, {
+    user: null,
+  });
 
   return utils;
 };
 
 it("should render the signup card", async () => {
-  await act(async () => renderSignupCard());
+  await act(() => renderSignupCard());
 
   expect(screen.getByText(/Join Huginn today/)).toBeInTheDocument();
   expect(
@@ -32,7 +26,7 @@ it("should render the signup card", async () => {
 });
 
 it("should render the signup form when the user clicked the 'Create Account' button", async () => {
-  const { user } = await act(async () => renderSignupCard());
+  const { user } = await act(() => renderSignupCard());
 
   await user.click(screen.getByRole("button", { name: /Create Account/ }));
 
@@ -49,7 +43,7 @@ it("should render the signup form when the user clicked the 'Create Account' but
 });
 
 it("should show the tooltip on pointerover and close on pointer leave", async () => {
-  const { user } = await act(async () => renderSignupCard());
+  const { user } = await act(() => renderSignupCard());
 
   await user.click(screen.getByRole("button", { name: /Create Account/ }));
 
@@ -61,7 +55,7 @@ it("should show the tooltip on pointerover and close on pointer leave", async ()
 });
 
 it("should close the signup form when the user clicked the 'Close' button", async () => {
-  const { user } = await act(async () => renderSignupCard());
+  const { user } = await act(() => renderSignupCard());
 
   await user.click(screen.getByRole("button", { name: /Create Account/ }));
 
