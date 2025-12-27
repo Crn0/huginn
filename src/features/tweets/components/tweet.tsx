@@ -153,7 +153,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               </span>
 
               <time
-                className='font-light opacity-50'
+                className='w-20 overflow-hidden font-light text-ellipsis whitespace-nowrap opacity-50 sm:w-fit'
                 dateTime={tweet.createdAt}
               >
                 {dateDiffInDays(laterDate, currentDate) < 1
