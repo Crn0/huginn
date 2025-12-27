@@ -1,13 +1,25 @@
 import { it, expect, vi } from "vitest";
 import { act, screen, waitFor, within } from "@testing-library/react";
-import { createUser, renderApp } from "@/testing/test-utils";
-import { CreateTweet } from "@/features/tweets/components/create-tweet";
+import {
+  createTweet,
+  createUser,
+  getUser,
+  renderAppWithRouter,
+} from "@/testing/test-utils";
+import { ReplyTweet } from "@/features/tweets/components/reply-tweet";
 
 const renderCreateTweet = async (onSuccess?: () => void) => {
   const fakeUser = await createUser();
 
-  const utils = await renderApp(
-    <CreateTweet
+  const createdAuthor = await createUser();
+
+  const author = getUser(createdAuthor.id);
+
+  const tweet = await createTweet({ author });
+
+  const utils = await renderAppWithRouter(
+    <ReplyTweet
+      tweet={tweet}
       username={fakeUser.username}
       formId='test-create-tweet-form'
       onSuccess={onSuccess}
@@ -15,10 +27,10 @@ const renderCreateTweet = async (onSuccess?: () => void) => {
     { user: fakeUser }
   );
 
-  return { ...utils };
+  return { ...utils, tweet };
 };
 
-it("should render create tweet form", async () => {
+it("should render reply tweet form", async () => {
   await act(async () => renderCreateTweet());
 
   const form = screen.getByRole("form");
@@ -31,7 +43,7 @@ it("should render create tweet form", async () => {
   expect(screen.getByRole("button", { name: /Post/ })).toBeInTheDocument();
 });
 
-it("should call onSuccess after successfully submitting a tweet", async () => {
+it("should call onSuccess after successfully replying to a tweet", async () => {
   const onSuccess = vi.fn();
   const { user } = await act(async () => renderCreateTweet(onSuccess));
 

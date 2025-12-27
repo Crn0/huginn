@@ -186,7 +186,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               >
                 <Tooltip>
                   <PopoverTrigger asChild>
-                    <TooltipTrigger asChild>
+                    <TooltipTrigger data-testid='more' asChild>
                       <Button
                         data-tweet-navigates='false'
                         className='hover:bg-background hover:text-foreground text-foreground opacity-50 hover:border-0'
@@ -243,7 +243,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
 
       <CardFooter className='flex justify-between'>
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger data-testid='reply' asChild>
             <Button variant='ghost' asChild>
               <Link
                 className='text-foreground'
@@ -264,7 +264,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger data-testid='repost' asChild>
             <Button
               variant='ghost'
               className={cn(tweet.reposted && "text-teal-400")}
@@ -282,7 +282,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger data-testid='like' asChild>
             <Button
               variant='ghost'
               className={cn(tweet.liked && "text-rose-400")}
@@ -300,7 +300,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger data-testid='view' asChild>
             <Button variant='ghost'>
               <ChartColumnIcon />
             </Button>
@@ -311,7 +311,7 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
         </Tooltip>
 
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger data-testid='share' asChild>
             <Button variant='ghost'>
               <ShareIcon />
             </Button>

@@ -270,7 +270,7 @@ export function ReplyTweet({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <Label className='sr-only' htmlFor='media'>
-                    Avatar
+                    Media
                   </Label>
 
                   <Input
