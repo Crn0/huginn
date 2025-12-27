@@ -4,11 +4,13 @@ import { notificationKeys } from "@/features/notifications/api/query-key-factory
 import { authUserQueryOptions, useAuthUser } from "@/lib/auth";
 import { infiniteNotificationsOption } from "@/features/notifications/api/get-notifications";
 
+import { tryCatch } from "@/lib/try-catch";
+import { readNotifications } from "@/features/notifications/api/read-notifications";
+
 import { ErrorComponent } from "@/components/errors/error-component";
 import { ContentLayout } from "@/components/layouts/content-layout";
 import { Notifications } from "@/features/notifications/components/notifications";
 import { LogoSplash } from "@/components/ui/logo-splash";
-import { readNotifications } from "@/features/notifications/api/read-notifications";
 
 export const Route = createFileRoute("/_protected/notifications")({
   loader: async ({ context: { queryClient, client } }) => {
@@ -26,7 +28,7 @@ export const Route = createFileRoute("/_protected/notifications")({
     const readIds = notifications.map(({ id }) => id);
 
     if (readIds.length > 0) {
-      await readNotifications(client)({ readIds });
+      await tryCatch(readNotifications(client)({ readIds }));
 
       queryClient.invalidateQueries({
         queryKey: notificationKeys.list(user.username),
