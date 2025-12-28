@@ -138,7 +138,9 @@ export const userMeHandlers = [
       await networkDelay();
 
       try {
-        const updateBody = (await request.json()) as UpdateProfileBody;
+        const formData = await request.formData();
+
+        const updateBody = Object.fromEntries(formData) as UpdateProfileBody;
 
         const user = requireAuth(request);
 
