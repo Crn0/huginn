@@ -47,12 +47,14 @@ export interface UpdateProfileProps {
   renderButtonTrigger: (
     disclosure: Pick<UseDisclosure, "open" | "toggle">
   ) => ReactNode;
+  onSuccess?: () => void;
 }
 
 const fileType = SUPPORTED_FILE_TYPES.join(",");
 
 export function UpdateProfile({
   user,
+  onSuccess,
   renderButtonTrigger,
 }: UpdateProfileProps) {
   const { profile } = user;
@@ -77,6 +79,7 @@ export function UpdateProfile({
 
   const profileMutation = useUpdateProfile(user.username, {
     onSuccess: () => {
+      onSuccess?.();
       close();
     },
     onError: (e) => handleServerError(e, form.setError),
