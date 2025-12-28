@@ -39,6 +39,7 @@ import {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { handleServerError } from "@/lib/handle-form-server-error";
 
@@ -64,7 +65,7 @@ export function UpdateProfile({
       displayName: profile.displayName,
       bio: profile.bio ?? "",
       location: profile.location ?? "",
-      website: profile.website ?? undefined,
+      website: profile.website ?? "",
       birthday: profile.birthday ?? "",
       avatar: null,
       banner: null,
@@ -134,6 +135,10 @@ export function UpdateProfile({
               </Button>
             </div>
           </DialogHeader>
+
+          <div className='sr-only'>
+            <DialogDescription>Update user profile</DialogDescription>
+          </div>
           <form
             id='form-profile-update'
             role='form'
@@ -349,7 +354,7 @@ export function UpdateProfile({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <Label className='sr-only' htmlFor='form-bio'>
-                      Display Name
+                      Bio
                     </Label>
                     <InputGroup>
                       <InputGroupTextarea
@@ -364,7 +369,7 @@ export function UpdateProfile({
                             field.onChange(e);
                           }
                         }}
-                        value={field.value ?? undefined}
+                        value={field.value ?? ""}
                         aria-invalid={fieldState.invalid}
                         aria-disabled={bio?.length >= BIO_LENGTH}
                       />
@@ -394,7 +399,7 @@ export function UpdateProfile({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <Label className='sr-only' htmlFor='form-location'>
-                      Display Name
+                      Location
                     </Label>
                     <InputGroup>
                       <InputGroupInput
@@ -406,7 +411,7 @@ export function UpdateProfile({
                             field.onChange(e);
                           }
                         }}
-                        value={field.value ?? undefined}
+                        value={field.value ?? ""}
                         aria-invalid={fieldState.invalid}
                         aria-disabled={field.value?.length === LOCATION_LENGTH}
                       />
@@ -437,7 +442,7 @@ export function UpdateProfile({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <Label className='sr-only' htmlFor='form-website'>
-                      Display Name
+                      Website
                     </Label>
                     <InputGroup>
                       <InputGroupInput
@@ -459,7 +464,7 @@ export function UpdateProfile({
                             field.onChange(null);
                           }
                         }}
-                        value={field.value ?? undefined}
+                        value={field.value ?? ""}
                         aria-invalid={fieldState.invalid}
                         aria-disabled={field.value?.length === WEBSITE_LENGTH}
                       />
