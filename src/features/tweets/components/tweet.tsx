@@ -167,18 +167,18 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
                 </time>
               </div>
 
-              {user.username !== tweet.author.username && (
+              {tweet.replyTo && (
                 <CardDescription>
                   Replying to{" "}
                   <Link
                     to='/$username'
-                    params={{ username: tweet.author.username }}
+                    params={{ username: tweet.replyTo.username }}
                   >
                     <span
                       data-navigates='false'
                       className='w-10 overflow-hidden overflow-ellipsis whitespace-nowrap text-blue-400 sm:w-fit'
                     >
-                      @{tweet.author.username}
+                      @{tweet.replyTo.username}
                     </span>
                   </Link>
                 </CardDescription>
