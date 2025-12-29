@@ -91,7 +91,6 @@ export function DashboardLayout({
       icon: BellIcon,
       count: unreadNotificationCount,
       preload: false,
-      disabled: notificationsQuery.isLoading,
     },
     {
       name: "Profile",
