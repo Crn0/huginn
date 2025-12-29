@@ -176,7 +176,17 @@ export function ReplyTweet({
           <CardFooter>
             <CardDescription>
               Replying to{" "}
-              <span className='text-blue-400'>@{tweet.author.username}</span>
+              <Link
+                to='/$username'
+                params={{ username: tweet.author.username }}
+              >
+                <span
+                  data-navigates='false'
+                  className='w-10 overflow-hidden overflow-ellipsis whitespace-nowrap text-blue-400 sm:w-fit'
+                >
+                  @{tweet.author.username}
+                </span>
+              </Link>
             </CardDescription>
           </CardFooter>
         )}
