@@ -21,6 +21,7 @@ import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
@@ -143,23 +144,45 @@ export function Tweet({ user, tweet, pageTweet }: TweetProps) {
               role='button'
               tabIndex={0}
               onClick={onNavigateTweet}
-              className='text-foreground flex flex-1 gap-1'
+              className='text-foreground grid flex-1 gap-1'
             >
-              <span className='w-15 overflow-hidden font-bold overflow-ellipsis whitespace-nowrap sm:w-auto'>
-                {profile.displayName}
-              </span>
-              <span className='w-10 overflow-hidden font-light overflow-ellipsis whitespace-nowrap opacity-50 sm:w-auto'>
-                @{author.username}
-              </span>
-
-              <time
-                className='w-20 overflow-hidden font-light text-ellipsis whitespace-nowrap opacity-50 sm:w-fit'
-                dateTime={tweet.createdAt}
+              <div
+                data-navigates='true'
+                className='text-foreground flex flex-1 gap-1'
               >
-                {dateDiffInDays(laterDate, currentDate) < 1
-                  ? `• ${formatDistanceStrict(laterDate, currentDate)}`
-                  : format(tweet.createdAt, "• MMM d")}
-              </time>
+                <span className='w-15 overflow-hidden font-bold overflow-ellipsis whitespace-nowrap sm:w-auto'>
+                  {profile.displayName}
+                </span>
+                <span className='w-10 overflow-hidden font-light overflow-ellipsis whitespace-nowrap opacity-50 sm:w-auto'>
+                  @{author.username}
+                </span>
+
+                <time
+                  className='w-20 overflow-hidden font-light text-ellipsis whitespace-nowrap opacity-50 sm:w-fit'
+                  dateTime={tweet.createdAt}
+                >
+                  {dateDiffInDays(laterDate, currentDate) < 1
+                    ? `• ${formatDistanceStrict(laterDate, currentDate)}`
+                    : format(tweet.createdAt, "• MMM d")}
+                </time>
+              </div>
+
+              {user.username !== tweet.author.username && (
+                <CardDescription>
+                  Replying to{" "}
+                  <Link
+                    to='/$username'
+                    params={{ username: tweet.author.username }}
+                  >
+                    <span
+                      data-navigates='false'
+                      className='w-10 overflow-hidden overflow-ellipsis whitespace-nowrap text-blue-400 sm:w-fit'
+                    >
+                      @{tweet.author.username}
+                    </span>
+                  </Link>
+                </CardDescription>
+              )}
             </div>
 
             <div className='flex'>
