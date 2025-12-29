@@ -32,7 +32,7 @@ export function TweetReplyList({ user, parent }: TweetReplyListProps) {
 
   if (!tweets.length) {
     return (
-      <div className='flex items-center-safe justify-center-safe'>
+      <div className='flex items-center-safe justify-center-safe p-10'>
         <span>Nothing to see here — yet.</span>
       </div>
     );
