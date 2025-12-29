@@ -88,7 +88,7 @@ type BaseTweet = Entity<{
   reposted: boolean;
   liked: boolean;
   media: Media[];
-  replyTo: Pick<BaseEntity, "id"> | null;
+  replyTo: Pick<User, "id" | "username"> | null;
   updatedAt: string | null;
   isRepost: boolean;
   _count: { replies: number; repost: number; likes: number };
@@ -101,7 +101,9 @@ export type Repost = Entity<
 export type Tweet = Entity<BaseTweet & { isRepost: false }> | Repost;
 
 export type TweetReply = Tweet & {
-  replies: (Omit<Tweet, "replyTo"> & { replyTo: { id: string } })[];
+  replies: (Omit<Tweet, "replyTo"> & {
+    replyTo: Pick<User, "id" | "username"> | null;
+  })[];
 };
 
 export type TweetLike = Tweet | TweetReply | TweetReply["replies"][number];

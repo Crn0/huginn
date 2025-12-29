@@ -123,9 +123,16 @@ export const createTweet = <
   };
 };
 
+const transformReplyTo = (
+  replyTo: ReturnType<typeof createTweet>["replyTo"]
+) =>
+  replyTo ? { id: replyTo.author.id, username: replyTo.author.username } : null;
+
 export const transformTweet = (
   tweet: ReturnType<typeof createTweet>,
-  overrides?: Partial<Omit<Tweet, "isRepost">>
+  overrides?: Partial<Omit<Tweet, "isRepost">> & {
+    replyTo?: { id: string; username: string } | null;
+  }
 ): Tweet => ({
   id: overrides?.id ?? tweet.id,
   reposted: Boolean(overrides?.reposted),
@@ -133,7 +140,7 @@ export const transformTweet = (
   isRepost: false,
   content: overrides?.content ?? tweet.content,
   media: overrides?.media ?? [],
-  replyTo: overrides?.replyTo ?? tweet.replyTo,
+  replyTo: overrides?.replyTo ?? transformReplyTo(tweet.replyTo),
   author: {
     ...tweet.author,
     followed: false,
