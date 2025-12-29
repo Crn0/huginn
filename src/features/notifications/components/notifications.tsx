@@ -13,8 +13,8 @@ export function Notifications({ user }: NotificationsProps) {
 
   if (!notificationsQuery.isSuccess) {
     return (
-      <div>
-        <Spinner />
+      <div className='grid place-content-center-safe place-items-center-safe'>
+        <Spinner className='text-spinner size-8' />
       </div>
     );
   }
