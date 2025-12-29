@@ -32,6 +32,7 @@ import { UserTweetList } from "@/features/tweets/components/user-tweet-list";
 import { useToggleFollowUser } from "@/features/follow/api/follow";
 import { UserMediaList } from "@/features/media/components/user-media-list";
 import { ErrorComponent } from "@/components/errors/error-component";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/_protected/$username")({
   loader: ({ context, params }) => {
@@ -40,6 +41,11 @@ export const Route = createFileRoute("/_protected/$username")({
     );
   },
   errorComponent: ErrorComponent,
+  pendingComponent: () => (
+    <div className='grid h-dvh w-full place-content-center-safe place-items-center-safe'>
+      <Spinner className='text-spinner size-10' />
+    </div>
+  ),
   component: RouteComponent,
 });
 

@@ -11,6 +11,7 @@ import { ErrorComponent } from "@/components/errors/error-component";
 import { ContentLayout } from "@/components/layouts/content-layout";
 import { Notifications } from "@/features/notifications/components/notifications";
 import { LogoSplash } from "@/components/ui/logo-splash";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/_protected/notifications")({
   loader: async ({ context: { queryClient, client } }) => {
@@ -34,8 +35,15 @@ export const Route = createFileRoute("/_protected/notifications")({
         queryKey: notificationKeys.list(user.username),
       });
     }
+
+    return notifications;
   },
   errorComponent: ErrorComponent,
+  pendingComponent: () => (
+    <div className='grid h-dvh w-full place-content-center-safe place-items-center-safe'>
+      <Spinner className='text-spinner size-10' />
+    </div>
+  ),
   component: RouteComponent,
 });
 

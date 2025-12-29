@@ -5,9 +5,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tweets } from "@/features/tweets/components/tweets";
 import { ContentLayout } from "@/components/layouts/content-layout";
 import { ErrorComponent } from "@/components/errors/error-component";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/_protected/home")({
   errorComponent: ErrorComponent,
+  pendingComponent: () => (
+    <div className='grid h-dvh w-full place-content-center-safe place-items-center-safe'>
+      <Spinner className='text-spinner size-10' />
+    </div>
+  ),
   component: RouteComponent,
 });
 
