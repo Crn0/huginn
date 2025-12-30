@@ -1,4 +1,6 @@
-import { useUser } from "@/features/users/api/get-user";
+import type { AuthUser } from "@/lib/auth";
+import type { User } from "@/types/api";
+
 import {
   useInfiniteUserTweets,
   type Scope,
@@ -9,23 +11,17 @@ import { isRepost } from "../utils/is-repost";
 import { ErrorComponent } from "@/components/errors/error-component";
 import { InfiniteScroll } from "@/components/ui/infinite-scroll";
 import { Spinner } from "@/components/ui/spinner";
-import { LogoSplash } from "@/components/ui/logo-splash";
 import { PlaceTweetTree } from "./place-tweet-tree";
 
 export interface UserTweetListProps {
-  username: string;
+  authUser: AuthUser;
+  user: User;
   scope: Scope;
   withReply?: boolean;
 }
 
-export function UserTweetList({ username, scope }: UserTweetListProps) {
-  const userQuery = useUser(username);
-
-  const tweetsQuery = useInfiniteUserTweets(username, scope);
-
-  if (!userQuery.isSuccess) {
-    return <LogoSplash />;
-  }
+export function UserTweetList({ authUser, user, scope }: UserTweetListProps) {
+  const tweetsQuery = useInfiniteUserTweets(user.username, scope);
 
   if (!tweetsQuery.data && tweetsQuery.isLoading)
     return (
@@ -39,7 +35,6 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
       <ErrorComponent error={tweetsQuery.error} reset={tweetsQuery.refetch} />
     );
 
-  const user = userQuery.data;
   const tweets = tweetsQuery.data.pages?.flatMap(({ data }) => data);
 
   if (!tweets.length) {
@@ -64,7 +59,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
                 className='grid w-full sm:w-xl'
                 aria-label={`comment-${tweet.content}-${tweet.id}`}
               >
-                <PlaceTweetTree user={user} tweet={tweet} replies={[]} />
+                <PlaceTweetTree user={authUser} tweet={tweet} replies={[]} />
               </li>
             );
           })}
@@ -82,7 +77,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
                 aria-label={`comment-${tweet.content}-${tweet.id}`}
               >
                 <PlaceTweetTree
-                  user={user}
+                  user={authUser}
                   tweet={tweet}
                   replies={replies}
                   maxDepth={3}

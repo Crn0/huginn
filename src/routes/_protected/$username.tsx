@@ -260,12 +260,13 @@ function RouteComponent() {
             </TabsList>
 
             <TabsContent value='posts'>
-              <UserTweetList username={user.username} scope='posts' />
+              <UserTweetList authUser={authUser} user={user} scope='posts' />
             </TabsContent>
 
             <TabsContent value='with-replies'>
               <UserTweetList
-                username={user.username}
+                authUser={authUser}
+                user={user}
                 scope='with-replies'
                 withReply
               />
@@ -282,7 +283,7 @@ function RouteComponent() {
               data={user}
             >
               <TabsContent value='likes'>
-                <UserTweetList username={user.username} scope='likes' />
+                <UserTweetList authUser={authUser} user={user} scope='likes' />
               </TabsContent>
             </Authorization>
           </Tabs>
