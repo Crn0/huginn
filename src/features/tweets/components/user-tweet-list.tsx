@@ -71,7 +71,7 @@ export function UserTweetList({ username, scope }: UserTweetListProps) {
         {scope === "with-replies" &&
           tweets.map((tweet) => {
             const replies =
-              tweets.filter((tw) => tw.replyTo?.id === tweet.id) ?? [];
+              tweets.filter((tw) => tw.replyTo?.tweetId === tweet.id) ?? [];
 
             if (tweet.replyTo && replies.length <= 0) return;
 

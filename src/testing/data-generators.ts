@@ -123,15 +123,19 @@ export const createTweet = <
   };
 };
 
-const transformReplyTo = (
-  replyTo: ReturnType<typeof createTweet>["replyTo"]
-) =>
-  replyTo ? { id: replyTo.author.id, username: replyTo.author.username } : null;
+const transformReplyTo = (tweet: ReturnType<typeof createTweet>) =>
+  tweet.replyTo
+    ? {
+        id: tweet.replyTo.author.id,
+        tweetId: tweet.id,
+        username: tweet.replyTo.author.username,
+      }
+    : null;
 
 export const transformTweet = (
   tweet: ReturnType<typeof createTweet>,
   overrides?: Partial<Omit<Tweet, "isRepost">> & {
-    replyTo?: { id: string; username: string } | null;
+    replyTo?: { id: string; tweetId: string; username: string } | null;
   }
 ): Tweet => ({
   id: overrides?.id ?? tweet.id,
@@ -140,7 +144,7 @@ export const transformTweet = (
   isRepost: false,
   content: overrides?.content ?? tweet.content,
   media: overrides?.media ?? [],
-  replyTo: overrides?.replyTo ?? transformReplyTo(tweet.replyTo),
+  replyTo: overrides?.replyTo ?? transformReplyTo(tweet),
   author: {
     ...tweet.author,
     followed: false,
