@@ -8,7 +8,7 @@ import { format } from "@/utils/format-date";
 import { UserAvatar } from "@/components/ui/avatar/user-avatar";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { NotificationTweet } from "./notification-tweet";
+import { Tweet } from "@/features/tweets/components/tweet";
 import { Link } from "@/components/ui/link";
 
 export interface NotificationProps {
@@ -18,7 +18,7 @@ export interface NotificationProps {
 
 export function Notification({ user, notification }: NotificationProps) {
   if (notification.type !== "FOLLOW") {
-    return <NotificationTweet user={user} tweet={notification.tweet} />;
+    return <Tweet user={user} tweet={notification.tweet} />;
   }
 
   return (
